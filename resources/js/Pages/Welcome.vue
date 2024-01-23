@@ -29,7 +29,7 @@ defineProps({
                 PrimeVue With Laravel Starter Kit
             </div>
             <div class="text-700 text-2xl mb-5">
-                Laravel authentication powered by Fortify, UI with PrimeVue and PrimeFlex.
+                Laravel authentication powered by Fortify, UI powered by PrimeVue and PrimeFlex.
             </div>
             <Button
                 label="Login"
