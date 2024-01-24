@@ -1,8 +1,9 @@
 import './bootstrap'; // not the framework, terminology
-import '../css/app.css';
 import 'primeflex/primeflex.css';
 import 'primevue/resources/themes/lara-light-blue/theme.css';
+//import 'primevue/resources/themes/lara-dark-blue/theme.css';
 import 'primeicons/primeicons.css';
+import '../css/app.css';
 import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';

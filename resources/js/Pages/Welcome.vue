@@ -1,6 +1,6 @@
 <script setup>
 import { Head, Link } from "@inertiajs/vue3";
-import Button from 'primevue/button';
+import Button from "primevue/button";
 
 defineProps({
     canLogin: {
@@ -29,18 +29,23 @@ defineProps({
                 PrimeVue With Laravel Starter Kit
             </div>
             <div class="text-700 text-2xl mb-5">
-                Laravel authentication powered by Fortify, UI powered by PrimeVue and PrimeFlex.
+                Laravel authentication powered by Fortify, UI powered by
+                PrimeVue and PrimeFlex.
             </div>
-            <Button
-                label="Login"
-                icon="pi pi-sign-in"
-                class="font-bold px-5 py-3 p-button-raised p-button-rounded white-space-nowrap mr-3"
-            ></Button>
-            <Button
-                label="Register"
-                icon="pi pi-user-plus"
-                class="font-bold px-5 py-3 p-button-raised p-button-rounded white-space-nowrap"
-            ></Button>
+            <Link :href="route('login')" class="p-menuitem-link">
+                <Button
+                    label="Login"
+                    icon="pi pi-sign-in"
+                    class="font-bold px-5 py-3 p-button-raised p-button-rounded white-space-nowrap mr-3"
+                ></Button>
+            </Link>
+            <Link :href="route('register')" class="p-menuitem-link">
+                <Button
+                    label="Register"
+                    icon="pi pi-user-plus"
+                    class="font-bold px-5 py-3 p-button-raised p-button-rounded white-space-nowrap"
+                ></Button>
+            </Link>
         </div>
     </div>
 </template>

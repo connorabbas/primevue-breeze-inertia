@@ -8,25 +8,21 @@ const visible = ref(false);
 
 <template>
     <Head title="Dashboard" />
-
     <AuthenticatedLayout>
         <template #header>
-            <h2
-                class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight"
-            >
-                Dashboard
-            </h2>
-        </template>
-
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div
-                    class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg"
-                >
-                    <div class="p-6 text-gray-900 dark:text-gray-100">
-                        You're logged in!
+            <div class="border-bottom-1 border-200 bg-white py-4">
+                <div class="grid-nogutter">
+                    <div
+                        class="col-12 md:col-10 md:col-offset-1 lg:col-8 lg:col-offset-2"
+                    >
+                        <h2 class="m-0">Dashboard</h2>
                     </div>
                 </div>
+            </div>
+        </template>
+        <div class="mt-5 surface-card p-4 shadow-1 border-round">
+            <div>
+                <p class="m-0">You are logged in!</p>
             </div>
         </div>
     </AuthenticatedLayout>

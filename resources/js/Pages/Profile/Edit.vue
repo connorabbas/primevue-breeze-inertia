@@ -21,7 +21,15 @@ const props = defineProps({
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Profile</h2>
+            <div class="border-bottom-1 border-200 bg-white py-4">
+                <div class="grid-nogutter">
+                    <div
+                        class="col-12 md:col-10 md:col-offset-1 lg:col-8 lg:col-offset-2"
+                    >
+                        <h2 class="m-0">Profile</h2>
+                    </div>
+                </div>
+            </div>
         </template>
 
         <div class="py-12">
