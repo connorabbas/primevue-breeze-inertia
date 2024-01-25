@@ -14,8 +14,7 @@ import OuterLayoutContainer from "@/Components/OuterLayoutContainer.vue";
                 </OuterLayoutContainer>
             </div>
         </template>
-        <!-- surface-card -->
-        <div class="mt-5 surface-overlay p-5 shadow-1 border-noround md:border-round-md">
+        <div class="mt-5 surface-overlay p-5 shadow-1 border-noround md:border-round-lg">
             <div>
                 <p class="m-0">You are logged in!</p>
             </div>

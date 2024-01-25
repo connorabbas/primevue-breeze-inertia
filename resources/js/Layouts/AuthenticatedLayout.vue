@@ -11,7 +11,6 @@ import ThemeToggleButton from "@/Components/ThemeToggleButton.vue";
 const page = usePage();
 const mainMenuItems = [
     {
-        intertiaLink: true,
         label: "Dashboard",
         href: route("dashboard"),
         isCurrentRoute: route().current("dashboard"),
@@ -96,7 +95,6 @@ watchEffect(() => {
                         </template>
                         <template #item="{ item, props, hasSubmenu, root }">
                             <Link
-                                v-if="item.intertiaLink"
                                 :href="item.href"
                                 class="hidden sm:hidden md:hidden lg:flex"
                                 :class="[
@@ -110,23 +108,11 @@ watchEffect(() => {
                                     :class="[item.icon, 'mr-2']"
                                 />
                                 <span>{{ item.label }}</span>
-                            </Link>
-                            <a
-                                v-else
-                                :href="item.url"
-                                :target="item.target"
-                                v-bind="props.action"
-                            >
-                                <span
-                                    v-show="item.icon"
-                                    :class="[item.icon, 'mr-2']"
-                                />
-                                <span>{{ item.label }}</span>
                                 <span
                                     v-if="hasSubmenu"
                                     class="pi pi-fw pi-angle-down ml-2"
                                 />
-                            </a>
+                            </Link>
                         </template>
                         <template #end>
                             <div class="flex">

@@ -55,19 +55,21 @@ defineProps({
 
                         <Link :href="route('login')" class="p-menuitem-link">
                             <Button
+                                raised
                                 label="Login"
                                 icon="pi pi-sign-in"
-                                class="mr-3 p-button-raised"
+                                class="mr-3"
                             ></Button>
                         </Link>
                         <Link :href="route('register')" class="p-menuitem-link">
                             <Button
+                                outlined
                                 label="Register"
                                 icon="pi pi-user-plus"
-                                class="mr-3 p-button-outlined"
+                                class="mr-3"
                             ></Button>
                         </Link>
-                        <ThemeToggleButton class="p-button-outlined" />
+                        <ThemeToggleButton outlined />
                     </section>
                 </div>
             </div>

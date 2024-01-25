@@ -118,6 +118,7 @@ const submit = () => {
                     </div>
 
                     <Button
+                        raised
                         type="submit"
                         :loading="form.processing"
                         label="Register"
