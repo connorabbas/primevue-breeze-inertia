@@ -2,6 +2,7 @@
 import { Head, Link } from "@inertiajs/vue3";
 import Button from "primevue/button";
 import GuestLayout from "@/Layouts/GuestLayout.vue";
+import ThemeToggleButton from "@/Components/ThemeToggleButton.vue";
 
 defineProps({
     canLogin: {
@@ -63,9 +64,10 @@ defineProps({
                             <Button
                                 label="Register"
                                 icon="pi pi-user-plus"
-                                class="p-button-outlined"
+                                class="mr-3 p-button-outlined"
                             ></Button>
                         </Link>
+                        <ThemeToggleButton class="p-button-outlined" />
                     </section>
                 </div>
             </div>

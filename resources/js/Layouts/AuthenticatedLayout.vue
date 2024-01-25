@@ -6,6 +6,7 @@ import Button from "primevue/button";
 import Menu from "primevue/menu";
 import Sidebar from "primevue/sidebar";
 import OuterLayoutContainer from "@/Components/OuterLayoutContainer.vue";
+import ThemeToggleButton from "@/Components/ThemeToggleButton.vue";
 
 const page = usePage();
 const mainMenuItems = [
@@ -128,64 +129,71 @@ watchEffect(() => {
                             </a>
                         </template>
                         <template #end>
-                            <div class="hidden sm:hidden md:hidden lg:flex">
-                                <Menu
-                                    :model="userMenuItems"
-                                    popup
-                                    ref="menu"
-                                    class="shadow-1"
-                                >
-                                    <template #item="{ item, props }">
-                                        <Link
-                                            :href="item.href"
-                                            :method="
-                                                item.method === 'post'
-                                                    ? 'post'
-                                                    : 'get'
-                                            "
-                                            :as="
-                                                item.method === 'post'
-                                                    ? 'li'
-                                                    : 'a'
-                                            "
-                                            :class="[
-                                                'p-menuitem-link',
-                                                item.method === 'post'
-                                                    ? 'flex items-center w-full text-left'
-                                                    : '',
-                                                item.isCurrentRoute
-                                                    ? 'text-primary'
-                                                    : '',
-                                            ]"
-                                            custom
-                                        >
-                                            <span
-                                                v-show="item.icon"
-                                                :class="[item.icon, 'mr-2']"
-                                            />
-                                            <span>{{ item.label }}</span>
-                                        </Link>
-                                    </template>
-                                </Menu>
+                            <div class="flex">
+                                <ThemeToggleButton
+                                    plain
+                                    text
+                                    class="inline-flex"
+                                />
+                                <div class="hidden sm:hidden md:hidden lg:flex">
+                                    <Menu
+                                        :model="userMenuItems"
+                                        popup
+                                        ref="menu"
+                                        class="shadow-1"
+                                    >
+                                        <template #item="{ item, props }">
+                                            <Link
+                                                :href="item.href"
+                                                :method="
+                                                    item.method === 'post'
+                                                        ? 'post'
+                                                        : 'get'
+                                                "
+                                                :as="
+                                                    item.method === 'post'
+                                                        ? 'li'
+                                                        : 'a'
+                                                "
+                                                :class="[
+                                                    'p-menuitem-link',
+                                                    item.method === 'post'
+                                                        ? 'flex items-center w-full text-left'
+                                                        : '',
+                                                    item.isCurrentRoute
+                                                        ? 'text-primary'
+                                                        : '',
+                                                ]"
+                                                custom
+                                            >
+                                                <span
+                                                    v-show="item.icon"
+                                                    :class="[item.icon, 'mr-2']"
+                                                />
+                                                <span>{{ item.label }}</span>
+                                            </Link>
+                                        </template>
+                                    </Menu>
+                                    <Button
+                                        plain
+                                        text
+                                        class="p-menuitem-text inline-flex"
+                                        @click="toggleMenu($event)"
+                                    >
+                                        <span class="">{{
+                                            page.props.auth.user.name
+                                        }}</span>
+                                        <i class="pi pi-angle-down ml-2"></i>
+                                    </Button>
+                                </div>
                                 <Button
                                     plain
                                     text
-                                    class="p-menuitem-text"
-                                    @click="toggleMenu($event)"
-                                >
-                                    <span class="">{{
-                                        page.props.auth.user.name
-                                    }}</span>
-                                    <i class="pi pi-angle-down ml-2"></i>
-                                </Button>
+                                    class="flex sm:flex lg:hidden xl:hidden"
+                                    icon="pi pi-bars"
+                                    @click="mobileMenuOpen = true"
+                                />
                             </div>
-                            <Button
-                                plain
-                                text
-                                class="flex sm:flex lg:hidden xl:hidden"
-                                icon="pi pi-bars"
-                                @click="mobileMenuOpen = true"
-                            />
                         </template>
                     </Menubar>
                 </OuterLayoutContainer>
