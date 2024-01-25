@@ -4,7 +4,7 @@ import { Head, Link, useForm } from "@inertiajs/vue3";
 import InputText from "primevue/inputtext";
 import Checkbox from "primevue/checkbox";
 import Button from "primevue/button";
-import InputError from "../../Components/InputError.vue";
+import InputError from "@/Components/InputError.vue";
 
 defineProps({
     canResetPassword: {
@@ -38,7 +38,7 @@ const submit = () => {
 
         <div class="h-screen flex align-items-center justify-content-center">
             <div
-                class="surface-card p-4 shadow-2 border-round w-full sm:w-12 md:w-30rem"
+                class="surface-card p-4 shadow-1 border-round w-full sm:w-12 md:w-30rem"
             >
                 <form @submit.prevent="submit">
                     <div class="mb-4">
@@ -48,11 +48,13 @@ const submit = () => {
                             >Email</label
                         >
                         <InputText
+                            required
                             autofocus
                             id="email"
                             type="email"
                             v-model="form.email"
                             class="w-full"
+                            autocomplete="username"
                         />
                         <InputError class="mt-2" :message="form.errors.email" />
                     </div>
@@ -64,10 +66,12 @@ const submit = () => {
                             >Password</label
                         >
                         <InputText
+                            required
                             id="password"
                             type="password"
                             v-model="form.password"
                             class="w-full"
+                            autocomplete="current-password"
                         />
                         <InputError
                             class="mt-2 mb-1"
@@ -100,7 +104,7 @@ const submit = () => {
 
                     <Button
                         type="submit"
-                        :disabled="form.processing"
+                        :loading="form.processing"
                         label="Log In"
                         class="w-full"
                     ></Button>

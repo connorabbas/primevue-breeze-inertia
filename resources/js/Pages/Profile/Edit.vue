@@ -3,6 +3,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import DeleteUserForm from './Partials/DeleteUserForm.vue';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm.vue';
+import OuterLayoutContainer from "@/Components/OuterLayoutContainer.vue";
 import { Head } from '@inertiajs/vue3';
 
 const props = defineProps({
@@ -21,14 +22,10 @@ const props = defineProps({
 
     <AuthenticatedLayout>
         <template #header>
-            <div class="border-bottom-1 border-200 bg-white py-4">
-                <div class="grid-nogutter">
-                    <div
-                        class="col-12 md:col-10 md:col-offset-1 lg:col-8 lg:col-offset-2"
-                    >
-                        <h2 class="m-0">Profile</h2>
-                    </div>
-                </div>
+            <div class="bg-white py-4 shadow-1">
+                <OuterLayoutContainer>
+                    <h2 class="m-0">Profile</h2>
+                </OuterLayoutContainer>
             </div>
         </template>
 
