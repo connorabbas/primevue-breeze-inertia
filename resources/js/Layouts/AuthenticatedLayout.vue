@@ -81,11 +81,12 @@ watchEffect(() => {
 <template>
     <div>
         <header>
-            <div class="border-bottom-1 border-50 bg-white">
+            <!-- border-200 -->
+            <div class="border-bottom-1 surface-border surface-overlay">
                 <OuterLayoutContainer class="pb-0">
                     <Menubar
                         :model="mainMenuItems"
-                        class="border-noround border-none bg-white px-0"
+                        class="border-noround border-none surface-overlay px-0"
                     >
                         <template #start>
                             <div class="mr-4">

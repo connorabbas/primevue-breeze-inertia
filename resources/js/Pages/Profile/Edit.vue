@@ -22,7 +22,7 @@ const props = defineProps({
 
     <AuthenticatedLayout>
         <template #header>
-            <div class="bg-white py-4 shadow-1">
+            <div class="surface-overlay py-4 shadow-1">
                 <OuterLayoutContainer>
                     <h2 class="m-0">Profile</h2>
                 </OuterLayoutContainer>
@@ -31,7 +31,7 @@ const props = defineProps({
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-                <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+                <div class="p-4 sm:p-8 surface-overlay dark:bg-gray-800 shadow sm:rounded-lg">
                     <UpdateProfileInformationForm
                         :must-verify-email="mustVerifyEmail"
                         :status="status"
@@ -39,11 +39,11 @@ const props = defineProps({
                     />
                 </div>
 
-                <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+                <div class="p-4 sm:p-8 surface-overlay dark:bg-gray-800 shadow sm:rounded-lg">
                     <UpdatePasswordForm class="max-w-xl" />
                 </div>
 
-                <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+                <div class="p-4 sm:p-8 surface-overlay dark:bg-gray-800 shadow sm:rounded-lg">
                     <DeleteUserForm class="max-w-xl" />
                 </div>
             </div>

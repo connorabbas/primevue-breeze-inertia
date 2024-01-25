@@ -1,0 +1,12 @@
+/* Define the variables for the different theme colors */
+/* body.themed-light {
+    --themed-bg-color: var(--gray-50);
+}
+body.themed-dark {
+    --themed-bg-color: var(--gray-800);
+} */
+
+/* Dynamic classes that will change based on the body tags theme class */
+/* .themed-bg {
+    background-color: var(--themed-bg-color);
+} */

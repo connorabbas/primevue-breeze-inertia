@@ -1,12 +1,5 @@
-html {
-    font-size: 14px;
-}
-
-body {
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-.no-underline {
-    text-decoration: none;
-}
+@import "primeflex/primeflex.css";
+@import "primevue/resources/themes/lara-dark-indigo/theme.css";
+@import "primeicons/primeicons.css";
+@import "theme.css";
+@import "custom.css";
