@@ -34,16 +34,16 @@ const closeModal = () => {
 <template>
     <section class="space-y-6">
         <Dialog
+            position="top"
             v-model:visible="modalOpen"
             modal
-            header="Delete Account"
+            header="Are you sure you want to delete your account?"
             :style="{ width: '40rem' }"
         >
             <div class="mb-4">
-                <h2 class="text-xl font-medium">
+                <!-- <h2 class="text-xl font-medium">
                     Are you sure you want to delete your account?
-                </h2>
-
+                </h2> -->
                 <p class="mt-1 text-color-secondary">
                     Once your account is deleted, all of its resources and data
                     will be permanently deleted. Please enter your password to
@@ -70,10 +70,9 @@ const closeModal = () => {
                 <Button
                     class="mr-2"
                     label="Cancel"
-                    outlined
+                    plain
+                    text
                     @click="closeModal"
-                    autofocus
-                    severity="contrast"
                 />
                 <Button
                     raised
@@ -85,14 +84,16 @@ const closeModal = () => {
             </template>
         </Dialog>
 
-        <header class="mb-5">
-            <h2 class="text-lg font-medium mt-0">Delete Account</h2>
-
-            <p class="mt-1 text-sm text-color-secondary">
-                Once your account is deleted, all of its resources and data will
-                be permanently deleted. Before deleting your account, please
-                download any data or information that you wish to retain.
-            </p>
+        <header class="mb-5 flex">
+            <div class="w-12 lg:w-10 xl:w-6">
+                <h2 class="text-lg font-medium mt-0">Delete Account</h2>
+                <p class="mt-1 text-sm text-color-secondary">
+                    Once your account is deleted, all of its resources and data
+                    will be permanently deleted. Before deleting your account,
+                    please download any data or information that you wish to
+                    retain.
+                </p>
+            </div>
         </header>
 
         <Button

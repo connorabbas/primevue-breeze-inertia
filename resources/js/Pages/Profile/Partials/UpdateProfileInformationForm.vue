@@ -23,42 +23,47 @@ const form = useForm({
 
 <template>
     <section>
-        <header class="mb-5">
-            <h2 class="text-lg font-medium mt-0">Profile Information</h2>
+        <header class="mb-5 flex">
+            <div class="w-12 lg:w-10 xl:w-6">
+                <h2 class="text-lg font-medium mt-0">Profile Information</h2>
 
-            <p class="mt-1 text-sm text-color-secondary">
-                Update your account's profile information and email address.
-            </p>
+                <p class="mt-1 text-sm text-color-secondary">
+                    Update your account's profile information and email address.
+                </p>
+            </div>
         </header>
 
         <form
             @submit.prevent="form.put(route('user-profile-information.update'))"
         >
-            <div class="mb-4">
-                <label for="name" class="block mb-2">Name</label>
-                <InputText
-                    required
-                    autofocus
-                    id="name"
-                    type="text"
-                    v-model="form.name"
-                    class="w-full"
-                    autocomplete="name"
-                />
-                <InputError class="mt-2" :message="form.errors.name" />
+            <div class="mb-4 flex">
+                <div class="w-12 lg:w-10 xl:w-6">
+                    <label for="name" class="block mb-2">Name</label>
+                    <InputText
+                        required
+                        autofocus
+                        id="name"
+                        type="text"
+                        v-model="form.name"
+                        class="w-full"
+                        autocomplete="name"
+                    />
+                    <InputError class="mt-2" :message="form.errors.name" />
+                </div>
             </div>
-
-            <div class="mb-4">
-                <label for="email" class="block mb-2">Email</label>
-                <InputText
-                    required
-                    id="email"
-                    type="email"
-                    v-model="form.email"
-                    class="w-full"
-                    autocomplete="username"
-                />
-                <InputError class="mt-2" :message="form.errors.email" />
+            <div class="mb-4 flex">
+                <div class="w-12 lg:w-10 xl:w-6">
+                    <label for="email" class="block mb-2">Email</label>
+                    <InputText
+                        required
+                        id="email"
+                        type="email"
+                        v-model="form.email"
+                        class="w-full"
+                        autocomplete="username"
+                    />
+                    <InputError class="mt-2" :message="form.errors.email" />
+                </div>
             </div>
 
             <!-- TODO -->
@@ -83,7 +88,7 @@ const form = useForm({
                 </div>
             </div>
 
-            <div class="flex items-center gap-4">
+            <div class="flex align-content-center gap-3">
                 <Button
                     raised
                     type="submit"
