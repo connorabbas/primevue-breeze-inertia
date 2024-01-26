@@ -59,7 +59,7 @@ const menu = ref(null);
 const mobileMenuOpen = ref(false);
 const windowWidth = ref(window.innerWidth);
 
-function toggleMenu(event) {
+function toggleUserMenu(event) {
     menu.value.toggle(event);
 }
 const updateWidth = () => {
@@ -167,7 +167,7 @@ watchEffect(() => {
                                         plain
                                         text
                                         class="p-menuitem-text inline-flex"
-                                        @click="toggleMenu($event)"
+                                        @click="toggleUserMenu($event)"
                                     >
                                         <span class="">{{
                                             page.props.auth.user.name
