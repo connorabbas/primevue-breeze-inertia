@@ -10,3 +10,15 @@ body {
 .no-underline {
     text-decoration: none;
 }
+
+.svg-fill-dark {
+    fill: white;
+}
+
+.svg-fill-light {
+    fill: black;
+}
+
+/* .p-button {
+    padding: 0.5rem 1rem;
+} */

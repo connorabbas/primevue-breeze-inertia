@@ -25,13 +25,13 @@ const submit = () => {
 
         <div class="h-screen flex align-items-center justify-content-center">
             <div
-                class="surface-card p-4 shadow-1 border-round w-full sm:w-12 md:w-30rem"
+                class="surface-card p-4 shadow-1 border-round-lg w-full sm:w-12 md:w-30rem"
             >
                 <form @submit.prevent="submit">
                     <div class="mb-4">
                         <label
                             for="name"
-                            class="block text-900 font-medium mb-2"
+                            class="block mb-2"
                             >Name</label
                         >
                         <InputText
@@ -49,7 +49,7 @@ const submit = () => {
                     <div class="mb-4">
                         <label
                             for="email"
-                            class="block text-900 font-medium mb-2"
+                            class="block mb-2"
                             >Email</label
                         >
                         <InputText
@@ -66,7 +66,7 @@ const submit = () => {
                     <div class="mb-4">
                         <label
                             for="password"
-                            class="block text-900 font-medium mb-2"
+                            class="block mb-2"
                             >Password</label
                         >
                         <InputText
@@ -86,7 +86,7 @@ const submit = () => {
                     <div class="mb-4">
                         <label
                             for="password_confirmation"
-                            class="block text-900 font-medium mb-2"
+                            class="block mb-2"
                             >Password</label
                         >
                         <InputText
@@ -122,8 +122,8 @@ const submit = () => {
                         type="submit"
                         :loading="form.processing"
                         label="Register"
-                        class="w-full"
-                    ></Button>
+                        severity="contrast"
+                    />
                 </form>
             </div>
         </div>

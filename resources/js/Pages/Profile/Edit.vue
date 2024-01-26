@@ -1,10 +1,10 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import DeleteUserForm from './Partials/DeleteUserForm.vue';
-import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue';
-import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm.vue';
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import DeleteUserForm from "./Partials/DeleteUserForm.vue";
+import UpdatePasswordForm from "./Partials/UpdatePasswordForm.vue";
+import UpdateProfileInformationForm from "./Partials/UpdateProfileInformationForm.vue";
 import OuterLayoutContainer from "@/Components/OuterLayoutContainer.vue";
-import { Head } from '@inertiajs/vue3';
+import { Head } from "@inertiajs/vue3";
 
 const props = defineProps({
     auth: Object,
@@ -29,23 +29,27 @@ const props = defineProps({
             </div>
         </template>
 
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-                <div class="p-4 sm:p-8 surface-overlay dark:bg-gray-800 shadow sm:rounded-lg">
-                    <UpdateProfileInformationForm
-                        :must-verify-email="mustVerifyEmail"
-                        :status="status"
-                        class="max-w-xl"
-                    />
-                </div>
+        <div class="my-6">
+            <div
+                class="p-4 sm:p-5 surface-overlay shadow-1 border-noround sm:border-round-lg mb-5"
+            >
+                <UpdateProfileInformationForm
+                    :must-verify-email="mustVerifyEmail"
+                    :status="status"
+                    class="max-w-xl"
+                />
+            </div>
 
-                <div class="p-4 sm:p-8 surface-overlay dark:bg-gray-800 shadow sm:rounded-lg">
-                    <UpdatePasswordForm class="max-w-xl" />
-                </div>
+            <div
+                class="p-4 sm:p-5 surface-overlay shadow-1 border-noround sm:border-round-lg mb-5"
+            >
+                <UpdatePasswordForm class="max-w-xl" />
+            </div>
 
-                <div class="p-4 sm:p-8 surface-overlay dark:bg-gray-800 shadow sm:rounded-lg">
-                    <DeleteUserForm class="max-w-xl" />
-                </div>
+            <div
+                class="p-4 sm:p-5 surface-overlay shadow-1 border-noround sm:border-round-lg mb-5"
+            >
+                <DeleteUserForm class="max-w-xl" />
             </div>
         </div>
     </AuthenticatedLayout>

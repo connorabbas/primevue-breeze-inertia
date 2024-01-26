@@ -6,7 +6,9 @@ import { createInertiaApp } from "@inertiajs/vue3";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import { ZiggyVue } from "../../vendor/tightenco/ziggy/dist/vue.m";
 import PrimeVue from "primevue/config";
-import { loadTheme, getSavedThemePreference } from './Modules/theme-manager.mjs';
+import ConfirmationService from 'primevue/confirmationservice';
+import ToastService from 'primevue/toastservice';
+import { useTheme } from "@/Composables/useTheme.js";
 
 const appName = import.meta.env.VITE_APP_NAME || "Laravel";
 
@@ -18,15 +20,17 @@ createInertiaApp({
             import.meta.glob("./Pages/**/*.vue")
         ),
     setup({ el, App, props, plugin }) {
-        // set users theme
-        const savedTheme = getSavedThemePreference();
-        loadTheme(savedTheme);
+        // set site theme
+        const { currentTheme, loadTheme } = useTheme();
+        loadTheme(currentTheme.value);
 
         // start the app
         return createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(ZiggyVue, Ziggy)
             .use(PrimeVue)
+            .use(ConfirmationService)
+            .use(ToastService)
             .mount(el);
     },
     progress: {

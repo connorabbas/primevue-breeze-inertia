@@ -1,14 +1,18 @@
 <script setup>
-import { ref, onMounted, onUnmounted, watchEffect } from "vue";
+import { ref, onMounted, onUnmounted, watchEffect, computed } from "vue";
 import { Link, usePage } from "@inertiajs/vue3";
 import Menubar from "primevue/menubar";
 import Button from "primevue/button";
 import Menu from "primevue/menu";
 import Sidebar from "primevue/sidebar";
 import OuterLayoutContainer from "@/Components/OuterLayoutContainer.vue";
+import ApplicationLogo from "@/Components/ApplicationLogo.vue";
 import ThemeToggleButton from "@/Components/ThemeToggleButton.vue";
+import { useTheme } from "@/Composables/useTheme.js";
 
 const page = usePage();
+const { logoFillClass } = useTheme();
+
 const mainMenuItems = [
     {
         label: "Dashboard",
@@ -81,7 +85,6 @@ watchEffect(() => {
 <template>
     <div>
         <header>
-            <!-- border-200 -->
             <div class="border-bottom-1 surface-border surface-overlay">
                 <OuterLayoutContainer class="pb-0">
                     <Menubar
@@ -89,9 +92,12 @@ watchEffect(() => {
                         class="border-noround border-none surface-overlay px-0"
                     >
                         <template #start>
-                            <div class="mr-4">
-                                <b>LOGO</b>
-                            </div>
+                            <Link :href="route('welcome')" class="mr-3 h-0">
+                                <ApplicationLogo
+                                    :class="logoFillClass"
+                                    class="h-3rem w-auto pt-1"
+                                />
+                            </Link>
                         </template>
                         <template #item="{ item, props, hasSubmenu, root }">
                             <Link
@@ -187,7 +193,7 @@ watchEffect(() => {
             <!-- Mobile sidebar menu -->
             <Sidebar
                 v-model:visible="mobileMenuOpen"
-                header="LOGO \ APP NAME"
+                header="Menu"
                 position="right"
             >
                 <ul class="list-none m-0 p-0">

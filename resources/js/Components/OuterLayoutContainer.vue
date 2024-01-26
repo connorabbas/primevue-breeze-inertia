@@ -12,7 +12,8 @@ const props = defineProps({
     <div
         :class="[
             'grid-nogutter',
-            spacedMobile ? 'px-3 sm:px-3' : 'px-0 sm:px-0',
+            spacedMobile ? 'px-3' : 'px-0',
+            'sm:px-3',
             'md:p-0',
             'lg:p-0',
             'xl:p-0',

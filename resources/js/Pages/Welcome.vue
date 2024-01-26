@@ -28,7 +28,7 @@ defineProps({
     <GuestLayout>
         <div class="h-screen flex align-items-center justify-content-center">
             <div
-                class="grid grid-nogutter surface-section text-800 border-round shadow-1 surface-overlay"
+                class="grid grid-nogutter surface-section text-800 border-round-lg shadow-1 surface-overlay"
             >
                 <div
                     class="col-12 md:col-8 p-6 text-center md:text-left flex align-items-center"
@@ -53,23 +53,63 @@ defineProps({
                             the glue.
                         </p>
 
-                        <Link :href="route('login')" class="p-menuitem-link">
-                            <Button
-                                raised
-                                label="Login"
-                                icon="pi pi-sign-in"
-                                class="mr-3"
-                            ></Button>
-                        </Link>
-                        <Link :href="route('register')" class="p-menuitem-link">
-                            <Button
-                                outlined
-                                label="Register"
-                                icon="pi pi-user-plus"
-                                class="mr-3"
-                            ></Button>
-                        </Link>
+                        <!-- TODO: change buttons when logged in show laravel and php versions -->
+                        <template v-if="$page.props.auth.user">
+                            <Link
+                                :href="route('dashboard')"
+                                class="p-menuitem-link"
+                            >
+                                <Button
+                                    raised
+                                    label="Dashboard"
+                                    icon="pi pi-home"
+                                    class="mr-3"
+                                />
+                            </Link>
+                            <Link
+                                :href="route('profile.edit')"
+                                class="p-menuitem-link"
+                            >
+                                <Button
+                                    outlined
+                                    label="Profile"
+                                    icon="pi pi-user"
+                                    class="mr-3"
+                                />
+                            </Link>
+                        </template>
+                        <template v-else>
+                            <Link
+                                :href="route('login')"
+                                class="p-menuitem-link"
+                            >
+                                <Button
+                                    raised
+                                    label="Login"
+                                    icon="pi pi-sign-in"
+                                    class="mr-3"
+                                />
+                            </Link>
+                            <Link
+                                :href="route('register')"
+                                class="p-menuitem-link"
+                            >
+                                <Button
+                                    outlined
+                                    label="Register"
+                                    icon="pi pi-user-plus"
+                                    class="mr-3"
+                                />
+                            </Link>
+                        </template>
                         <ThemeToggleButton outlined />
+                        <div class="mt-4">
+                            <p class="m-0 text-sm text-color-secondary">
+                                Laravel v{{ laravelVersion }} (PHP v{{
+                                    phpVersion
+                                }})
+                            </p>
+                        </div>
                     </section>
                 </div>
             </div>
