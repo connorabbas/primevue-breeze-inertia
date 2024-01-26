@@ -11,6 +11,9 @@ defineProps({
     canResetPassword: {
         type: Boolean,
     },
+    status: {
+        type: String,
+    },
 });
 
 const form = useForm({

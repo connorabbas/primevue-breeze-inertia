@@ -4,6 +4,10 @@ const lightTheme = "lara-light-indigo";
 const darkTheme = "lara-dark-indigo";
 const currentTheme = ref(getSavedThemePreference());
 
+/**
+ * Set the theme of the site, save the users preference in localStorage
+ * Alternatively use: https://primevue.org/theming/#switchthemes
+ */
 function setTheme(theme) {
     const themeLink =
         document.getElementById("theme-css") || document.createElement("link");
