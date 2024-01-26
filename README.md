@@ -27,3 +27,5 @@ In order for this theme toggle (and PrimeVue component styling) to work, the nec
 
 ### Swap Themes
 You can easily change what themes are used for the light/dark modes by copying and pasting your desired theme folders from `/node_modules/primevue/resources/themes/*` into the `/public/themes` directory. Then within the `/resources/js/Composables/useTheme.js` file you can change the values of the `lightTheme` and `darkTheme` const variables accordingly.
+
+[PrimeVue Themes](https://primevue.org/theming/#builtinthemes)
