@@ -21,8 +21,8 @@ createInertiaApp({
         ),
     setup({ el, App, props, plugin }) {
         // set site theme
-        const { currentTheme, loadTheme } = useTheme();
-        loadTheme(currentTheme.value);
+        const { currentTheme, setTheme } = useTheme();
+        setTheme(currentTheme.value);
 
         // start the app
         return createApp({ render: () => h(App, props) })

@@ -34,7 +34,7 @@ const closeModal = () => {
 <template>
     <section class="space-y-6">
         <Dialog
-            position="top"
+            position="center"
             v-model:visible="modalOpen"
             modal
             header="Are you sure you want to delete your account?"

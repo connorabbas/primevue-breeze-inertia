@@ -8,10 +8,8 @@ import Sidebar from "primevue/sidebar";
 import OuterLayoutContainer from "@/Components/OuterLayoutContainer.vue";
 import ApplicationLogo from "@/Components/ApplicationLogo.vue";
 import ThemeToggleButton from "@/Components/ThemeToggleButton.vue";
-import { useTheme } from "@/Composables/useTheme.js";
 
 const page = usePage();
-const { logoFillClass } = useTheme();
 
 const mainMenuItems = [
     {
@@ -94,8 +92,7 @@ watchEffect(() => {
                         <template #start>
                             <Link :href="route('welcome')" class="mr-3 h-0">
                                 <ApplicationLogo
-                                    :class="logoFillClass"
-                                    class="h-3rem w-auto pt-1"
+                                    class="h-3rem w-auto pt-1 surface-svg-fill"
                                 />
                             </Link>
                         </template>

@@ -2,24 +2,18 @@
 import Button from "primevue/button";
 import { useTheme } from "@/Composables/useTheme.js";
 
-const { currentTheme, loadTheme } = useTheme();
+const { currentTheme, setTheme } = useTheme();
 
-/* TODO: change to `dark` and `light` values then have useTheme decide the  */
 function toggleTheme() {
-    const newTheme =
-        currentTheme.value === "lara-light-indigo"
-            ? "lara-dark-indigo"
-            : "lara-light-indigo";
-    loadTheme(newTheme);
+    const newTheme = currentTheme.value === "light" ? "dark" : "light";
+    setTheme(newTheme);
 }
 </script>
 
 <template>
     <Button
         title="Change theme"
-        :icon="
-            currentTheme === 'lara-light-indigo' ? 'pi pi-sun' : 'pi pi-moon'
-        "
+        :icon="currentTheme === 'light' ? 'pi pi-sun' : 'pi pi-moon'"
         @click="toggleTheme"
     />
 </template>

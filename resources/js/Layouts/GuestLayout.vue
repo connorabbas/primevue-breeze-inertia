@@ -1,8 +1,5 @@
 <script setup>
 import ApplicationLogo from "@/Components/ApplicationLogo.vue";
-import { useTheme } from "@/Composables/useTheme.js";
-
-const { logoFillClass } = useTheme();
 </script>
 
 <template>
@@ -16,8 +13,7 @@ const { logoFillClass } = useTheme();
                 <div>
                     <div class="flex justify-content-center mb-4">
                         <ApplicationLogo
-                            :class="logoFillClass"
-                            class="h-5rem w-auto pt-1"
+                            class="h-5rem w-auto pt-1 surface-svg-fill"
                         />
                     </div>
                     <slot />
