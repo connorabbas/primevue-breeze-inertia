@@ -26,7 +26,12 @@ const submit = () => {
         <Head title="Forgot Password" />
 
         <div class="w-full sm:w-12 md:w-30rem mb-3">
-            <Message v-if="status" severity="success" :closable="false">
+            <Message
+                v-if="status"
+                severity="success"
+                :closable="false"
+                class="shadow-1"
+            >
                 {{ status }}
             </Message>
         </div>

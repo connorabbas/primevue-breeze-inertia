@@ -27,9 +27,7 @@ Route::get('/', function () {
 })->name('welcome');
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', fn () => Inertia::render('Dashboard', ['status' => session('status')]))
-        ->middleware(['verified']) // testing
-        ->name('dashboard');
+    Route::get('/dashboard', fn () => Inertia::render('Dashboard', ['status' => session('status')]))->name('dashboard');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });

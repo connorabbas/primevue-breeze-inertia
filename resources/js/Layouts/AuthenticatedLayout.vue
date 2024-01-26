@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, onUnmounted, watchEffect, computed } from "vue";
-import { Link, usePage } from "@inertiajs/vue3";
+import { Link } from "@inertiajs/vue3";
 import Menubar from "primevue/menubar";
 import Button from "primevue/button";
 import Menu from "primevue/menu";
@@ -8,8 +8,6 @@ import Sidebar from "primevue/sidebar";
 import OuterLayoutContainer from "@/Components/OuterLayoutContainer.vue";
 import ApplicationLogo from "@/Components/ApplicationLogo.vue";
 import ThemeToggleButton from "@/Components/ThemeToggleButton.vue";
-
-const page = usePage();
 
 const mainMenuItems = [
     {
@@ -129,7 +127,7 @@ watchEffect(() => {
                                         :model="userMenuItems"
                                         popup
                                         ref="menu"
-                                        class="shadow-1"
+                                        class="shadow-1 border-1 surface-border"
                                     >
                                         <template #item="{ item, props }">
                                             <Link
@@ -170,7 +168,7 @@ watchEffect(() => {
                                         @click="toggleUserMenu($event)"
                                     >
                                         <span class="">{{
-                                            page.props.auth.user.name
+                                            $page.props.auth.user.name
                                         }}</span>
                                         <i class="pi pi-angle-down ml-2"></i>
                                     </Button>
