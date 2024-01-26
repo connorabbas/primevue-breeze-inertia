@@ -33,8 +33,6 @@ const submit = () => {
     <GuestLayout>
         <Head title="Log in" />
 
-        {{ form.remember }}
-
         <div class="w-full sm:w-12 md:w-30rem mb-3">
             <Message
                 v-if="status"
