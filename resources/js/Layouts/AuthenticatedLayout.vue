@@ -70,7 +70,7 @@ onMounted(() => {
 onUnmounted(() => {
     window.removeEventListener("resize", updateWidth);
 });
-// Watch for windowWidth changes to close sidebar are larger screens if it was opened on mobile
+// Watch for windowWidth changes to close sidebar on larger screens if it was opened on mobile
 watchEffect(() => {
     if (windowWidth.value > 992) {
         mobileMenuOpen.value = false;
