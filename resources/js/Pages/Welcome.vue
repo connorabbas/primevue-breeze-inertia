@@ -58,7 +58,6 @@ defineProps({
                                 as the glue.
                             </p>
 
-                            <!-- TODO: change buttons when logged in show laravel and php versions -->
                             <template v-if="$page.props.auth.user">
                                 <Link
                                     :href="route('dashboard')"

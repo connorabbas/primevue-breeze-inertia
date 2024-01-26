@@ -5,13 +5,11 @@ import InputText from "primevue/inputtext";
 import Checkbox from "primevue/checkbox";
 import Button from "primevue/button";
 import InputError from "@/Components/InputError.vue";
+import Message from "primevue/message";
 
 defineProps({
     canResetPassword: {
         type: Boolean,
-    },
-    status: {
-        type: String,
     },
 });
 
@@ -29,16 +27,18 @@ const submit = () => {
 </script>
 
 <template>
-    <!-- TODO use logo in GuestLayout -->
     <GuestLayout>
         <Head title="Log in" />
+
+        <div class="w-full sm:w-12 md:w-30rem mb-3">
+            <Message v-if="status" severity="success" :closable="false">
+                {{ status }}
+            </Message>
+        </div>
 
         <div
             class="surface-card p-4 shadow-1 border-round-lg w-full sm:w-12 md:w-30rem"
         >
-            <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
-                {{ status }}
-            </div>
             <form @submit.prevent="submit">
                 <div class="mb-4">
                     <label for="email" class="block mb-2">Email</label>
@@ -90,7 +90,7 @@ const submit = () => {
                     <Link
                         v-if="canResetPassword"
                         :href="route('password.request')"
-                        class="mr-3 text-color-secondary"
+                        class="mr-3 text-color-secondary hover:text-color"
                     >
                         Forgot your password?
                     </Link>

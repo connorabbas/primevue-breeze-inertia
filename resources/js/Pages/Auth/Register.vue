@@ -91,7 +91,7 @@ const submit = () => {
                 <div class="flex justify-content-end align-items-center">
                     <Link
                         :href="route('login')"
-                        class="mr-3 text-color-secondary"
+                        class="mr-3 text-color-secondary hover:text-color"
                     >
                         Already registered?
                     </Link>

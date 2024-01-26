@@ -70,13 +70,17 @@ class FortifyServiceProvider extends ServiceProvider
                 'token' => $request->route('token'),
             ]);
         });
+        Fortify::verifyEmailView(function (Request $request) {
+            return $request->user()->hasVerifiedEmail()
+                ? redirect()->intended(RouteServiceProvider::HOME)
+                : Inertia::render('Auth/VerifyEmail', ['status' => session('status')]);
+        });
 
         RateLimiter::for('login', function (Request $request) {
             $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())) . '|' . $request->ip());
 
             return Limit::perMinute(5)->by($throttleKey);
         });
-
         RateLimiter::for('two-factor', function (Request $request) {
             return Limit::perMinute(5)->by($request->session()->get('login.id'));
         });

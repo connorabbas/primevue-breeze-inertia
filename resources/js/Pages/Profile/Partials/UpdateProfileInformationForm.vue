@@ -3,6 +3,7 @@ import InputError from "@/Components/InputError.vue";
 import InputText from "primevue/inputtext";
 import Button from "primevue/button";
 import { Link, useForm, usePage } from "@inertiajs/vue3";
+import Message from "primevue/message";
 
 defineProps({
     mustVerifyEmail: {
@@ -66,25 +67,30 @@ const form = useForm({
                 </div>
             </div>
 
-            <!-- TODO -->
-            <div v-if="mustVerifyEmail && user.email_verified_at === null">
-                <p class="text-sm mt-2 text-gray-800 dark:text-gray-200">
-                    Your email address is unverified.
-                    <Link
-                        :href="route('verification.send')"
-                        method="post"
-                        as="button"
-                        class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
-                    >
-                        Click here to re-send the verification email.
-                    </Link>
-                </p>
+            <div
+                v-if="mustVerifyEmail && user.email_verified_at === null"
+                class="mb-4 flex"
+            >
+                <div class="w-12 lg:w-10 xl:w-6">
+                    <p class="text-sm mt-2">
+                        Your email address is unverified.
+                        <Link
+                            :href="route('verification.send')"
+                            method="post"
+                            class="underline text-sm text-color-secondary hover:text-color"
+                        >
+                            Click here to re-send the verification email.
+                        </Link>
+                    </p>
 
-                <div
-                    v-show="status === 'verification-link-sent'"
-                    class="mt-2 font-medium text-sm text-green-600 dark:text-green-400"
-                >
-                    A new verification link has been sent to your email address.
+                    <Message
+                        v-if="status === 'verification-link-sent'"
+                        severity="success"
+                        :closable="false"
+                    >
+                        A new verification link has been sent to your email
+                        address.
+                    </Message>
                 </div>
             </div>
 
