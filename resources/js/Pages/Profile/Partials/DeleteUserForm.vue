@@ -41,9 +41,6 @@ const closeModal = () => {
             :style="{ width: '40rem' }"
         >
             <div class="mb-4">
-                <!-- <h2 class="text-xl font-medium">
-                    Are you sure you want to delete your account?
-                </h2> -->
                 <p class="mt-1 text-color-secondary">
                     Once your account is deleted, all of its resources and data
                     will be permanently deleted. Please enter your password to
@@ -51,7 +48,7 @@ const closeModal = () => {
                 </p>
             </div>
 
-            <div class="mb-4">
+            <div>
                 <InputText
                     required
                     id="password"

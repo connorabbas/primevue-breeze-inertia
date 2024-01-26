@@ -29,79 +29,71 @@ const submit = () => {
 </script>
 
 <template>
+    <!-- TODO use logo in GuestLayout -->
     <GuestLayout>
         <Head title="Log in" />
 
-        <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
-            {{ status }}
-        </div>
+        <div
+            class="surface-card p-4 shadow-1 border-round-lg w-full sm:w-12 md:w-30rem"
+        >
+            <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
+                {{ status }}
+            </div>
+            <form @submit.prevent="submit">
+                <div class="mb-4">
+                    <label for="email" class="block mb-2">Email</label>
+                    <InputText
+                        required
+                        autofocus
+                        id="email"
+                        type="email"
+                        v-model="form.email"
+                        class="w-full"
+                        autocomplete="username"
+                    />
+                    <InputError class="mt-2" :message="form.errors.email" />
+                </div>
 
-        <div class="h-screen flex align-items-center justify-content-center">
-            <div
-                class="surface-card p-4 shadow-1 border-round-lg w-full sm:w-12 md:w-30rem"
-            >
-                <form @submit.prevent="submit">
-                    <div class="mb-4">
-                        <label
-                            for="email"
-                            class="block mb-2"
-                            >Email</label
-                        >
-                        <InputText
-                            required
-                            autofocus
-                            id="email"
-                            type="email"
-                            v-model="form.email"
-                            class="w-full"
-                            autocomplete="username"
-                        />
-                        <InputError class="mt-2" :message="form.errors.email" />
-                    </div>
+                <div class="mb-4">
+                    <label for="password" class="block mb-2">Password</label>
+                    <InputText
+                        required
+                        id="password"
+                        type="password"
+                        v-model="form.password"
+                        class="w-full"
+                        autocomplete="current-password"
+                    />
+                    <InputError
+                        class="mt-2 mb-1"
+                        :message="form.errors.password"
+                    />
+                </div>
 
-                    <div class="mb-4">
-                        <label
-                            for="password"
-                            class="block mb-2"
-                            >Password</label
-                        >
-                        <InputText
-                            required
-                            id="password"
-                            type="password"
-                            v-model="form.password"
-                            class="w-full"
-                            autocomplete="current-password"
-                        />
-                        <InputError
-                            class="mt-2 mb-1"
-                            :message="form.errors.password"
-                        />
-                    </div>
-
-                    <div class="mb-5">
-                        <div
-                            class="flex align-items-center justify-content-between"
-                        >
-                            <div class="flex align-items-center">
-                                <Checkbox
-                                    id="remember"
-                                    :binary="true"
-                                    v-model="form.remember"
-                                    class="mr-2"
-                                ></Checkbox>
-                                <label for="remember">Remember me</label>
-                            </div>
-                            <Link
-                                v-if="canResetPassword"
-                                :href="route('password.request')"
-                                class="font-medium no-underline ml-2 text-blue-500 text-right cursor-pointer"
-                            >
-                                Forgot your password?
-                            </Link>
+                <div class="mb-5">
+                    <div
+                        class="flex align-items-center justify-content-between"
+                    >
+                        <div class="flex align-items-center">
+                            <Checkbox
+                                id="remember"
+                                :binary="true"
+                                v-model="form.remember"
+                                class="mr-2"
+                            ></Checkbox>
+                            <label for="remember">Remember me</label>
                         </div>
                     </div>
+                </div>
 
+                <div class="flex justify-content-end align-items-center">
+                    <Link
+                        v-if="canResetPassword"
+                        :href="route('password.request')"
+                        class="mr-3 text-color-secondary"
+                    >
+                        Forgot your password?
+                    </Link>
                     <Button
                         raised
                         type="submit"
@@ -109,8 +101,8 @@ const submit = () => {
                         label="Log In"
                         severity="contrast"
                     />
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
     </GuestLayout>
 </template>
