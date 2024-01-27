@@ -28,7 +28,7 @@ const form = useForm({
             <div class="w-12 lg:w-10 xl:w-6">
                 <h2 class="text-lg font-medium mt-0">Profile Information</h2>
 
-                <p class="mt-1 text-sm text-color-secondary">
+                <p class="mb-0 text-sm text-color-secondary">
                     Update your account's profile information and email address.
                 </p>
             </div>

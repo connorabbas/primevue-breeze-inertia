@@ -31,7 +31,7 @@ const props = defineProps({
 
         <div class="my-6">
             <div
-                class="p-4 sm:p-5 surface-overlay shadow-1 border-noround sm:border-round-lg mb-5"
+                class="p-3 sm:p-5 surface-overlay shadow-1 border-noround sm:border-round-lg mb-5"
             >
                 <UpdateProfileInformationForm
                     :must-verify-email="mustVerifyEmail"
@@ -41,13 +41,13 @@ const props = defineProps({
             </div>
 
             <div
-                class="p-4 sm:p-5 surface-overlay shadow-1 border-noround sm:border-round-lg mb-5"
+                class="p-3 sm:p-5 surface-overlay shadow-1 border-noround sm:border-round-lg mb-5"
             >
                 <UpdatePasswordForm class="max-w-xl" />
             </div>
 
             <div
-                class="p-4 sm:p-5 surface-overlay shadow-1 border-noround sm:border-round-lg mb-5"
+                class="p-3 sm:p-5 surface-overlay shadow-1 border-noround sm:border-round-lg mb-5"
             >
                 <DeleteUserForm class="max-w-xl" />
             </div>
