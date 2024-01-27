@@ -5,8 +5,8 @@ import Button from "primevue/button";
 import { useForm } from "@inertiajs/vue3";
 import { ref } from "vue";
 
-const passwordInput = ref(null);
 const currentPasswordInput = ref(null);
+const passwordInput = ref(null);
 
 const form = useForm({
     current_password: "",
@@ -19,13 +19,13 @@ const updatePassword = () => {
         preserveScroll: true,
         onSuccess: () => form.reset(),
         onError: () => {
-            if (form.errors.password) {
+            if (form.errors.updatePassword?.password) {
                 form.reset("password", "password_confirmation");
-                passwordInput.value.focus();
+                passwordInput.value.$el.focus();
             }
-            if (form.errors.current_password) {
+            if (form.errors.updatePassword?.current_password) {
                 form.reset("current_password");
-                currentPasswordInput.value.focus();
+                currentPasswordInput.value.$el.focus();
             }
         },
     });
@@ -62,7 +62,7 @@ const updatePassword = () => {
                     />
                     <InputError
                         class="mt-2"
-                        :message="form.errors.current_password"
+                        :message="form.errors.updatePassword?.current_password"
                     />
                 </div>
             </div>
@@ -81,7 +81,7 @@ const updatePassword = () => {
                         class="w-full"
                         autocomplete="new-password"
                     />
-                    <InputError class="mt-2" :message="form.errors.password" />
+                    <InputError class="mt-2" :message="form.errors.updatePassword?.password" />
                 </div>
             </div>
 
@@ -100,7 +100,7 @@ const updatePassword = () => {
                     />
                     <InputError
                         class="mt-2"
-                        :message="form.errors.password_confirmation"
+                        :message="form.errors.updatePassword?.password_confirmation"
                     />
                 </div>
             </div>

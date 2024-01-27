@@ -4,7 +4,7 @@ import InputText from "primevue/inputtext";
 import Button from "primevue/button";
 import Dialog from "primevue/dialog";
 import { useForm } from "@inertiajs/vue3";
-import { nextTick, ref } from "vue";
+import { nextTick, ref, watch } from "vue";
 
 const passwordInput = ref(null);
 const modalOpen = ref(false);
@@ -13,22 +13,24 @@ const form = useForm({
     password: "",
 });
 
-const confirmUserDeletion = () => {
-    modalOpen.value = true;
-    //nextTick(() => passwordInput.value.focus()); // not working for some reason
-};
 const deleteUser = () => {
     form.delete(route("profile.destroy"), {
         preserveScroll: true,
-        onSuccess: () => closeModal(),
-        onError: () => passwordInput.value.focus(),
+        onSuccess: () => (modalOpen.value = false),
+        onError: () => passwordInput.value.$el.focus(),
         onFinish: () => form.reset(),
     });
 };
-const closeModal = () => {
-    modalOpen.value = false;
-    form.reset();
-};
+
+watch(modalOpen, (newModalOpen) => {
+    if (newModalOpen) {
+        nextTick(() => {
+            passwordInput.value.$el.focus();
+        });
+    } else {
+        form.clearErrors();
+    }
+});
 </script>
 
 <template>
@@ -69,7 +71,7 @@ const closeModal = () => {
                     label="Cancel"
                     plain
                     text
-                    @click="closeModal"
+                    @click="modalOpen = false"
                 />
                 <Button
                     raised
@@ -95,7 +97,7 @@ const closeModal = () => {
 
         <Button
             raised
-            @click="confirmUserDeletion"
+            @click="modalOpen = true"
             label="Delete Account"
             severity="danger"
         />

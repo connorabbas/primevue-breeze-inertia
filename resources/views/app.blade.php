@@ -16,7 +16,7 @@
     @inertiaHead
 </head>
 
-<body class="font-sans antialiased h-full surface-ground">
+<body class="h-full surface-ground">
     @inertia
 </body>
 

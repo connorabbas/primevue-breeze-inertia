@@ -49,7 +49,7 @@ const form = useForm({
                         class="w-full"
                         autocomplete="name"
                     />
-                    <InputError class="mt-2" :message="form.errors.name" />
+                    <InputError class="mt-2" :message="form.errors.updateProfileInformation?.name" />
                 </div>
             </div>
             <div class="mb-4 flex">
@@ -63,7 +63,7 @@ const form = useForm({
                         class="w-full"
                         autocomplete="username"
                     />
-                    <InputError class="mt-2" :message="form.errors.email" />
+                    <InputError class="mt-2" :message="form.errors.updateProfileInformation?.email" />
                 </div>
             </div>
 
