@@ -54,11 +54,14 @@ A starter kit using [Laravel Fortify](https://laravel.com/docs/master/fortify) f
    ```
 
 ## Theming
-During the installation steps, you are required to run the Vite build process (`npm run build`). The reason for running the build process locally is to gather the necessary theme files for the application, which are copied into the site's `/public/themes` directory via the [vite-plugin-static-copy](https://github.com/sapphi-red/vite-plugin-static-copy#readme) Vite plugin in the `vite.config.js` file.
+### Public Theme Files
+During the installation steps, you are required to run the Vite build process (`npm run build`). The reason for running the build process locally is to gather the necessary theme files for the application, which are copied into the site's `/public/themes` directory via the [vite-plugin-static-copy](https://github.com/sapphi-red/vite-plugin-static-copy#readme) plugin in the `vite.config.js` file.
+
+The alternative to this approach would be manually copying the theme folders from `node_modules/primevue/resources/themes` into the `public/themes` directory, and committing the folders/files to your repository source code. (would required removing the `.gitignore` rule)
 
 ### Changing Themes
-Both the file copying process, and the light/dark theme toggle functionality rely on the `LIGHT_THEME` and `DARK_THEME` constant values defined in the `/resources/js/Modules/constants.js` file.
+Both the file copying process, and the light/dark theme toggle functionality rely on the `LIGHT_THEME` and `DARK_THEME` constant values defined in the `/resources/js/Modules/constants.mjs` file.
 
-To change what themes are used on the site, simply modify the constant string values to any theme name that is available from [PrimeVue's Built-in Themes](https://primevue.org/theming/#builtinthemes). After changing the values to your desired themes, you will need to run the `npm run build` command again, to copy the theme files for use.
+To change what themes are used on the site for light and dark modes, simply modify the constant string values to any theme name that is available from [PrimeVue's Built-in Themes](https://primevue.org/theming/#builtinthemes). After changing the values to your desired themes, you will need to run the `npm run build` command again, to copy the theme files for use.
 
 The `lara-light-indigo` and `lara-dark-indigo` themes are used by default, since they most closely resemble the Laravel Breeze styling.
