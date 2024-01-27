@@ -1,16 +1,19 @@
 <script setup>
+import { ref, onMounted } from 'vue';
 import GuestLayout from "@/Layouts/GuestLayout.vue";
 import InputError from "@/Components/InputError.vue";
 import Message from "primevue/message";
 import InputText from "primevue/inputtext";
 import Button from "primevue/button";
-import { Head, useForm, Link } from "@inertiajs/vue3";
+import { Head, useForm } from "@inertiajs/vue3";
 
 defineProps({
     status: {
         type: String,
     },
 });
+
+const emailInput = ref(null);
 
 const form = useForm({
     email: "",
@@ -19,6 +22,10 @@ const form = useForm({
 const submit = () => {
     form.post(route("password.email"));
 };
+
+onMounted(() => {
+    emailInput.value.$el.focus();
+});
 </script>
 
 <template>
@@ -50,7 +57,7 @@ const submit = () => {
                     <label for="email" class="block mb-2">Email</label>
                     <InputText
                         required
-                        autofocus
+                        ref="emailInput"
                         id="email"
                         type="email"
                         v-model="form.email"

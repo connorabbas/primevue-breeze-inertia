@@ -1,4 +1,5 @@
 <script setup>
+import { ref, onMounted } from 'vue';
 import GuestLayout from "@/Layouts/GuestLayout.vue";
 import { Head, Link, useForm } from "@inertiajs/vue3";
 import InputText from "primevue/inputtext";
@@ -16,6 +17,8 @@ defineProps({
     },
 });
 
+const emailInput = ref(null);
+
 const form = useForm({
     email: "",
     password: "",
@@ -27,6 +30,10 @@ const submit = () => {
         onFinish: () => form.reset("password"),
     });
 };
+
+onMounted(() => {
+    emailInput.value.$el.focus();
+});
 </script>
 
 <template>
@@ -52,7 +59,7 @@ const submit = () => {
                     <label for="email" class="block mb-2">Email</label>
                     <InputText
                         required
-                        autofocus
+                        ref="emailInput"
                         id="email"
                         type="email"
                         v-model="form.email"

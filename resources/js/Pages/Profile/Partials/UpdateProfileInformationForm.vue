@@ -1,4 +1,5 @@
 <script setup>
+import { ref, onMounted } from 'vue';
 import InputError from "@/Components/InputError.vue";
 import InputText from "primevue/inputtext";
 import Button from "primevue/button";
@@ -15,10 +16,15 @@ defineProps({
 });
 
 const user = usePage().props.auth.user;
+const nameInput = ref(null);
 
 const form = useForm({
     name: user.name,
     email: user.email,
+});
+
+onMounted(() => {
+    nameInput.value.$el.focus();
 });
 </script>
 
@@ -42,7 +48,7 @@ const form = useForm({
                     <label for="name" class="block mb-2">Name</label>
                     <InputText
                         required
-                        autofocus
+                        ref="nameInput"
                         id="name"
                         type="text"
                         v-model="form.name"

@@ -1,4 +1,5 @@
 <script setup>
+import { ref, onMounted } from 'vue';
 import GuestLayout from "@/Layouts/GuestLayout.vue";
 import InputError from "@/Components/InputError.vue";
 import InputText from "primevue/inputtext";
@@ -12,11 +13,17 @@ const form = useForm({
     password_confirmation: "",
 });
 
+const nameInput = ref(null);
+
 const submit = () => {
     form.post(route("register"), {
         onFinish: () => form.reset("password", "password_confirmation"),
     });
 };
+
+onMounted(() => {
+    nameInput.value.$el.focus();
+});
 </script>
 
 <template>
@@ -30,7 +37,7 @@ const submit = () => {
                 <div class="mb-4">
                     <label for="name" class="block mb-2">Name</label>
                     <InputText
-                        autofocus
+                        ref="nameInput"
                         id="name"
                         type="text"
                         v-model="form.name"

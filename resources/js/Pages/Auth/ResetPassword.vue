@@ -1,4 +1,5 @@
 <script setup>
+import { ref, onMounted } from 'vue';
 import GuestLayout from "@/Layouts/GuestLayout.vue";
 import InputError from "@/Components/InputError.vue";
 import InputText from "primevue/inputtext";
@@ -16,6 +17,8 @@ const props = defineProps({
     },
 });
 
+const emailInput = ref(null);
+
 const form = useForm({
     token: props.token,
     email: props.email,
@@ -28,6 +31,10 @@ const submit = () => {
         onFinish: () => form.reset("password", "password_confirmation"),
     });
 };
+
+onMounted(() => {
+    emailInput.value.$el.focus();
+});
 </script>
 
 <template>
@@ -41,13 +48,13 @@ const submit = () => {
                 <div class="mb-4">
                     <label for="email" class="block mb-2">Email</label>
                     <InputText
+                        ref="emailInput"
                         id="email"
                         type="email"
                         v-model="form.email"
                         class="w-full"
                         required
                         autocomplete="username"
-                        autofocus
                     />
                     <InputError class="mt-2" :message="form.errors.email" />
                 </div>
