@@ -48,11 +48,17 @@ A starter kit using [Laravel Fortify](https://laravel.com/docs/master/fortify) f
 
 ## Theming
 ### Theme Toggle
-By default the application comes with a light/dark theme toggle to switch between the `lara-light-indigo` and `lara-dark-indigo` themes, provided by PrimeVue.
+By default, the application comes with a light/dark theme toggle. In order for this theme toggle (and PrimeVue component styling) to work, the necessary theme folders must live in the `/public/themes` directory of the application.
 
-In order for this theme toggle (and PrimeVue component styling) to work, the necessary css files must live in the `/public` directory of the application.
+The `lara-light-indigo` and `lara-dark-indigo` themes are provided and used by default, since they most closely resemble the Laravel Breeze styling.
+
+> :warning: **Keep in mind:** The default css theme files provided are not minified.
 
 ### Swap Themes
-You can easily change what themes are used for the light/dark modes by copying and pasting your desired theme folders from `/node_modules/primevue/resources/themes/*` into the `/public/themes` directory. Then within the `/resources/js/Composables/useTheme.js` file you can change the values of the `lightTheme` and `darkTheme` const variables accordingly.
+You can easily change what themes are used for the light/dark modes by copying and pasting your desired theme folders from `/node_modules/primevue/resources/themes` into the `/public/themes` directory
+
+Then within the `/resources/js/Composables/useTheme.js` file you can change the values of the `lightTheme` and `darkTheme` const variables accordingly. These values should exactly match the directory names of the themes you intend on using.
+
+In theory, you can use any combination of themes you want with the toggle, or expand on the `useTheme()` composable further to allow more then 2 themes to be selected on your site.
 
 [PrimeVue Themes](https://primevue.org/theming/#builtinthemes)
