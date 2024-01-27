@@ -1,4 +1,4 @@
-/* Define the variables for the different theme colors */
+/* Define variables for the different theme colors */
 :root {
     --surface-svg-bg-color: var(--gray-800);
 }

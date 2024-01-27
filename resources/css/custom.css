@@ -1,4 +1,5 @@
 html {
+    /* font size will determine the PrimeVue Components scaling */
     font-size: 14px;
 }
 
@@ -10,7 +11,3 @@ body {
 .no-underline {
     text-decoration: none;
 }
-
-/* .p-button {
-    padding: 0.5rem 1rem;
-} */
