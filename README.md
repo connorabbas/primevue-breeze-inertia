@@ -27,7 +27,7 @@ A starter kit using [Laravel Fortify](https://laravel.com/docs/master/fortify) f
    ```
    cp .env.example .env
    ```
-4. Generate App Key
+4. Generate the app key
    ```
    php artisan key:generate
    ```
