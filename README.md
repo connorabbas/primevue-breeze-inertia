@@ -27,6 +27,7 @@ A starter kit using [Laravel Fortify](https://laravel.com/docs/master/fortify) f
    ```
    cp .env.example .env
    ```
+
 4. Generate the app key
    ```
    php artisan key:generate
@@ -41,24 +42,23 @@ A starter kit using [Laravel Fortify](https://laravel.com/docs/master/fortify) f
    ```
    npm install
    ```
-7. Start the Vite dev server
+
+7. Build assets (required to get theme files)
+   ```
+   npm run build
+   ```
+
+8. Start the Vite dev server (if developing)
    ```
    npm run dev
    ```
 
 ## Theming
-### Theme Toggle
-By default, the application comes with a light/dark theme toggle. In order for this theme toggle (and PrimeVue component styling) to work, the necessary theme folders must live in the `/public/themes` directory of the application.
+During the installation steps, you are required to run the Vite build process (`npm run build`). The reason for running the build process locally is to gather the necessary theme files for the application, which are copied into the site's `/public/themes` directory via the [vite-plugin-static-copy](https://github.com/sapphi-red/vite-plugin-static-copy#readme) Vite plugin in the `vite.config.js` file.
 
-The `lara-light-indigo` and `lara-dark-indigo` themes are provided and used by default, since they most closely resemble the Laravel Breeze styling.
+### Changing Themes
+Both the file copying process, and the light/dark theme toggle functionality rely on the `LIGHT_THEME` and `DARK_THEME` constant values defined in the `/resources/js/Modules/constants.js` file.
 
-> :warning: **Keep in mind:** The default css theme files provided are not minified.
+To change what themes are used on the site, simply modify the constant string values to any theme name that is available from [PrimeVue's Built-in Themes](https://primevue.org/theming/#builtinthemes). After changing the values to your desired themes, you will need to run the `npm run build` command again, to copy the theme files for use.
 
-### Swap Themes
-You can easily change what themes are used for the light/dark modes by copying and pasting your desired theme folders from `/node_modules/primevue/resources/themes` into the `/public/themes` directory
-
-Then within the `/resources/js/Composables/useTheme.js` file you can change the values of the `lightTheme` and `darkTheme` const variables accordingly. These values should exactly match the directory names of the themes you intend on using.
-
-In theory, you can use any combination of themes you want with the toggle, or expand on the `useTheme()` composable further to allow more then 2 themes to be selected on your site.
-
-[PrimeVue Themes](https://primevue.org/theming/#builtinthemes)
+The `lara-light-indigo` and `lara-dark-indigo` themes are used by default, since they most closely resemble the Laravel Breeze styling.
