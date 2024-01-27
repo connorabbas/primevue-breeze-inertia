@@ -1,7 +1,8 @@
 import { ref } from "vue";
+import constants from "../Modules/constants.mjs";
 
-const lightTheme = "lara-light-indigo";
-const darkTheme = "lara-dark-indigo";
+const lightTheme = constants.LIGHT_THEME;
+const darkTheme = constants.DARK_THEME;
 const currentTheme = ref(getSavedThemePreference());
 
 /**

@@ -2,6 +2,10 @@ import { defineConfig } from "vite";
 import laravel from "laravel-vite-plugin";
 import vue from "@vitejs/plugin-vue";
 import { viteStaticCopy } from "vite-plugin-static-copy";
+import constants from "./resources/js/Modules/constants.mjs";
+
+const lightTheme = constants.LIGHT_THEME;
+const darkTheme = constants.DARK_THEME;
 
 export default defineConfig({
     plugins: [
@@ -20,11 +24,11 @@ export default defineConfig({
         viteStaticCopy({
             targets: [
                 {
-                    src: "node_modules/primevue/resources/themes/lara-light-indigo",
+                    src: `node_modules/primevue/resources/themes/${lightTheme}`,
                     dest: "../themes",
                 },
                 {
-                    src: "node_modules/primevue/resources/themes/lara-dark-indigo",
+                    src: `node_modules/primevue/resources/themes/${darkTheme}`,
                     dest: "../themes",
                 },
             ],
