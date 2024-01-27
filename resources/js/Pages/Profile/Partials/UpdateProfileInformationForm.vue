@@ -1,8 +1,10 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted } from "vue";
 import InputError from "@/Components/InputError.vue";
 import InputText from "primevue/inputtext";
 import Button from "primevue/button";
+import Toast from "primevue/toast";
+import { useToast } from "primevue/usetoast";
 import { Link, useForm, usePage } from "@inertiajs/vue3";
 import Message from "primevue/message";
 
@@ -15,13 +17,31 @@ defineProps({
     },
 });
 
-const user = usePage().props.auth.user;
 const nameInput = ref(null);
 
+const user = usePage().props.auth.user;
+const toast = useToast();
 const form = useForm({
     name: user.name,
     email: user.email,
 });
+
+const showSuccessToast = () => {
+    toast.add({
+        severity: "success",
+        summary: "Saved",
+        detail: "Profile information has been updated",
+        life: 3000,
+    });
+};
+const updateProfileInformation = () => {
+    form.put(route("user-profile-information.update"), {
+        preserveScroll: true,
+        onSuccess: () => {
+            showSuccessToast();
+        },
+    });
+};
 
 onMounted(() => {
     nameInput.value.$el.focus();
@@ -40,9 +60,9 @@ onMounted(() => {
             </div>
         </header>
 
-        <form
-            @submit.prevent="form.put(route('user-profile-information.update'))"
-        >
+        <Toast />
+
+        <form @submit.prevent="updateProfileInformation">
             <div class="mb-4 flex">
                 <div class="w-12 lg:w-10 xl:w-6">
                     <label for="name" class="block mb-2">Name</label>
@@ -55,7 +75,10 @@ onMounted(() => {
                         class="w-full"
                         autocomplete="name"
                     />
-                    <InputError class="mt-2" :message="form.errors.updateProfileInformation?.name" />
+                    <InputError
+                        class="mt-2"
+                        :message="form.errors.updateProfileInformation?.name"
+                    />
                 </div>
             </div>
             <div class="mb-4 flex">
@@ -69,7 +92,10 @@ onMounted(() => {
                         class="w-full"
                         autocomplete="username"
                     />
-                    <InputError class="mt-2" :message="form.errors.updateProfileInformation?.email" />
+                    <InputError
+                        class="mt-2"
+                        :message="form.errors.updateProfileInformation?.email"
+                    />
                 </div>
             </div>
 

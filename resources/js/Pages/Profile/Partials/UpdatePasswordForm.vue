@@ -2,22 +2,36 @@
 import InputError from "@/Components/InputError.vue";
 import InputText from "primevue/inputtext";
 import Button from "primevue/button";
+import Toast from "primevue/toast";
+import { useToast } from "primevue/usetoast";
 import { useForm } from "@inertiajs/vue3";
 import { ref } from "vue";
 
 const currentPasswordInput = ref(null);
 const passwordInput = ref(null);
 
+const toast = useToast();
 const form = useForm({
     current_password: "",
     password: "",
     password_confirmation: "",
 });
 
+const showSuccessToast = () => {
+    toast.add({
+        severity: "success",
+        summary: "Saved",
+        detail: "Your password has been updated",
+        life: 3000,
+    });
+};
 const updatePassword = () => {
     form.put(route("user-password.update"), {
         preserveScroll: true,
-        onSuccess: () => form.reset(),
+        onSuccess: () => {
+            form.reset();
+            showSuccessToast();
+        },
         onError: () => {
             if (form.errors.updatePassword?.password) {
                 form.reset("password", "password_confirmation");
@@ -44,6 +58,8 @@ const updatePassword = () => {
                 </p>
             </div>
         </header>
+
+        <Toast />
 
         <form @submit.prevent="updatePassword">
             <div class="mb-4 flex">
@@ -81,7 +97,10 @@ const updatePassword = () => {
                         class="w-full"
                         autocomplete="new-password"
                     />
-                    <InputError class="mt-2" :message="form.errors.updatePassword?.password" />
+                    <InputError
+                        class="mt-2"
+                        :message="form.errors.updatePassword?.password"
+                    />
                 </div>
             </div>
 
@@ -100,7 +119,9 @@ const updatePassword = () => {
                     />
                     <InputError
                         class="mt-2"
-                        :message="form.errors.updatePassword?.password_confirmation"
+                        :message="
+                            form.errors.updatePassword?.password_confirmation
+                        "
                     />
                 </div>
             </div>
