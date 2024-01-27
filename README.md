@@ -18,6 +18,7 @@ A starter kit using [Laravel Fortify](https://laravel.com/docs/master/fortify) f
    ```
 
 3. Setup `.env` file
+
    Windows
    ```
    copy .env.example .env
