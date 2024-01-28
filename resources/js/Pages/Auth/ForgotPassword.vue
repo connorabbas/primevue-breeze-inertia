@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted } from "vue";
 import GuestLayout from "@/Layouts/GuestLayout.vue";
 import InputError from "@/Components/InputError.vue";
 import Message from "primevue/message";
@@ -62,6 +62,7 @@ onMounted(() => {
                         type="email"
                         v-model="form.email"
                         class="w-full"
+                        :class="form.errors.email ? 'p-invalid' : ''"
                         autocomplete="username"
                     />
                     <InputError class="mt-2" :message="form.errors.email" />

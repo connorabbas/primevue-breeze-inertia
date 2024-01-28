@@ -73,6 +73,7 @@ onMounted(() => {
                         type="text"
                         v-model="form.name"
                         class="w-full"
+                        :class="form.errors.updateProfileInformation?.name ? 'p-invalid' : ''"
                         autocomplete="name"
                     />
                     <InputError
@@ -90,6 +91,7 @@ onMounted(() => {
                         type="email"
                         v-model="form.email"
                         class="w-full"
+                        :class="form.errors.updateProfileInformation?.email ? 'p-invalid' : ''"
                         autocomplete="username"
                     />
                     <InputError

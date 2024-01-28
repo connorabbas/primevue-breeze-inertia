@@ -42,6 +42,7 @@ onMounted(() => {
                         type="text"
                         v-model="form.name"
                         class="w-full"
+                        :class="form.errors.name ? 'p-invalid' : ''"
                         required
                         autocomplete="name"
                     />
@@ -55,6 +56,7 @@ onMounted(() => {
                         type="email"
                         v-model="form.email"
                         class="w-full"
+                        :class="form.errors.email ? 'p-invalid' : ''"
                         required
                         autocomplete="username"
                     />
@@ -68,6 +70,7 @@ onMounted(() => {
                         type="password"
                         v-model="form.password"
                         class="w-full"
+                        :class="form.errors.password ? 'p-invalid' : ''"
                         required
                         autocomplete="new-password"
                     />
@@ -86,6 +89,7 @@ onMounted(() => {
                         type="password"
                         v-model="form.password_confirmation"
                         class="w-full"
+                        :class="form.errors.password_confirmation ? 'p-invalid' : ''"
                         required
                         autocomplete="new-password"
                     />

@@ -59,6 +59,7 @@ watch(modalOpen, (newModalOpen) => {
                     placeholder="Password"
                     v-model="form.password"
                     class="w-full"
+                    :class="form.errors.password ? 'p-invalid' : ''"
                     autocomplete="current-password"
                     @keyup.enter="deleteUser"
                 />
