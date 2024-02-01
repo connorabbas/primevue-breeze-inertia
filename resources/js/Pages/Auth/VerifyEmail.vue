@@ -1,7 +1,6 @@
 <script setup>
 import { computed } from "vue";
 import GuestLayout from "@/Layouts/GuestLayout.vue";
-import Button from "primevue/button";
 import Message from "primevue/message";
 import { Head, Link, useForm } from "@inertiajs/vue3";
 

@@ -1,8 +1,6 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import InputError from "@/Components/InputError.vue";
-import InputText from "primevue/inputtext";
-import Button from "primevue/button";
 import Toast from "primevue/toast";
 import { useToast } from "primevue/usetoast";
 import { Link, useForm, usePage } from "@inertiajs/vue3";

@@ -1,5 +1,4 @@
 <script setup>
-import Button from "primevue/button";
 import { useTheme } from "@/Composables/useTheme.js";
 
 const { currentTheme, setTheme } = useTheme();

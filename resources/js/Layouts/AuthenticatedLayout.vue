@@ -2,7 +2,6 @@
 import { ref, onMounted, onUnmounted, watchEffect, computed } from "vue";
 import { Link } from "@inertiajs/vue3";
 import Menubar from "primevue/menubar";
-import Button from "primevue/button";
 import Menu from "primevue/menu";
 import Sidebar from "primevue/sidebar";
 import OuterLayoutContainer from "@/Components/OuterLayoutContainer.vue";

@@ -1,7 +1,5 @@
 <script setup>
 import InputError from "@/Components/InputError.vue";
-import InputText from "primevue/inputtext";
-import Button from "primevue/button";
 import Dialog from "primevue/dialog";
 import { useForm } from "@inertiajs/vue3";
 import { nextTick, ref, watch } from "vue";

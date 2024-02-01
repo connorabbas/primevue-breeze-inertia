@@ -2,8 +2,6 @@
 import { ref, onMounted } from 'vue';
 import GuestLayout from "@/Layouts/GuestLayout.vue";
 import InputError from "@/Components/InputError.vue";
-import InputText from "primevue/inputtext";
-import Button from "primevue/button";
 import { Head, useForm } from "@inertiajs/vue3";
 
 const props = defineProps({
