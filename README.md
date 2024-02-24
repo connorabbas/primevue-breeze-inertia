@@ -57,7 +57,7 @@ A starter kit using [Laravel Fortify](https://laravel.com/docs/master/fortify) f
 ### Public Theme Files
 During the installation steps, you are required to run the Vite build process (`npm run build`). The reason for running the build process locally is to gather the necessary theme files for the application, which are copied into the site's `/public/themes` directory via the [vite-plugin-static-copy](https://github.com/sapphi-red/vite-plugin-static-copy#readme) plugin in the `vite.config.js` file.
 
-The alternative to this approach would be manually copying the theme folders from `node_modules/primevue/resources/themes` into the `public/themes` directory, and committing the folders/files to your repository source code. (would required removing the `.gitignore` rule)
+The alternative to this approach would be manually copying the theme folders from `node_modules/primevue/resources/themes` into the `public/themes` directory, and committing the folders/files to your repository source code. (Would require removing the `.gitignore` rule as well)
 
 ### Changing Themes
 Both the file copying process, and the light/dark theme toggle functionality rely on the `LIGHT_THEME` and `DARK_THEME` constant values defined in the `/resources/js/Modules/constants.mjs` file.

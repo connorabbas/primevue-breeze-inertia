@@ -37,7 +37,7 @@ function saveThemePreference(theme) {
 }
 
 function getSavedThemePreference() {
-    return localStorage.getItem("selectedTheme") || lightTheme;
+    return localStorage.getItem("selectedTheme") || 'light';
 }
 
 export function useTheme() {
