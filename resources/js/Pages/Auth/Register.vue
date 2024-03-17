@@ -80,7 +80,7 @@ onMounted(() => {
 
                 <div class="mb-4">
                     <label for="password_confirmation" class="block mb-2"
-                        >Password</label
+                        >Confirm Password</label
                     >
                     <InputText
                         id="password_confirmation"
