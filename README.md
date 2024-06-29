@@ -1,5 +1,5 @@
 # Laravel & Inertia w/ PrimeVue & PrimeFlex
-A starter kit using [Laravel Breeze](https://laravel.com/docs/master/starter-kits#laravel-breeze) with the [Intertia.js](https://inertiajs.com/) Vue option, but using [PrimeVue](https://primevue.org/) (& [PrimeFlex](https://primeflex.org/)) for the frontend instead of Tailwind CSS based styling and components.
+A starter kit using [Laravel Breeze](https://laravel.com/docs/master/starter-kits#laravel-breeze) with the [Intertia.js](https://inertiajs.com/) Vue option, but using [PrimeVue](https://v3.primevue.org/) (& [PrimeFlex](https://primeflex.org/)) for the frontend instead of Tailwind CSS based styling and components.
 
 ## Installation 
 1. Clone the repo
@@ -62,6 +62,6 @@ The alternative to this approach would be manually copying the theme folders fro
 ### Changing Themes
 Both the file copying process, and the light/dark theme toggle functionality rely on the `LIGHT_THEME` and `DARK_THEME` constant values defined in the `/resources/js/Modules/constants.mjs` file.
 
-To change what themes are used on the site for light and dark modes, simply modify the constant string values to any theme name that is available from [PrimeVue's Built-in Themes](https://primevue.org/theming/#builtinthemes). After changing the values to your desired themes, you will need to run the `npm run build` command again, to copy the theme files for use.
+To change what themes are used on the site for light and dark modes, simply modify the constant string values to any theme name that is available from [PrimeVue's Built-in Themes](https://v3.primevue.org/theming/#builtinthemes). After changing the values to your desired themes, you will need to run the `npm run build` command again, to copy the theme files for use.
 
 The `lara-light-indigo` and `lara-dark-indigo` themes are used by default, since they most closely resemble the Laravel Breeze styling.

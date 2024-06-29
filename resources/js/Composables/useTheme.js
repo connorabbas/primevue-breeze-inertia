@@ -7,7 +7,7 @@ const currentTheme = ref(getSavedThemePreference());
 
 /**
  * Set the theme of the site, save the users preference in localStorage
- * Alternatively use: https://primevue.org/theming/#switchthemes
+ * Alternatively use: https://v3.primevue.org/theming/#switchthemes
  */
 function setTheme(theme) {
     const themeLink =
