@@ -46,11 +46,11 @@ defineProps({
                             <p class="mt-0 mb-4 text-700 line-height-3">
                                 A starter kit using
                                 <a
-                                    href="https://laravel.com/docs/master/fortify"
-                                    >Laravel Fortify</a
+                                    href="https://laravel.com/docs/master/starter-kits#laravel-breeze"
+                                    >Laravel Breeze</a
                                 >
                                 for authentication,
-                                <a href="https://primevue.org/">PrimeVue</a> and
+                                <a href="https://v3.primevue.org/">PrimeVue</a> and
                                 <a href="https://primeflex.org/">PrimeFlex</a>
                                 for the UI, and
                                 <a href="https://inertiajs.com/">Inertia.js</a>
