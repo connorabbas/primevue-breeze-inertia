@@ -24,18 +24,18 @@ const showSuccessToast = () => {
     });
 };
 const updatePassword = () => {
-    form.put(route("user-password.update"), {
+    form.put(route("password.update"), {
         preserveScroll: true,
         onSuccess: () => {
             form.reset();
             showSuccessToast();
         },
         onError: () => {
-            if (form.errors.updatePassword?.password) {
+            if (form.errors?.password) {
                 form.reset("password", "password_confirmation");
                 passwordInput.value.$el.focus();
             }
-            if (form.errors.updatePassword?.current_password) {
+            if (form.errors?.current_password) {
                 form.reset("current_password");
                 currentPasswordInput.value.$el.focus();
             }
@@ -72,12 +72,12 @@ const updatePassword = () => {
                         type="password"
                         v-model="form.current_password"
                         class="w-full"
-                        :class="form.errors.updatePassword?.current_password ? 'p-invalid' : ''"
+                        :class="form.errors?.current_password ? 'p-invalid' : ''"
                         autocomplete="current-password"
                     />
                     <InputError
                         class="mt-2"
-                        :message="form.errors.updatePassword?.current_password"
+                        :message="form.errors?.current_password"
                     />
                 </div>
             </div>
@@ -94,12 +94,12 @@ const updatePassword = () => {
                         type="password"
                         v-model="form.password"
                         class="w-full"
-                        :class="form.errors.updatePassword?.password ? 'p-invalid' : ''"
+                        :class="form.errors?.password ? 'p-invalid' : ''"
                         autocomplete="new-password"
                     />
                     <InputError
                         class="mt-2"
-                        :message="form.errors.updatePassword?.password"
+                        :message="form.errors?.password"
                     />
                 </div>
             </div>
@@ -115,13 +115,13 @@ const updatePassword = () => {
                         type="password"
                         v-model="form.password_confirmation"
                         class="w-full"
-                        :class="form.errors.updatePassword?.password_confirmation ? 'p-invalid' : ''"
+                        :class="form.errors?.password_confirmation ? 'p-invalid' : ''"
                         autocomplete="new-password"
                     />
                     <InputError
                         class="mt-2"
                         :message="
-                            form.errors.updatePassword?.password_confirmation
+                            form.errors?.password_confirmation
                         "
                     />
                 </div>
