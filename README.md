@@ -1,6 +1,9 @@
 # Laravel & Inertia w/ PrimeVue & PrimeFlex
 A starter kit using [Laravel Breeze](https://laravel.com/docs/master/starter-kits#laravel-breeze) with the [Intertia.js](https://inertiajs.com/) Vue option, but using [PrimeVue](https://v3.primevue.org/) (& [PrimeFlex](https://primeflex.org/)) for the frontend instead of Tailwind CSS based styling and components.
 
+![image](https://github.com/connorabbas/primevue-auth-starter/assets/89364288/47998fb5-65de-41de-bf15-61202fda4ac5)
+
+
 ## Installation 
 1. Clone the repo
    ```
