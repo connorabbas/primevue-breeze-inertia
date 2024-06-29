@@ -33,7 +33,7 @@ const showSuccessToast = () => {
     });
 };
 const updateProfileInformation = () => {
-    form.put(route("user-profile-information.update"), {
+    form.patch(route("profile.update"), {
         preserveScroll: true,
         onSuccess: () => {
             showSuccessToast();
@@ -71,12 +71,12 @@ onMounted(() => {
                         type="text"
                         v-model="form.name"
                         class="w-full"
-                        :class="form.errors.updateProfileInformation?.name ? 'p-invalid' : ''"
+                        :class="form.errors?.name ? 'p-invalid' : ''"
                         autocomplete="name"
                     />
                     <InputError
                         class="mt-2"
-                        :message="form.errors.updateProfileInformation?.name"
+                        :message="form.errors?.name"
                     />
                 </div>
             </div>
@@ -89,12 +89,12 @@ onMounted(() => {
                         type="email"
                         v-model="form.email"
                         class="w-full"
-                        :class="form.errors.updateProfileInformation?.email ? 'p-invalid' : ''"
+                        :class="form.errors?.email ? 'p-invalid' : ''"
                         autocomplete="username"
                     />
                     <InputError
                         class="mt-2"
-                        :message="form.errors.updateProfileInformation?.email"
+                        :message="form.errors?.email"
                     />
                 </div>
             </div>

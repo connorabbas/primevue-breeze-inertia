@@ -2,10 +2,9 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
 use App\Models\User;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class ProfileTest extends TestCase
 {
@@ -24,23 +23,23 @@ class ProfileTest extends TestCase
 
     public function test_profile_information_can_be_updated(): void
     {
-        $user = User::factory(['email_verified_at' => null])->create();
+        $user = User::factory()->create();
 
         $response = $this
             ->actingAs($user)
-            ->put('/user/profile-information', [
+            ->patch('/profile', [
                 'name' => 'Test User',
-                'email' => 'test@example123.com',
+                'email' => 'test@example.com',
             ]);
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect();
+            ->assertRedirect('/profile');
 
         $user->refresh();
 
         $this->assertSame('Test User', $user->name);
-        $this->assertSame('test@example123.com', $user->email);
+        $this->assertSame('test@example.com', $user->email);
         $this->assertNull($user->email_verified_at);
     }
 
@@ -48,22 +47,18 @@ class ProfileTest extends TestCase
     {
         $user = User::factory()->create();
 
-        if ($user instanceof MustVerifyEmail) {
-            $response = $this
-                ->actingAs($user)
-                ->put('/user/profile-information', [
-                    'name' => 'Test User',
-                    'email' => $user->email,
-                ]);
+        $response = $this
+            ->actingAs($user)
+            ->patch('/profile', [
+                'name' => 'Test User',
+                'email' => $user->email,
+            ]);
 
-            $response
-                ->assertSessionHasNoErrors()
-                ->assertRedirect();
+        $response
+            ->assertSessionHasNoErrors()
+            ->assertRedirect('/profile');
 
-            $this->assertNotNull($user->refresh()->email_verified_at);
-        } else {
-            $this->markTestSkipped();
-        }
+        $this->assertNotNull($user->refresh()->email_verified_at);
     }
 
     public function test_user_can_delete_their_account(): void
