@@ -30,7 +30,7 @@ const verificationLinkSent = computed(
                 v-if="verificationLinkSent"
                 severity="success"
                 :closable="false"
-                class="shadow-sm"
+                class="shadow"
             >
                 A new verification link has been sent to the email address you
                 provided during registration.
@@ -38,7 +38,7 @@ const verificationLinkSent = computed(
         </div>
 
         <div
-            class="bg-surface-0 dark:bg-surface-900 p-6 shadow-sm rounded-lg w-full sm:w-full md:w-[30rem]"
+            class="bg-surface-0 dark:bg-surface-900 p-6 shadow rounded-lg w-full sm:w-full md:w-[30rem]"
         >
             <div class="mb-6 text-sm text-muted-color">
                 Thanks for signing up! Before getting started, could you verify

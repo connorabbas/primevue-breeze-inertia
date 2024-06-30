@@ -79,28 +79,29 @@ watchEffect(() => {
 
 <template>
     <div class="min-h-full">
-        <header>
-            <div class="border-b border-surface bg-surface-0 dark:bg-surface-900">
+        <nav>
+            <div
+                class="border-b border-surface bg-surface-0 dark:bg-surface-900"
+            >
                 <OuterLayoutContainer class="pb-0">
                     <Menubar
                         :model="mainMenuItems"
                         class="rounded-none border-0 bg-surface-0 dark:bg-surface-900 px-0"
                     >
                         <template #start>
-                            <Link :href="route('welcome')" class="mr-4 h-0">
+                            <Link :href="route('welcome')" class="mr-4">
                                 <ApplicationLogo
-                                    class="h-12 w-auto pt-1 surface-svg-fill"
+                                    class="w-12 h-12 w-auto pt-1 fill-current text-surface-500"
                                 />
                             </Link>
                         </template>
                         <template #item="{ item, props, hasSubmenu, root }">
                             <Link
                                 :href="item.href"
-                                class="hidden sm:hidden md:hidden lg:flex"
-                                :class="[
-                                    'p-menuitem-link',
-                                    item.isCurrentRoute ? 'text-primary' : '',
-                                ]"
+                                class="p-menubar-item-link hidden sm:flex"
+                                :class="{
+                                    'text-primary': item.isCurrentRoute,
+                                }"
                                 custom
                             >
                                 <span
@@ -121,12 +122,12 @@ watchEffect(() => {
                                     text
                                     class="inline-flex"
                                 />
-                                <div class="hidden sm:hidden md:hidden lg:flex">
+                                <div class="hidden sm:flex">
                                     <Menu
                                         :model="userMenuItems"
                                         popup
                                         ref="menu"
-                                        class="shadow-sm border border-surface"
+                                        class="shadow border border-surface"
                                     >
                                         <template #item="{ item, props }">
                                             <Link
@@ -142,7 +143,7 @@ watchEffect(() => {
                                                         : 'a'
                                                 "
                                                 :class="[
-                                                    'p-menuitem-link',
+                                                    'p-menu-item-link',
                                                     item.method === 'post'
                                                         ? 'flex items-center w-full text-left'
                                                         : '',
@@ -163,7 +164,7 @@ watchEffect(() => {
                                     <Button
                                         plain
                                         text
-                                        class="p-menuitem-text inline-flex"
+                                        class="p-menu-item-text inline-flex"
                                         @click="toggleUserMenu($event)"
                                     >
                                         <span class="">{{
@@ -175,7 +176,7 @@ watchEffect(() => {
                                 <Button
                                     plain
                                     text
-                                    class="flex sm:flex lg:hidden xl:hidden"
+                                    class="inline-flex sm:hidden"
                                     icon="pi pi-bars"
                                     @click="mobileMenuOpen = true"
                                 />
@@ -187,7 +188,7 @@ watchEffect(() => {
             <!-- Mobile sidebar menu -->
             <Sidebar
                 v-model:visible="mobileMenuOpen"
-                header="Menu"
+                header="Mobile Menu"
                 position="right"
             >
                 <ul class="list-none m-0 p-0">
@@ -201,7 +202,7 @@ watchEffect(() => {
                                 item.method === 'post'
                                     ? 'flex items-center w-full text-left'
                                     : '',
-                                item.isCurrentRoute ? 'text-primary' : '',
+                                item.isCurrentRoute ? '!text-primary' : '',
                             ]"
                             custom
                         >
@@ -211,12 +212,17 @@ watchEffect(() => {
                     </li>
                 </ul>
             </Sidebar>
+        </nav>
+        <header
+            class="bg-surface-0 dark:bg-surface-900 py-6 shadow"
+            v-if="$slots.header"
+        >
+            <OuterLayoutContainer>
+                <slot name="header" />
+            </OuterLayoutContainer>
         </header>
         <main>
-            <slot name="header" />
-            <OuterLayoutContainer :spaced-mobile="false">
-                <slot />
-            </OuterLayoutContainer>
+            <slot />
         </main>
     </div>
 </template>

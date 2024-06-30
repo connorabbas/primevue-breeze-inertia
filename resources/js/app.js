@@ -1,4 +1,4 @@
-import "./bootstrap"; // not the framework, terminology
+import "./bootstrap";
 import '../css/app.css';
 import "primeicons/primeicons.css";
 
@@ -57,6 +57,10 @@ createInertiaApp({
                     preset: breezeThemePreset,
                     options: {
                         darkModeSelector: '.dark-mode',
+                        cssLayer: {
+                            name: 'primevue',
+                            order: 'tailwind-base, primevue, tailwind-utilities'
+                        }
                     },
                 },
             })

@@ -22,35 +22,33 @@ const props = defineProps({
 
     <AuthenticatedLayout>
         <template #header>
-            <div class="bg-surface-0 dark:bg-surface-900 py-6 shadow-sm">
-                <OuterLayoutContainer>
-                    <h2 class="m-0">Profile</h2>
-                </OuterLayoutContainer>
-            </div>
+            <h2 class="font-semibold text-xl leading-tight">Profile</h2>
         </template>
 
-        <div class="my-12">
-            <div
-                class="p-4 sm:p-8 bg-surface-0 dark:bg-surface-900 shadow-sm rounded-none sm:rounded-lg mb-8"
-            >
-                <UpdateProfileInformationForm
-                    :must-verify-email="mustVerifyEmail"
-                    :status="status"
-                    class="max-w-xl"
-                />
-            </div>
+        <OuterLayoutContainer>
+            <div class="my-12">
+                <div
+                    class="p-4 sm:p-8 bg-surface-0 dark:bg-surface-900 shadow rounded-none sm:rounded-lg mb-8"
+                >
+                    <UpdateProfileInformationForm
+                        :must-verify-email="mustVerifyEmail"
+                        :status="status"
+                        class="max-w-xl"
+                    />
+                </div>
 
-            <div
-                class="p-4 sm:p-8 bg-surface-0 dark:bg-surface-900 shadow-sm rounded-none sm:rounded-lg mb-8"
-            >
-                <UpdatePasswordForm class="max-w-xl" />
-            </div>
+                <div
+                    class="p-4 sm:p-8 bg-surface-0 dark:bg-surface-900 shadow rounded-none sm:rounded-lg mb-8"
+                >
+                    <UpdatePasswordForm class="max-w-xl" />
+                </div>
 
-            <div
-                class="p-4 sm:p-8 bg-surface-0 dark:bg-surface-900 shadow-sm rounded-none sm:rounded-lg mb-8"
-            >
-                <DeleteUserForm class="max-w-xl" />
+                <div
+                    class="p-4 sm:p-8 bg-surface-0 dark:bg-surface-900 shadow rounded-none sm:rounded-lg mb-8"
+                >
+                    <DeleteUserForm class="max-w-xl" />
+                </div>
             </div>
-        </div>
+        </OuterLayoutContainer>
     </AuthenticatedLayout>
 </template>

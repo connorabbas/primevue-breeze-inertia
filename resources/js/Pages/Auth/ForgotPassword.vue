@@ -35,14 +35,14 @@ onMounted(() => {
                 v-if="status"
                 severity="success"
                 :closable="false"
-                class="shadow-sm"
+                class="shadow"
             >
                 {{ status }}
             </Message>
         </div>
 
         <div
-            class="bg-surface-0 dark:bg-surface-900 p-6 shadow-sm rounded-lg w-full sm:w-full md:w-[30rem]"
+            class="bg-surface-0 dark:bg-surface-900 p-6 shadow rounded-lg w-full sm:w-full md:w-[30rem]"
         >
             <div class="mb-6 text-sm text-muted-color">
                 Forgot your password? No problem. Just let us know your email

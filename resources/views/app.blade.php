@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full">
 
-<head class="h-full">
+<head>
     <meta charset="utf-8">
     <meta
         name="viewport"
@@ -16,9 +16,8 @@
     @inertiaHead
 </head>
 
-<body class="h-full">
-    {{-- @inertia --}}
-    <div id="app" class="h-full" data-page="{{ json_encode($page) }}"></div>
+<body class="h-full bg-surface-50 dark:bg-surface-950">
+    @inertia
 </body>
 
 </html>

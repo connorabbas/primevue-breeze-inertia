@@ -43,14 +43,14 @@ onMounted(() => {
                 v-if="status"
                 severity="success"
                 :closable="false"
-                class="shadow-sm"
+                class="shadow"
             >
                 {{ status }}
             </Message>
         </div>
 
         <div
-            class="bg-surface-0 dark:bg-surface-900 p-6 shadow-sm rounded-lg w-full sm:w-full md:w-[30rem]"
+            class="bg-surface-0 dark:bg-surface-900 p-6 shadow rounded-lg w-full sm:w-full md:w-[30rem]"
         >
             <form @submit.prevent="submit">
                 <div class="mb-6">

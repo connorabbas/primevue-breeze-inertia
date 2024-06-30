@@ -10,17 +10,9 @@ const props = defineProps({
 
 <template>
     <div
-        :class="[
-            'grid-nogutter',
-            spacedMobile ? 'px-4' : 'px-0',
-            'sm:px-4',
-            'md:p-0',
-            'lg:p-0',
-            'xl:p-0',
-        ]"
+        :class="[spacedMobile ? 'px-2' : 'px-0']"
+        class="max-w-7xl mx-auto sm:px-6 lg:px-8"
     >
-        <div class="col-span-12 md:col-span-10 md:col-start-2 lg:col-span-8 lg:col-start-3">
-            <slot />
-        </div>
+        <slot />
     </div>
 </template>
