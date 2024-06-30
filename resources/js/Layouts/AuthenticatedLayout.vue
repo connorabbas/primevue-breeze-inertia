@@ -1,54 +1,54 @@
 <script setup>
-import { ref, onMounted, onUnmounted, watchEffect, computed } from "vue";
-import { Link } from "@inertiajs/vue3";
-import Menubar from "primevue/menubar";
-import Menu from "primevue/menu";
-import Sidebar from "primevue/sidebar";
-import OuterLayoutContainer from "@/Components/OuterLayoutContainer.vue";
-import ApplicationLogo from "@/Components/ApplicationLogo.vue";
-import ThemeToggleButton from "@/Components/ThemeToggleButton.vue";
+import { ref, onMounted, onUnmounted, watchEffect, computed } from 'vue';
+import { Link } from '@inertiajs/vue3';
+import Menubar from 'primevue/menubar';
+import Menu from 'primevue/menu';
+import Sidebar from 'primevue/sidebar';
+import OuterLayoutContainer from '@/Components/OuterLayoutContainer.vue';
+import ApplicationLogo from '@/Components/ApplicationLogo.vue';
+import ThemeToggleButton from '@/Components/ThemeToggleButton.vue';
 
 const mainMenuItems = [
     {
-        label: "Dashboard",
-        href: route("dashboard"),
-        isCurrentRoute: route().current("dashboard"),
+        label: 'Dashboard',
+        href: route('dashboard'),
+        isCurrentRoute: route().current('dashboard'),
     },
 ];
 const userMenuItems = [
     {
-        label: "Profile",
-        href: route("profile.edit"),
-        icon: "pi pi-fw pi-user",
-        isCurrentRoute: route().current("profile.edit"),
+        label: 'Profile',
+        href: route('profile.edit'),
+        icon: 'pi pi-fw pi-user',
+        isCurrentRoute: route().current('profile.edit'),
     },
     {
-        href: route("logout"),
-        label: "Log Out",
-        method: "post",
-        icon: "pi pi-fw pi-sign-out",
-        isCurrentRoute: route().current("logout"),
+        href: route('logout'),
+        label: 'Log Out',
+        method: 'post',
+        icon: 'pi pi-fw pi-sign-out',
+        isCurrentRoute: route().current('logout'),
     },
 ];
 const mobileMenuItems = [
     {
-        label: "Dashboard",
-        href: route("dashboard"),
-        icon: "pi pi-fw pi-home",
-        isCurrentRoute: route().current("dashboard"),
+        label: 'Dashboard',
+        href: route('dashboard'),
+        icon: 'pi pi-fw pi-home',
+        isCurrentRoute: route().current('dashboard'),
     },
     {
-        label: "Profile",
-        href: route("profile.edit"),
-        icon: "pi pi-fw pi-user",
-        isCurrentRoute: route().current("profile.edit"),
+        label: 'Profile',
+        href: route('profile.edit'),
+        icon: 'pi pi-fw pi-user',
+        isCurrentRoute: route().current('profile.edit'),
     },
     {
-        href: route("logout"),
-        label: "Log Out",
-        method: "post",
-        icon: "pi pi-fw pi-sign-out",
-        isCurrentRoute: route().current("logout"),
+        href: route('logout'),
+        label: 'Log Out',
+        method: 'post',
+        icon: 'pi pi-fw pi-sign-out',
+        isCurrentRoute: route().current('logout'),
     },
 ];
 
@@ -64,10 +64,10 @@ const updateWidth = () => {
 };
 
 onMounted(() => {
-    window.addEventListener("resize", updateWidth);
+    window.addEventListener('resize', updateWidth);
 });
 onUnmounted(() => {
-    window.removeEventListener("resize", updateWidth);
+    window.removeEventListener('resize', updateWidth);
 });
 // Watch for windowWidth changes to close sidebar on larger screens if it was opened on mobile
 watchEffect(() => {

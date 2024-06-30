@@ -1,8 +1,8 @@
 <script setup>
-import { computed } from "vue";
-import GuestLayout from "@/Layouts/GuestLayout.vue";
-import Message from "primevue/message";
-import { Head, Link, useForm } from "@inertiajs/vue3";
+import { computed } from 'vue';
+import GuestLayout from '@/Layouts/GuestLayout.vue';
+import Message from 'primevue/message';
+import { Head, Link, useForm } from '@inertiajs/vue3';
 
 const props = defineProps({
     status: {
@@ -13,11 +13,11 @@ const props = defineProps({
 const form = useForm({});
 
 const submit = () => {
-    form.post(route("verification.send"));
+    form.post(route('verification.send'));
 };
 
 const verificationLinkSent = computed(
-    () => props.status === "verification-link-sent"
+    () => props.status === 'verification-link-sent'
 );
 </script>
 
@@ -48,9 +48,7 @@ const verificationLinkSent = computed(
             </div>
 
             <form @submit.prevent="submit">
-                <div
-                    class="mt-6 flex justify-between items-center"
-                >
+                <div class="mt-6 flex justify-between items-center">
                     <Button
                         raised
                         type="submit"

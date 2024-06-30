@@ -1,10 +1,10 @@
 <script setup>
-import { ref, onMounted } from "vue";
-import InputError from "@/Components/InputError.vue";
-import Toast from "primevue/toast";
-import { useToast } from "primevue/usetoast";
-import { Link, useForm, usePage } from "@inertiajs/vue3";
-import Message from "primevue/message";
+import { ref, onMounted } from 'vue';
+import InputError from '@/Components/InputError.vue';
+import Toast from 'primevue/toast';
+import { useToast } from 'primevue/usetoast';
+import { Link, useForm, usePage } from '@inertiajs/vue3';
+import Message from 'primevue/message';
 
 defineProps({
     mustVerifyEmail: {
@@ -26,14 +26,14 @@ const form = useForm({
 
 const showSuccessToast = () => {
     toast.add({
-        severity: "success",
-        summary: "Saved",
-        detail: "Profile information has been updated",
+        severity: 'success',
+        summary: 'Saved',
+        detail: 'Profile information has been updated',
         life: 3000,
     });
 };
 const updateProfileInformation = () => {
-    form.patch(route("profile.update"), {
+    form.patch(route('profile.update'), {
         preserveScroll: true,
         onSuccess: () => {
             showSuccessToast();
@@ -74,10 +74,7 @@ onMounted(() => {
                         :class="form.errors?.name ? 'p-invalid' : ''"
                         autocomplete="name"
                     />
-                    <InputError
-                        class="mt-2"
-                        :message="form.errors?.name"
-                    />
+                    <InputError class="mt-2" :message="form.errors?.name" />
                 </div>
             </div>
             <div class="mb-6 flex">
@@ -92,10 +89,7 @@ onMounted(() => {
                         :class="form.errors?.email ? 'p-invalid' : ''"
                         autocomplete="username"
                     />
-                    <InputError
-                        class="mt-2"
-                        :message="form.errors?.email"
-                    />
+                    <InputError class="mt-2" :message="form.errors?.email" />
                 </div>
             </div>
 

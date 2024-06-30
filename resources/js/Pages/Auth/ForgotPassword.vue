@@ -1,9 +1,9 @@
 <script setup>
-import { ref, onMounted } from "vue";
-import GuestLayout from "@/Layouts/GuestLayout.vue";
-import InputError from "@/Components/InputError.vue";
-import Message from "primevue/message";
-import { Head, useForm } from "@inertiajs/vue3";
+import { ref, onMounted } from 'vue';
+import GuestLayout from '@/Layouts/GuestLayout.vue';
+import InputError from '@/Components/InputError.vue';
+import Message from 'primevue/message';
+import { Head, useForm } from '@inertiajs/vue3';
 
 defineProps({
     status: {
@@ -14,11 +14,11 @@ defineProps({
 const emailInput = ref(null);
 
 const form = useForm({
-    email: "",
+    email: '',
 });
 
 const submit = () => {
-    form.post(route("password.email"));
+    form.post(route('password.email'));
 };
 
 onMounted(() => {

@@ -1,30 +1,30 @@
 <script setup>
-import InputError from "@/Components/InputError.vue";
-import Toast from "primevue/toast";
-import { useToast } from "primevue/usetoast";
-import { useForm } from "@inertiajs/vue3";
-import { ref } from "vue";
+import InputError from '@/Components/InputError.vue';
+import Toast from 'primevue/toast';
+import { useToast } from 'primevue/usetoast';
+import { useForm } from '@inertiajs/vue3';
+import { ref } from 'vue';
 
 const currentPasswordInput = ref(null);
 const passwordInput = ref(null);
 
 const toast = useToast();
 const form = useForm({
-    current_password: "",
-    password: "",
-    password_confirmation: "",
+    current_password: '',
+    password: '',
+    password_confirmation: '',
 });
 
 const showSuccessToast = () => {
     toast.add({
-        severity: "success",
-        summary: "Saved",
-        detail: "Your password has been updated",
+        severity: 'success',
+        summary: 'Saved',
+        detail: 'Your password has been updated',
         life: 3000,
     });
 };
 const updatePassword = () => {
-    form.put(route("password.update"), {
+    form.put(route('password.update'), {
         preserveScroll: true,
         onSuccess: () => {
             form.reset();
@@ -32,11 +32,11 @@ const updatePassword = () => {
         },
         onError: () => {
             if (form.errors?.password) {
-                form.reset("password", "password_confirmation");
+                form.reset('password', 'password_confirmation');
                 passwordInput.value.$el.focus();
             }
             if (form.errors?.current_password) {
-                form.reset("current_password");
+                form.reset('current_password');
                 currentPasswordInput.value.$el.focus();
             }
         },
@@ -72,7 +72,9 @@ const updatePassword = () => {
                         type="password"
                         v-model="form.current_password"
                         class="w-full"
-                        :class="form.errors?.current_password ? 'p-invalid' : ''"
+                        :class="
+                            form.errors?.current_password ? 'p-invalid' : ''
+                        "
                         autocomplete="current-password"
                     />
                     <InputError
@@ -97,10 +99,7 @@ const updatePassword = () => {
                         :class="form.errors?.password ? 'p-invalid' : ''"
                         autocomplete="new-password"
                     />
-                    <InputError
-                        class="mt-2"
-                        :message="form.errors?.password"
-                    />
+                    <InputError class="mt-2" :message="form.errors?.password" />
                 </div>
             </div>
 
@@ -115,14 +114,16 @@ const updatePassword = () => {
                         type="password"
                         v-model="form.password_confirmation"
                         class="w-full"
-                        :class="form.errors?.password_confirmation ? 'p-invalid' : ''"
+                        :class="
+                            form.errors?.password_confirmation
+                                ? 'p-invalid'
+                                : ''
+                        "
                         autocomplete="new-password"
                     />
                     <InputError
                         class="mt-2"
-                        :message="
-                            form.errors?.password_confirmation
-                        "
+                        :message="form.errors?.password_confirmation"
                     />
                 </div>
             </div>

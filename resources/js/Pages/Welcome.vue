@@ -1,6 +1,6 @@
 <script setup>
-import { Head, Link } from "@inertiajs/vue3";
-import ThemeToggleButton from "@/Components/ThemeToggleButton.vue";
+import { Head, Link } from '@inertiajs/vue3';
+import ThemeToggleButton from '@/Components/ThemeToggleButton.vue';
 
 defineProps({
     canLogin: {

@@ -1,21 +1,21 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import GuestLayout from "@/Layouts/GuestLayout.vue";
-import InputError from "@/Components/InputError.vue";
-import { Head, Link, useForm } from "@inertiajs/vue3";
+import GuestLayout from '@/Layouts/GuestLayout.vue';
+import InputError from '@/Components/InputError.vue';
+import { Head, Link, useForm } from '@inertiajs/vue3';
 
 const form = useForm({
-    name: "",
-    email: "",
-    password: "",
-    password_confirmation: "",
+    name: '',
+    email: '',
+    password: '',
+    password_confirmation: '',
 });
 
 const nameInput = ref(null);
 
 const submit = () => {
-    form.post(route("register"), {
-        onFinish: () => form.reset("password", "password_confirmation"),
+    form.post(route('register'), {
+        onFinish: () => form.reset('password', 'password_confirmation'),
     });
 };
 
@@ -87,7 +87,9 @@ onMounted(() => {
                         type="password"
                         v-model="form.password_confirmation"
                         class="w-full"
-                        :class="form.errors.password_confirmation ? 'p-invalid' : ''"
+                        :class="
+                            form.errors.password_confirmation ? 'p-invalid' : ''
+                        "
                         required
                         autocomplete="new-password"
                     />

@@ -1,10 +1,10 @@
 <script setup>
-import { useTheme } from "@/Composables/useTheme.js";
+import { useTheme } from '@/Composables/useTheme.js';
 
 const { currentTheme, setTheme } = useTheme();
 
 function toggleTheme() {
-    const newTheme = currentTheme.value === "light" ? "dark" : "light";
+    const newTheme = currentTheme.value === 'light' ? 'dark' : 'light';
     setTheme(newTheme);
 }
 </script>

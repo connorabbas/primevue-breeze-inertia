@@ -1,8 +1,8 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import GuestLayout from "@/Layouts/GuestLayout.vue";
-import InputError from "@/Components/InputError.vue";
-import { Head, useForm } from "@inertiajs/vue3";
+import GuestLayout from '@/Layouts/GuestLayout.vue';
+import InputError from '@/Components/InputError.vue';
+import { Head, useForm } from '@inertiajs/vue3';
 
 const props = defineProps({
     email: {
@@ -20,13 +20,13 @@ const emailInput = ref(null);
 const form = useForm({
     token: props.token,
     email: props.email,
-    password: "",
-    password_confirmation: "",
+    password: '',
+    password_confirmation: '',
 });
 
 const submit = () => {
-    form.post(route("password.store"), {
-        onFinish: () => form.reset("password", "password_confirmation"),
+    form.post(route('password.store'), {
+        onFinish: () => form.reset('password', 'password_confirmation'),
     });
 };
 
@@ -84,7 +84,9 @@ onMounted(() => {
                         type="password"
                         v-model="form.password_confirmation"
                         class="w-full"
-                        :class="form.errors.password_confirmation ? 'p-invalid' : ''"
+                        :class="
+                            form.errors.password_confirmation ? 'p-invalid' : ''
+                        "
                         required
                         autocomplete="new-password"
                     />

@@ -1,18 +1,18 @@
 <script setup>
-import InputError from "@/Components/InputError.vue";
-import Dialog from "primevue/dialog";
-import { useForm } from "@inertiajs/vue3";
-import { nextTick, ref, watch } from "vue";
+import InputError from '@/Components/InputError.vue';
+import Dialog from 'primevue/dialog';
+import { useForm } from '@inertiajs/vue3';
+import { nextTick, ref, watch } from 'vue';
 
 const passwordInput = ref(null);
 const modalOpen = ref(false);
 
 const form = useForm({
-    password: "",
+    password: '',
 });
 
 const deleteUser = () => {
-    form.delete(route("profile.destroy"), {
+    form.delete(route('profile.destroy'), {
         preserveScroll: true,
         onSuccess: () => (modalOpen.value = false),
         onError: () => passwordInput.value.$el.focus(),

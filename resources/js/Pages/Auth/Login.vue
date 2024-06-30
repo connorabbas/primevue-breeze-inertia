@@ -1,10 +1,10 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import GuestLayout from "@/Layouts/GuestLayout.vue";
-import { Head, Link, useForm } from "@inertiajs/vue3";
-import Checkbox from "primevue/checkbox";
-import InputError from "@/Components/InputError.vue";
-import Message from "primevue/message";
+import GuestLayout from '@/Layouts/GuestLayout.vue';
+import { Head, Link, useForm } from '@inertiajs/vue3';
+import Checkbox from 'primevue/checkbox';
+import InputError from '@/Components/InputError.vue';
+import Message from 'primevue/message';
 
 defineProps({
     canResetPassword: {
@@ -18,14 +18,14 @@ defineProps({
 const emailInput = ref(null);
 
 const form = useForm({
-    email: "",
-    password: "",
+    email: '',
+    password: '',
     remember: false,
 });
 
 const submit = () => {
-    form.post(route("login"), {
-        onFinish: () => form.reset("password"),
+    form.post(route('login'), {
+        onFinish: () => form.reset('password'),
     });
 };
 
@@ -86,9 +86,7 @@ onMounted(() => {
                 </div>
 
                 <div class="mb-8">
-                    <div
-                        class="flex items-center justify-between"
-                    >
+                    <div class="flex items-center justify-between">
                         <div class="flex items-center">
                             <Checkbox
                                 id="remember"

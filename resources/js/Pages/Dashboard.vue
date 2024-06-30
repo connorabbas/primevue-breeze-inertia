@@ -1,7 +1,7 @@
 <script setup>
-import { Head } from "@inertiajs/vue3";
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import OuterLayoutContainer from "@/Components/OuterLayoutContainer.vue";
+import { Head } from '@inertiajs/vue3';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import OuterLayoutContainer from '@/Components/OuterLayoutContainer.vue';
 </script>
 
 <template>
