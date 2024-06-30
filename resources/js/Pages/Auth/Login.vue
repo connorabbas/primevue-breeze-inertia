@@ -103,7 +103,7 @@ onMounted(() => {
                     <Link
                         v-if="canResetPassword"
                         :href="route('password.request')"
-                        class="mr-4 text-muted-color hover:text-color"
+                        class="mr-4 underline text-muted-color hover:text-color"
                     >
                         Forgot your password?
                     </Link>

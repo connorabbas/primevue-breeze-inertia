@@ -59,7 +59,7 @@ const verificationLinkSent = computed(
                     <Link
                         :href="route('logout')"
                         method="post"
-                        class="text-muted-color hover:text-color"
+                        class="text-muted-color underline text-muted-color hover:text-color"
                         >Log Out</Link
                     >
                 </div>

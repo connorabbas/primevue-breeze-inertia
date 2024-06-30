@@ -82,16 +82,13 @@ watch(modalOpen, (newModalOpen) => {
             </template>
         </Dialog>
 
-        <header class="mb-8 flex">
-            <div class="w-full lg:w-10/12 xl:w-6/12">
-                <h2 class="text-lg font-medium mt-0">Delete Account</h2>
-                <p class="mb-0 text-sm text-muted-color">
-                    Once your account is deleted, all of its resources and data
-                    will be permanently deleted. Before deleting your account,
-                    please download any data or information that you wish to
-                    retain.
-                </p>
-            </div>
+        <header>
+            <h2 class="text-lg font-medium mt-0 mb-2">Delete Account</h2>
+            <p class="mb-0 text-sm text-muted-color">
+                Once your account is deleted, all of its resources and data will
+                be permanently deleted. Before deleting your account, please
+                download any data or information that you wish to retain.
+            </p>
         </header>
 
         <Button

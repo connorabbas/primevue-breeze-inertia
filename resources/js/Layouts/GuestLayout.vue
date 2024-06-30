@@ -11,7 +11,7 @@ import ApplicationLogo from '@/Components/ApplicationLogo.vue';
                 <div>
                     <div class="flex justify-center mb-6">
                         <ApplicationLogo
-                            class="w-20 h-20 fill-current text-surface-500"
+                            class="w-20 h-20 fill-current text-surface-900 dark:text-surface-0"
                         />
                     </div>
                     <slot />

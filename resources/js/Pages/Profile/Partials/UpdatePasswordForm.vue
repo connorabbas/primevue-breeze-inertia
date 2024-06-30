@@ -46,89 +46,74 @@ const updatePassword = () => {
 
 <template>
     <section>
-        <header class="mb-8 flex">
-            <div class="w-full lg:w-10/12 xl:w-6/12">
-                <h2 class="text-lg font-medium mt-0">Update Password</h2>
-
-                <p class="mb-0 text-sm text-muted-color">
-                    Ensure your account is using a long, random password to stay
-                    secure.
-                </p>
-            </div>
-        </header>
-
         <Toast />
 
-        <form @submit.prevent="updatePassword">
-            <div class="mb-6 flex">
-                <div class="w-full lg:w-10/12 xl:w-6/12">
-                    <label for="current_password" class="block mb-2"
-                        >Current Password</label
-                    >
-                    <InputText
-                        required
-                        id="current_password"
-                        ref="currentPasswordInput"
-                        type="password"
-                        v-model="form.current_password"
-                        class="w-full"
-                        :class="
-                            form.errors?.current_password ? 'p-invalid' : ''
-                        "
-                        autocomplete="current-password"
-                    />
-                    <InputError
-                        class="mt-2"
-                        :message="form.errors?.current_password"
-                    />
-                </div>
+        <header>
+            <h2 class="text-lg font-medium mt-0 mb-2">Update Password</h2>
+            <p class="mb-0 text-sm text-muted-color">
+                Ensure your account is using a long, random password to stay
+                secure.
+            </p>
+        </header>
+
+        <form @submit.prevent="updatePassword" class="mt-6 space-y-6">
+            <div>
+                <label for="current_password" class="block mb-2"
+                    >Current Password</label
+                >
+                <InputText
+                    required
+                    id="current_password"
+                    ref="currentPasswordInput"
+                    type="password"
+                    v-model="form.current_password"
+                    class="w-full"
+                    :class="form.errors?.current_password ? 'p-invalid' : ''"
+                    autocomplete="current-password"
+                />
+                <InputError
+                    class="mt-2"
+                    :message="form.errors?.current_password"
+                />
             </div>
 
-            <div class="mb-6 flex">
-                <div class="w-full lg:w-10/12 xl:w-6/12">
-                    <label for="password" class="block mb-2"
-                        >New Password</label
-                    >
-                    <InputText
-                        required
-                        id="password"
-                        ref="passwordInput"
-                        type="password"
-                        v-model="form.password"
-                        class="w-full"
-                        :class="form.errors?.password ? 'p-invalid' : ''"
-                        autocomplete="new-password"
-                    />
-                    <InputError class="mt-2" :message="form.errors?.password" />
-                </div>
+            <div>
+                <label for="password" class="block mb-2">New Password</label>
+                <InputText
+                    required
+                    id="password"
+                    ref="passwordInput"
+                    type="password"
+                    v-model="form.password"
+                    class="w-full"
+                    :class="form.errors?.password ? 'p-invalid' : ''"
+                    autocomplete="new-password"
+                />
+                <InputError class="mt-2" :message="form.errors?.password" />
             </div>
 
-            <div class="mb-6 flex">
-                <div class="w-full lg:w-10/12 xl:w-6/12">
-                    <label for="password_confirmation" class="block mb-2"
-                        >Confirm Password</label
-                    >
-                    <InputText
-                        required
-                        id="password_confirmation"
-                        type="password"
-                        v-model="form.password_confirmation"
-                        class="w-full"
-                        :class="
-                            form.errors?.password_confirmation
-                                ? 'p-invalid'
-                                : ''
-                        "
-                        autocomplete="new-password"
-                    />
-                    <InputError
-                        class="mt-2"
-                        :message="form.errors?.password_confirmation"
-                    />
-                </div>
+            <div>
+                <label for="password_confirmation" class="block mb-2"
+                    >Confirm Password</label
+                >
+                <InputText
+                    required
+                    id="password_confirmation"
+                    type="password"
+                    v-model="form.password_confirmation"
+                    class="w-full"
+                    :class="
+                        form.errors?.password_confirmation ? 'p-invalid' : ''
+                    "
+                    autocomplete="new-password"
+                />
+                <InputError
+                    class="mt-2"
+                    :message="form.errors?.password_confirmation"
+                />
             </div>
 
-            <div class="flex content-center gap-4">
+            <div class="flex items-center gap-4">
                 <Button
                     raised
                     type="submit"

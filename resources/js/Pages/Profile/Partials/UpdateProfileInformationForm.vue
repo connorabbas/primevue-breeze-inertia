@@ -48,80 +48,68 @@ onMounted(() => {
 
 <template>
     <section>
-        <header class="mb-8 flex">
-            <div class="w-full lg:w-10/12 xl:w-6/12">
-                <h2 class="text-lg font-medium mt-0">Profile Information</h2>
-
-                <p class="mb-0 text-sm text-muted-color">
-                    Update your account's profile information and email address.
-                </p>
-            </div>
-        </header>
-
         <Toast />
 
-        <form @submit.prevent="updateProfileInformation">
-            <div class="mb-6 flex">
-                <div class="w-full lg:w-10/12 xl:w-6/12">
-                    <label for="name" class="block mb-2">Name</label>
-                    <InputText
-                        required
-                        ref="nameInput"
-                        id="name"
-                        type="text"
-                        v-model="form.name"
-                        class="w-full"
-                        :class="form.errors?.name ? 'p-invalid' : ''"
-                        autocomplete="name"
-                    />
-                    <InputError class="mt-2" :message="form.errors?.name" />
-                </div>
+        <header>
+            <h2 class="text-lg font-medium mt-0 mb-2">Profile Information</h2>
+            <p class="mb-0 text-sm text-muted-color">
+                Update your account's profile information and email address.
+            </p>
+        </header>
+
+        <form @submit.prevent="updateProfileInformation" class="mt-6 space-y-6">
+            <div>
+                <label for="name" class="block mb-2">Name</label>
+                <InputText
+                    required
+                    ref="nameInput"
+                    id="name"
+                    type="text"
+                    v-model="form.name"
+                    class="w-full"
+                    :class="form.errors?.name ? 'p-invalid' : ''"
+                    autocomplete="name"
+                />
+                <InputError class="mt-2" :message="form.errors?.name" />
             </div>
-            <div class="mb-6 flex">
-                <div class="w-full lg:w-10/12 xl:w-6/12">
-                    <label for="email" class="block mb-2">Email</label>
-                    <InputText
-                        required
-                        id="email"
-                        type="email"
-                        v-model="form.email"
-                        class="w-full"
-                        :class="form.errors?.email ? 'p-invalid' : ''"
-                        autocomplete="username"
-                    />
-                    <InputError class="mt-2" :message="form.errors?.email" />
-                </div>
+            <div>
+                <label for="email" class="block mb-2">Email</label>
+                <InputText
+                    required
+                    id="email"
+                    type="email"
+                    v-model="form.email"
+                    class="w-full"
+                    :class="form.errors?.email ? 'p-invalid' : ''"
+                    autocomplete="username"
+                />
+                <InputError class="mt-2" :message="form.errors?.email" />
             </div>
 
-            <div
-                v-if="mustVerifyEmail && user.email_verified_at === null"
-                class="mb-6 flex"
-            >
-                <div class="w-full lg:w-10/12 xl:w-6/12">
-                    <p class="text-sm mt-2">
-                        Your email address is unverified.
-                        <Link
-                            :href="route('verification.send')"
-                            method="post"
-                            class="underline text-sm text-muted-color hover:text-color"
-                        >
-                            Click here to re-send the verification email.
-                        </Link>
-                    </p>
-
-                    <Message
-                        v-if="status === 'verification-link-sent'"
-                        severity="success"
-                        :closable="false"
-                        class="shadow"
+            <!-- TODO: test this output -->
+            <div v-if="mustVerifyEmail && user.email_verified_at === null">
+                <p class="text-sm mt-2">
+                    Your email address is unverified.
+                    <Link
+                        :href="route('verification.send')"
+                        method="post"
+                        class="underline text-sm text-muted-color underline text-muted-color hover:text-color"
                     >
-                        A new verification link has been sent to your email
-                        address.
-                    </Message>
-                </div>
+                        Click here to re-send the verification email.
+                    </Link>
+                </p>
+
+                <Message
+                    v-if="status === 'verification-link-sent'"
+                    severity="success"
+                    :closable="false"
+                    class="shadow"
+                >
+                    A new verification link has been sent to your email address.
+                </Message>
             </div>
 
-            <div class="flex content-center gap-4">
+            <div class="flex items-center gap-4">
                 <Button
                     raised
                     type="submit"

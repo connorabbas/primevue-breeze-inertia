@@ -89,7 +89,7 @@ watchEffect(() => {
                         class="rounded-none border-0 bg-surface-0 dark:bg-surface-900 px-0"
                     >
                         <template #start>
-                            <Link :href="route('welcome')" class="mr-4">
+                            <Link :href="route('welcome')" class="mr-8">
                                 <ApplicationLogo
                                     class="w-12 h-12 w-auto pt-1 fill-current text-surface-900 dark:text-surface-0"
                                 />
@@ -186,6 +186,7 @@ watchEffect(() => {
                 </OuterLayoutContainer>
             </div>
             <!-- Mobile sidebar menu -->
+             <!-- TODO: change to Drawer -->
             <Sidebar
                 v-model:visible="mobileMenuOpen"
                 header="Mobile Menu"

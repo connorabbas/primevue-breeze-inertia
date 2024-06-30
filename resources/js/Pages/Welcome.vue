@@ -36,26 +36,27 @@ defineProps({
                     >
                         <section>
                             <span class="block text-6xl font-bold mb-1"
-                                >Laravel & Inertia</span
+                                >Laravel Breeze</span
                             >
                             <div class="text-6xl text-primary font-bold mb-4">
-                                PrimeVue & PrimeFlex
+                                w/ PrimeVue
                             </div>
                             <p
                                 class="mt-0 mb-6 text-surface-700 dark:text-surface-100 leading-normal"
                             >
-                                A starter kit using
+                                A starter kit using the Vue/Inertia option for
                                 <a
                                     href="https://laravel.com/docs/master/starter-kits#laravel-breeze"
+                                    class="underline text-primary hover:text-color"
                                     >Laravel Breeze</a
                                 >
-                                for authentication,
-                                <a href="https://v3.primevue.org/">PrimeVue</a>
-                                and
-                                <a href="https://primeflex.org/">PrimeFlex</a>
-                                for the UI, and
-                                <a href="https://inertiajs.com/">Inertia.js</a>
-                                as the glue.
+                                utilizing
+                                <a
+                                    href="https://primevue.org/"
+                                    class="underline text-primary hover:text-color"
+                                    >PrimeVue</a
+                                >
+                                components
                             </p>
 
                             <template v-if="$page.props.auth.user">
