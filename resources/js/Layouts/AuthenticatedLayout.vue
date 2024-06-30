@@ -91,7 +91,7 @@ watchEffect(() => {
                         <template #start>
                             <Link :href="route('welcome')" class="mr-4">
                                 <ApplicationLogo
-                                    class="w-12 h-12 w-auto pt-1 fill-current text-surface-500"
+                                    class="w-12 h-12 w-auto pt-1 fill-current text-surface-900 dark:text-surface-0"
                                 />
                             </Link>
                         </template>

@@ -13,7 +13,7 @@ import OuterLayoutContainer from "@/Components/OuterLayoutContainer.vue";
         <OuterLayoutContainer :spaced-mobile="false">
             <div class="py-12">
                 <div
-                    class="bg-surface-0 dark:bg-surface-900 p-8 shadow rounded-none sm:rounded-lg"
+                    class="bg-surface-0 dark:bg-surface-900 p-8 shadow rounded-none sm:rounded-xl"
                 >
                     <p class="m-0">You are logged in!</p>
                 </div>

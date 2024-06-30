@@ -29,7 +29,7 @@ defineProps({
         >
             <div class="h-screen flex items-center justify-center">
                 <div
-                    class="bg-surface-0 dark:bg-surface-900 p-12 shadow rounded-none sm:rounded-lg"
+                    class="bg-surface-0 dark:bg-surface-900 p-12 shadow rounded-none sm:rounded-xl"
                 >
                     <div
                         class="col-span-12 md:col-span-8 text-center md:text-left flex items-center"
