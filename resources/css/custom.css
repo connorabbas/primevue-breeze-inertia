@@ -1,13 +1,9 @@
 html {
-    /* font size will determine the PrimeVue Components scaling */
-    font-size: 14px;
+    /* font size will determine the component/utility scaling */
+    font-size: 15px;
 }
 
 body {
     margin: 0 !important;
     padding: 0 !important;
-}
-
-.no-underline {
-    text-decoration: none;
 }

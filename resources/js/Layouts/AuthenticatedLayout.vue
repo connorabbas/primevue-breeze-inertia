@@ -86,12 +86,12 @@ watchEffect(() => {
                 <OuterLayoutContainer class="pb-0">
                     <Menubar
                         :model="mainMenuItems"
-                        class="rounded-none border-0 bg-surface-0 dark:bg-surface-900 px-0"
+                        class="rounded-none border-0 bg-surface-0 dark:bg-surface-900 py-3 px-0"
                     >
                         <template #start>
                             <Link :href="route('welcome')" class="mr-8">
                                 <ApplicationLogo
-                                    class="w-12 h-12 w-auto pt-1 fill-current text-surface-900 dark:text-surface-0"
+                                    class="block h-9 w-auto fill-current text-surface-900 dark:text-surface-0"
                                 />
                             </Link>
                         </template>
@@ -186,7 +186,7 @@ watchEffect(() => {
                 </OuterLayoutContainer>
             </div>
             <!-- Mobile sidebar menu -->
-             <!-- TODO: change to Drawer -->
+            <!-- TODO: change to Drawer -->
             <Sidebar
                 v-model:visible="mobileMenuOpen"
                 header="Mobile Menu"
@@ -215,7 +215,7 @@ watchEffect(() => {
             </Sidebar>
         </nav>
         <header
-            class="bg-surface-0 dark:bg-surface-900 py-6 shadow"
+            class="bg-surface-0 dark:bg-surface-900 py-7 shadow"
             v-if="$slots.header"
         >
             <OuterLayoutContainer>

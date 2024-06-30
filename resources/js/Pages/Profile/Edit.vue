@@ -6,8 +6,6 @@ import UpdateProfileInformationForm from './Partials/UpdateProfileInformationFor
 import OuterLayoutContainer from '@/Components/OuterLayoutContainer.vue';
 import { Head } from '@inertiajs/vue3';
 
-import Card from 'primevue/card';
-
 const props = defineProps({
     auth: Object,
     mustVerifyEmail: {
@@ -24,10 +22,10 @@ const props = defineProps({
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl leading-tight">Profile</h2>
+            <h2 class="font-bold text-xl leading-tight">Profile</h2>
         </template>
 
-        <OuterLayoutContainer>
+        <OuterLayoutContainer :spaced-mobile="false">
             <div class="py-12">
                 <div class="space-y-6">
                     <div

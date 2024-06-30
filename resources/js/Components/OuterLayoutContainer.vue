@@ -10,7 +10,7 @@ const props = defineProps({
 
 <template>
     <div
-        :class="[spacedMobile ? 'px-2' : 'px-0']"
+        :class="[spacedMobile ? 'px-4' : 'px-0']"
         class="max-w-7xl mx-auto sm:px-6 lg:px-8"
     >
         <slot />
