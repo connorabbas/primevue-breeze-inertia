@@ -46,11 +46,11 @@ const updatePassword = () => {
 
 <template>
     <section>
-        <header class="mb-5 flex">
-            <div class="w-12 lg:w-10 xl:w-6">
+        <header class="mb-8 flex">
+            <div class="w-full lg:w-10/12 xl:w-6/12">
                 <h2 class="text-lg font-medium mt-0">Update Password</h2>
 
-                <p class="mb-0 text-sm text-color-secondary">
+                <p class="mb-0 text-sm text-muted-color">
                     Ensure your account is using a long, random password to stay
                     secure.
                 </p>
@@ -60,8 +60,8 @@ const updatePassword = () => {
         <Toast />
 
         <form @submit.prevent="updatePassword">
-            <div class="mb-4 flex">
-                <div class="w-12 lg:w-10 xl:w-6">
+            <div class="mb-6 flex">
+                <div class="w-full lg:w-10/12 xl:w-6/12">
                     <label for="current_password" class="block mb-2"
                         >Current Password</label
                     >
@@ -82,8 +82,8 @@ const updatePassword = () => {
                 </div>
             </div>
 
-            <div class="mb-4 flex">
-                <div class="w-12 lg:w-10 xl:w-6">
+            <div class="mb-6 flex">
+                <div class="w-full lg:w-10/12 xl:w-6/12">
                     <label for="password" class="block mb-2"
                         >New Password</label
                     >
@@ -104,8 +104,8 @@ const updatePassword = () => {
                 </div>
             </div>
 
-            <div class="mb-4 flex">
-                <div class="w-12 lg:w-10 xl:w-6">
+            <div class="mb-6 flex">
+                <div class="w-full lg:w-10/12 xl:w-6/12">
                     <label for="password_confirmation" class="block mb-2"
                         >Confirm Password</label
                     >
@@ -127,7 +127,7 @@ const updatePassword = () => {
                 </div>
             </div>
 
-            <div class="flex align-content-center gap-3">
+            <div class="flex content-center gap-4">
                 <Button
                     raised
                     type="submit"

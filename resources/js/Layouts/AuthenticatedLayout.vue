@@ -78,18 +78,18 @@ watchEffect(() => {
 </script>
 
 <template>
-    <div>
+    <div class="min-h-full">
         <header>
-            <div class="border-bottom-1 surface-border surface-overlay">
+            <div class="border-b border-surface bg-surface-0 dark:bg-surface-900">
                 <OuterLayoutContainer class="pb-0">
                     <Menubar
                         :model="mainMenuItems"
-                        class="border-noround border-none surface-overlay px-0"
+                        class="rounded-none border-0 bg-surface-0 dark:bg-surface-900 px-0"
                     >
                         <template #start>
-                            <Link :href="route('welcome')" class="mr-3 h-0">
+                            <Link :href="route('welcome')" class="mr-4 h-0">
                                 <ApplicationLogo
-                                    class="h-3rem w-auto pt-1 surface-svg-fill"
+                                    class="h-12 w-auto pt-1 surface-svg-fill"
                                 />
                             </Link>
                         </template>
@@ -126,7 +126,7 @@ watchEffect(() => {
                                         :model="userMenuItems"
                                         popup
                                         ref="menu"
-                                        class="shadow-1 border-1 surface-border"
+                                        class="shadow-sm border border-surface"
                                     >
                                         <template #item="{ item, props }">
                                             <Link
@@ -196,7 +196,7 @@ watchEffect(() => {
                             :href="item.href"
                             :method="item.method === 'post' ? 'post' : 'get'"
                             :as="item.method === 'post' ? 'li' : 'a'"
-                            class="flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors no-underline"
+                            class="flex items-center cursor-pointer p-4 rounded-border text-surface-700 dark:text-surface-100 hover:bg-surface-100 dark:hover:bg-surface-700 duration-150 transition-colors no-underline"
                             :class="[
                                 item.method === 'post'
                                     ? 'flex items-center w-full text-left'

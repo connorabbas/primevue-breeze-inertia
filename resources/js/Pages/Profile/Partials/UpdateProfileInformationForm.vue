@@ -48,11 +48,11 @@ onMounted(() => {
 
 <template>
     <section>
-        <header class="mb-5 flex">
-            <div class="w-12 lg:w-10 xl:w-6">
+        <header class="mb-8 flex">
+            <div class="w-full lg:w-10/12 xl:w-6/12">
                 <h2 class="text-lg font-medium mt-0">Profile Information</h2>
 
-                <p class="mb-0 text-sm text-color-secondary">
+                <p class="mb-0 text-sm text-muted-color">
                     Update your account's profile information and email address.
                 </p>
             </div>
@@ -61,8 +61,8 @@ onMounted(() => {
         <Toast />
 
         <form @submit.prevent="updateProfileInformation">
-            <div class="mb-4 flex">
-                <div class="w-12 lg:w-10 xl:w-6">
+            <div class="mb-6 flex">
+                <div class="w-full lg:w-10/12 xl:w-6/12">
                     <label for="name" class="block mb-2">Name</label>
                     <InputText
                         required
@@ -80,8 +80,8 @@ onMounted(() => {
                     />
                 </div>
             </div>
-            <div class="mb-4 flex">
-                <div class="w-12 lg:w-10 xl:w-6">
+            <div class="mb-6 flex">
+                <div class="w-full lg:w-10/12 xl:w-6/12">
                     <label for="email" class="block mb-2">Email</label>
                     <InputText
                         required
@@ -101,15 +101,15 @@ onMounted(() => {
 
             <div
                 v-if="mustVerifyEmail && user.email_verified_at === null"
-                class="mb-4 flex"
+                class="mb-6 flex"
             >
-                <div class="w-12 lg:w-10 xl:w-6">
+                <div class="w-full lg:w-10/12 xl:w-6/12">
                     <p class="text-sm mt-2">
                         Your email address is unverified.
                         <Link
                             :href="route('verification.send')"
                             method="post"
-                            class="underline text-sm text-color-secondary hover:text-color"
+                            class="underline text-sm text-muted-color hover:text-color"
                         >
                             Click here to re-send the verification email.
                         </Link>
@@ -119,7 +119,7 @@ onMounted(() => {
                         v-if="status === 'verification-link-sent'"
                         severity="success"
                         :closable="false"
-                        class="shadow-1"
+                        class="shadow-sm"
                     >
                         A new verification link has been sent to your email
                         address.
@@ -127,7 +127,7 @@ onMounted(() => {
                 </div>
             </div>
 
-            <div class="flex align-content-center gap-3">
+            <div class="flex content-center gap-4">
                 <Button
                     raised
                     type="submit"
@@ -144,7 +144,7 @@ onMounted(() => {
                 >
                     <p
                         v-if="form.recentlySuccessful"
-                        class="text-sm text-color-secondary"
+                        class="text-sm text-muted-color"
                     >
                         Saved.
                     </p>

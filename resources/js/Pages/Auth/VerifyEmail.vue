@@ -25,12 +25,12 @@ const verificationLinkSent = computed(
     <GuestLayout>
         <Head title="Email Verification" />
 
-        <div class="w-full sm:w-12 md:w-30rem mb-3">
+        <div class="w-full sm:w-full md:w-[30rem] mb-4">
             <Message
                 v-if="verificationLinkSent"
                 severity="success"
                 :closable="false"
-                class="shadow-1"
+                class="shadow-sm"
             >
                 A new verification link has been sent to the email address you
                 provided during registration.
@@ -38,9 +38,9 @@ const verificationLinkSent = computed(
         </div>
 
         <div
-            class="surface-card p-4 shadow-1 border-round-lg w-full sm:w-12 md:w-30rem"
+            class="bg-surface-0 dark:bg-surface-900 p-6 shadow-sm rounded-lg w-full sm:w-full md:w-[30rem]"
         >
-            <div class="mb-4 text-sm text-color-secondary">
+            <div class="mb-6 text-sm text-muted-color">
                 Thanks for signing up! Before getting started, could you verify
                 your email address by clicking on the link we just emailed to
                 you? If you didn't receive the email, we will gladly send you
@@ -49,7 +49,7 @@ const verificationLinkSent = computed(
 
             <form @submit.prevent="submit">
                 <div
-                    class="mt-4 flex justify-content-between align-items-center"
+                    class="mt-6 flex justify-between items-center"
                 >
                     <Button
                         raised
@@ -61,7 +61,7 @@ const verificationLinkSent = computed(
                     <Link
                         :href="route('logout')"
                         method="post"
-                        class="text-color-secondary hover:text-color"
+                        class="text-muted-color hover:text-color"
                         >Log Out</Link
                     >
                 </div>

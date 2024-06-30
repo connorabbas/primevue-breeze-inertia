@@ -12,14 +12,14 @@ const props = defineProps({
     <div
         :class="[
             'grid-nogutter',
-            spacedMobile ? 'px-3' : 'px-0',
-            'sm:px-3',
+            spacedMobile ? 'px-4' : 'px-0',
+            'sm:px-4',
             'md:p-0',
             'lg:p-0',
             'xl:p-0',
         ]"
     >
-        <div class="col-12 md:col-10 md:col-offset-1 lg:col-8 lg:col-offset-2">
+        <div class="col-span-12 md:col-span-10 md:col-start-2 lg:col-span-8 lg:col-start-3">
             <slot />
         </div>
     </div>

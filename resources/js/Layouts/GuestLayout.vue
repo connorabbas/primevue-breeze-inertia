@@ -3,17 +3,15 @@ import ApplicationLogo from "@/Components/ApplicationLogo.vue";
 </script>
 
 <template>
-    <div class="grid-nogutter h-full">
+    <div class="grid-nogutter min-h-full">
         <div
-            class="col-12 md:col-10 md:col-offset-1 lg:col-8 lg:col-offset-2 h-full"
+            class="col-span-12 md:col-span-10 md:col-start-2 lg:col-span-8 lg:col-start-3 h-full"
         >
-            <div
-                class="h-screen flex align-items-center justify-content-center"
-            >
+            <div class="h-screen flex items-center justify-center">
                 <div>
-                    <div class="flex justify-content-center mb-4">
+                    <div class="flex justify-center mb-6">
                         <ApplicationLogo
-                            class="h-5rem w-auto pt-1 surface-svg-fill"
+                            class="w-20 h-20 fill-current text-gray-500"
                         />
                     </div>
                     <slot />

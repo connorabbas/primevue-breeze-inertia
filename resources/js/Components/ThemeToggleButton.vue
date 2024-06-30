@@ -12,7 +12,7 @@ function toggleTheme() {
 <template>
     <Button
         title="Change theme"
-        :icon="currentTheme === 'light' ? 'pi pi-sun' : 'pi pi-moon'"
+        :icon="currentTheme === 'light' ? 'pi pi-moon' : 'pi pi-sun'"
         @click="toggleTheme"
     />
 </template>

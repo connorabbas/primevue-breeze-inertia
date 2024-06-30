@@ -38,22 +38,22 @@ onMounted(() => {
     <GuestLayout>
         <Head title="Log in" />
 
-        <div class="w-full sm:w-12 md:w-30rem mb-3">
+        <div class="w-full sm:w-full md:w-[30rem] mb-4">
             <Message
                 v-if="status"
                 severity="success"
                 :closable="false"
-                class="shadow-1"
+                class="shadow-sm"
             >
                 {{ status }}
             </Message>
         </div>
 
         <div
-            class="surface-card p-4 shadow-1 border-round-lg w-full sm:w-12 md:w-30rem"
+            class="bg-surface-0 dark:bg-surface-900 p-6 shadow-sm rounded-lg w-full sm:w-full md:w-[30rem]"
         >
             <form @submit.prevent="submit">
-                <div class="mb-4">
+                <div class="mb-6">
                     <label for="email" class="block mb-2">Email</label>
                     <InputText
                         required
@@ -68,7 +68,7 @@ onMounted(() => {
                     <InputError class="mt-2" :message="form.errors.email" />
                 </div>
 
-                <div class="mb-4">
+                <div class="mb-6">
                     <label for="password" class="block mb-2">Password</label>
                     <InputText
                         required
@@ -85,11 +85,11 @@ onMounted(() => {
                     />
                 </div>
 
-                <div class="mb-5">
+                <div class="mb-8">
                     <div
-                        class="flex align-items-center justify-content-between"
+                        class="flex items-center justify-between"
                     >
-                        <div class="flex align-items-center">
+                        <div class="flex items-center">
                             <Checkbox
                                 id="remember"
                                 :binary="true"
@@ -101,11 +101,11 @@ onMounted(() => {
                     </div>
                 </div>
 
-                <div class="flex justify-content-end align-items-center">
+                <div class="flex justify-end items-center">
                     <Link
                         v-if="canResetPassword"
                         :href="route('password.request')"
-                        class="mr-3 text-color-secondary hover:text-color"
+                        class="mr-4 text-muted-color hover:text-color"
                     >
                         Forgot your password?
                     </Link>

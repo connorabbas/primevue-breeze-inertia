@@ -40,8 +40,8 @@ watch(modalOpen, (newModalOpen) => {
             header="Are you sure you want to delete your account?"
             :style="{ width: '40rem' }"
         >
-            <div class="mb-4">
-                <p class="m-0 text-color-secondary">
+            <div class="mb-6">
+                <p class="m-0 text-muted-color">
                     Once your account is deleted, all of its resources and data
                     will be permanently deleted. Please enter your password to
                     confirm you would like to permanently delete your account.
@@ -82,10 +82,10 @@ watch(modalOpen, (newModalOpen) => {
             </template>
         </Dialog>
 
-        <header class="mb-5 flex">
-            <div class="w-12 lg:w-10 xl:w-6">
+        <header class="mb-8 flex">
+            <div class="w-full lg:w-10/12 xl:w-6/12">
                 <h2 class="text-lg font-medium mt-0">Delete Account</h2>
-                <p class="mb-0 text-sm text-color-secondary">
+                <p class="mb-0 text-sm text-muted-color">
                     Once your account is deleted, all of its resources and data
                     will be permanently deleted. Before deleting your account,
                     please download any data or information that you wish to

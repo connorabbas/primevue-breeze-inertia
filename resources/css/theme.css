@@ -2,7 +2,7 @@
 :root {
     --surface-svg-bg-color: var(--gray-800);
 }
-body.dark-theme {
+body.dark {
     --surface-svg-bg-color: var(--gray-50);
 }
 

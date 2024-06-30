@@ -40,10 +40,10 @@ onMounted(() => {
         <Head title="Reset Password" />
 
         <div
-            class="surface-card p-4 shadow-1 border-round-lg w-full sm:w-12 md:w-30rem"
+            class="bg-surface-0 dark:bg-surface-900 p-6 shadow-sm rounded-lg w-full sm:w-full md:w-[30rem]"
         >
             <form @submit.prevent="submit">
-                <div class="mb-4">
+                <div class="mb-6">
                     <label for="email" class="block mb-2">Email</label>
                     <InputText
                         ref="emailInput"
@@ -58,7 +58,7 @@ onMounted(() => {
                     <InputError class="mt-2" :message="form.errors.email" />
                 </div>
 
-                <div class="mb-4">
+                <div class="mb-6">
                     <label for="password" class="block mb-2">Password</label>
                     <InputText
                         id="password"
@@ -75,7 +75,7 @@ onMounted(() => {
                     />
                 </div>
 
-                <div class="mb-4">
+                <div class="mb-6">
                     <label for="password_confirmation" class="block mb-2"
                         >Password</label
                     >
@@ -94,7 +94,7 @@ onMounted(() => {
                     />
                 </div>
 
-                <div class="flex justify-content-end align-items-center">
+                <div class="flex justify-end items-center">
                     <Button
                         raised
                         type="submit"

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
-<head>
+<head class="h-full">
     <meta charset="utf-8">
     <meta
         name="viewport"
@@ -12,12 +12,13 @@
 
     <!-- Scripts -->
     @routes
-    @vite(['resources/js/app.js', 'resources/css/app.css', "resources/js/Pages/{$page['component']}.vue"])
+    @vite(['resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"])
     @inertiaHead
 </head>
 
-<body class="h-full surface-ground">
-    @inertia
+<body class="h-full">
+    {{-- @inertia --}}
+    <div id="app" class="h-full" data-page="{{ json_encode($page) }}"></div>
 </body>
 
 </html>
