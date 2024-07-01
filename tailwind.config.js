@@ -1,3 +1,5 @@
+import defaultTheme from 'tailwindcss/defaultTheme';
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
     content: [
@@ -7,7 +9,11 @@ module.exports = {
         './resources/js/**/*.vue',
     ],
     theme: {
-        extend: {},
+        extend: {
+            fontFamily: {
+                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+            },
+        },
     },
     plugins: [require('tailwindcss-primeui')],
     darkMode: ['selector', '.dark-mode'],

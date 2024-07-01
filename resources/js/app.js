@@ -1,7 +1,9 @@
 import './bootstrap';
 import '../css/app.css';
 import 'primeicons/primeicons.css';
+import 'primeicons/primeicons.css';
 
+import Lara from '@primevue/themes/lara';
 import Aura from '@primevue/themes/aura';
 import { definePreset } from '@primevue/themes';
 
@@ -16,25 +18,10 @@ import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 
 import { useTheme } from '@/Composables/useTheme.js';
+import breezePreset from '@/Modules/breeze-preset';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
-const breezeThemePreset = definePreset(Aura, {
-    semantic: {
-        primary: {
-            50: '{indigo.50}',
-            100: '{indigo.100}',
-            200: '{indigo.200}',
-            300: '{indigo.300}',
-            400: '{indigo.400}',
-            500: '{indigo.500}',
-            600: '{indigo.600}',
-            700: '{indigo.700}',
-            800: '{indigo.800}',
-            900: '{indigo.900}',
-            950: '{indigo.950}',
-        },
-    },
-});
+const breezeThemePreset = definePreset(Lara, breezePreset);
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,

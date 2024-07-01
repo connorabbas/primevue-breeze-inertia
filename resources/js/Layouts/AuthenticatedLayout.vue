@@ -164,7 +164,7 @@ watchEffect(() => {
                                     <Button
                                         plain
                                         text
-                                        class="p-menu-item-text inline-flex"
+                                        class="inline-flex"
                                         @click="toggleUserMenu($event)"
                                     >
                                         <span class="">{{

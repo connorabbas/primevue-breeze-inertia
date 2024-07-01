@@ -23,7 +23,7 @@ defineProps({
 <template>
     <Head title="Welcome" />
 
-    <div class="grid-nogutter min-h-full bg-surface-50 dark:bg-surface-950">
+    <div class="grid-nogutter min-h-full">
         <div
             class="col-span-12 md:col-span-10 md:col-start-2 lg:col-span-8 lg:col-start-3 h-full"
         >
