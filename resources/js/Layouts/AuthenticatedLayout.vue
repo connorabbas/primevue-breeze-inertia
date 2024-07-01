@@ -3,7 +3,7 @@ import { ref, onMounted, onUnmounted, watchEffect, computed } from 'vue';
 import { Link } from '@inertiajs/vue3';
 import Menubar from 'primevue/menubar';
 import Menu from 'primevue/menu';
-import Sidebar from 'primevue/sidebar';
+import Drawer from 'primevue/drawer';
 import OuterLayoutContainer from '@/Components/OuterLayoutContainer.vue';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import ThemeToggleButton from '@/Components/ThemeToggleButton.vue';
@@ -69,7 +69,7 @@ onMounted(() => {
 onUnmounted(() => {
     window.removeEventListener('resize', updateWidth);
 });
-// Watch for windowWidth changes to close sidebar on larger screens if it was opened on mobile
+// Watch for windowWidth changes to close drawer on larger screens if it was opened on mobile
 watchEffect(() => {
     if (windowWidth.value > 992) {
         mobileMenuOpen.value = false;
@@ -98,9 +98,9 @@ watchEffect(() => {
                         <template #item="{ item, props, hasSubmenu, root }">
                             <Link
                                 :href="item.href"
-                                class="p-menubar-item-link hidden sm:flex"
+                                class="hidden sm:flex p-menubar-item-link text-surface-500 dark:text-surface-400 hover:text-surface-700 dark:hover:text-surface-0 transition !duration-150"
                                 :class="{
-                                    'text-primary': item.isCurrentRoute,
+                                    '!text-primary': item.isCurrentRoute,
                                 }"
                                 custom
                             >
@@ -120,14 +120,14 @@ watchEffect(() => {
                                 <ThemeToggleButton
                                     plain
                                     text
-                                    class="inline-flex"
+                                    class="inline-flex text-surface-500 dark:text-surface-400 hover:text-surface-700 dark:hover:text-surface-0 transition !duration-150"
                                 />
                                 <div class="hidden sm:flex">
                                     <Menu
                                         :model="userMenuItems"
                                         popup
                                         ref="menu"
-                                        class="shadow border border-surface"
+                                        class="shadow"
                                     >
                                         <template #item="{ item, props }">
                                             <Link
@@ -164,7 +164,7 @@ watchEffect(() => {
                                     <Button
                                         plain
                                         text
-                                        class="inline-flex"
+                                        class="inline-flex text-surface-500 dark:text-surface-400 hover:text-surface-700 dark:hover:text-surface-0 transition !duration-150"
                                         @click="toggleUserMenu($event)"
                                     >
                                         <span class="">{{
@@ -185,9 +185,8 @@ watchEffect(() => {
                     </Menubar>
                 </OuterLayoutContainer>
             </div>
-            <!-- Mobile sidebar menu -->
-            <!-- TODO: change to Drawer -->
-            <Sidebar
+            <!-- Mobile drawer menu -->
+            <Drawer
                 v-model:visible="mobileMenuOpen"
                 header="Mobile Menu"
                 position="right"
@@ -212,7 +211,7 @@ watchEffect(() => {
                         </Link>
                     </li>
                 </ul>
-            </Sidebar>
+            </Drawer>
         </nav>
         <header
             class="bg-surface-0 dark:bg-surface-900 py-7 shadow"
