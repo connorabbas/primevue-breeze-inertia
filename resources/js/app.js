@@ -3,7 +3,7 @@ import '../css/app.css';
 import 'primeicons/primeicons.css';
 import 'primeicons/primeicons.css';
 
-import Lara from '@primevue/themes/lara';
+import Lara from '@primevue/themes/lara'; // Lara not ready
 import Aura from '@primevue/themes/aura';
 import { definePreset } from '@primevue/themes';
 
@@ -18,10 +18,10 @@ import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 
 import { useTheme } from '@/Composables/useTheme.js';
-import breezePreset from '@/Modules/breeze-preset';
+import breezePreset from '@/Modules/breeze-preset.mjs';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
-const breezeThemePreset = definePreset(Lara, breezePreset);
+const breezeThemePreset = definePreset(Aura, breezePreset);
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
