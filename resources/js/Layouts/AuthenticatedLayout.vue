@@ -155,7 +155,7 @@ watchEffect(() => {
                                             >
                                                 <span
                                                     v-show="item.icon"
-                                                    :class="[item.icon, 'mr-2']"
+                                                    :class="[item.icon, 'mr-1']"
                                                 />
                                                 <span>{{ item.label }}</span>
                                             </Link>
