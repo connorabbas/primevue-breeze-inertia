@@ -42,7 +42,7 @@ defineProps({
                                 w/ PrimeVue
                             </div>
                             <p
-                                class="mt-0 mb-6 text-surface-700 dark:text-surface-100 leading-normal"
+                                class="mt-0 mb-6 text-muted-color leading-normal"
                             >
                                 A starter kit using the Vue/Inertia option for
                                 <a

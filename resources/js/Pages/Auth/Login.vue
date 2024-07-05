@@ -38,84 +38,76 @@ onMounted(() => {
     <GuestLayout>
         <Head title="Log in" />
 
-        <div class="w-full sm:w-full md:w-[30rem] mb-4">
+        <template #message v-if="status">
             <Message
-                v-if="status"
                 severity="success"
                 :closable="false"
                 class="shadow"
             >
                 {{ status }}
             </Message>
-        </div>
+        </template>
 
-        <div
-            class="bg-surface-0 dark:bg-surface-900 p-6 shadow rounded-lg w-full sm:w-full md:w-[30rem]"
-        >
-            <form @submit.prevent="submit">
-                <div class="mb-6">
-                    <label for="email" class="block mb-2">Email</label>
-                    <InputText
-                        required
-                        ref="emailInput"
-                        id="email"
-                        type="email"
-                        v-model="form.email"
-                        class="w-full"
-                        :invalid="form.errors.email"
-                        autocomplete="username"
-                    />
-                    <InputError class="mt-2" :message="form.errors.email" />
-                </div>
+        <form @submit.prevent="submit">
+            <div class="mb-6">
+                <label for="email" class="block mb-2">Email</label>
+                <InputText
+                    required
+                    ref="emailInput"
+                    id="email"
+                    type="email"
+                    v-model="form.email"
+                    class="w-full"
+                    :invalid="form.errors.email"
+                    autocomplete="username"
+                />
+                <InputError class="mt-2" :message="form.errors.email" />
+            </div>
 
-                <div class="mb-6">
-                    <label for="password" class="block mb-2">Password</label>
-                    <InputText
-                        required
-                        id="password"
-                        type="password"
-                        v-model="form.password"
-                        class="w-full"
-                        :invalid="form.errors.password"
-                        autocomplete="current-password"
-                    />
-                    <InputError
-                        class="mt-2 mb-1"
-                        :message="form.errors.password"
-                    />
-                </div>
+            <div class="mb-6">
+                <label for="password" class="block mb-2">Password</label>
+                <InputText
+                    required
+                    id="password"
+                    type="password"
+                    v-model="form.password"
+                    class="w-full"
+                    :invalid="form.errors.password"
+                    autocomplete="current-password"
+                />
+                <InputError class="mt-2 mb-1" :message="form.errors.password" />
+            </div>
 
-                <div class="mb-8">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center">
-                            <Checkbox
-                                id="remember"
-                                :binary="true"
-                                v-model="form.remember"
-                                class="mr-2"
-                            ></Checkbox>
-                            <label for="remember">Remember me</label>
-                        </div>
+            <div class="mb-8">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <Checkbox
+                            id="remember"
+                            :binary="true"
+                            v-model="form.remember"
+                            class="mr-2"
+                        ></Checkbox>
+                        <label for="remember">Remember me</label>
                     </div>
                 </div>
+            </div>
 
-                <div class="flex justify-end items-center">
-                    <Link
-                        v-if="canResetPassword"
-                        :href="route('password.request')"
-                        class="mr-4 underline text-muted-color hover:text-color"
-                    >
-                        Forgot your password?
-                    </Link>
-                    <Button
-                        raised
-                        type="submit"
-                        :loading="form.processing"
-                        label="Log In"
-                        severity="contrast"
-                    />
-                </div>
-            </form>
-        </div>
+            <div class="flex justify-end items-center">
+                <Link
+                    v-if="canResetPassword"
+                    :href="route('password.request')"
+                    class="mr-4 underline text-muted-color hover:text-color"
+                >
+                    Forgot your password?
+                </Link>
+                <Button
+                    raised
+                    type="submit"
+                    :loading="form.processing"
+                    label="Log In"
+                    severity="contrast"
+                />
+            </div>
+        </form>
     </GuestLayout>
 </template>
