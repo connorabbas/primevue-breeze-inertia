@@ -43,6 +43,15 @@ export default {
                     900: '{gray.900}',
                     950: '{gray.950}',
                 },
+                /**
+                 * If you want to perfectly match the Laravel breeze dark mode styling (slightly lighter):
+                 * 1. Search and replace dark:bg-surface-900 with dark:bg-surface-800
+                 * 2. Search and replace dark:bg-surface-950 with dark:bg-surface-900
+                 * 3. Uncomment the below formField color token change (matches input field bg with site bg)
+                 */
+                /* formField: {
+                    background: '{surface.900}',
+                }, */
             },
         },
     },

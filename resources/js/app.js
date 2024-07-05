@@ -18,10 +18,10 @@ import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 
 import { useTheme } from '@/Composables/useTheme.js';
-import breezePreset from '@/Modules/breeze-preset.mjs';
+import themePreset from '@/Modules/theme-preset.mjs';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
-const breezeThemePreset = definePreset(Lara, breezePreset);
+const siteThemePreset = definePreset(Lara, themePreset);
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
@@ -41,7 +41,7 @@ createInertiaApp({
             .use(ZiggyVue, Ziggy)
             .use(PrimeVue, {
                 theme: {
-                    preset: breezeThemePreset,
+                    preset: siteThemePreset,
                     options: {
                         darkModeSelector: '.dark-mode',
                         cssLayer: {
