@@ -21,7 +21,7 @@ import { useTheme } from '@/Composables/useTheme.js';
 import themePreset from '@/Modules/theme-preset.mjs';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
-const siteThemePreset = definePreset(Lara, themePreset);
+const siteThemePreset = definePreset(Aura, themePreset);
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
