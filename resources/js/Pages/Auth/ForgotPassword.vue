@@ -60,7 +60,7 @@ onMounted(() => {
                         type="email"
                         v-model="form.email"
                         class="w-full"
-                        :class="form.errors.email ? 'p-invalid' : ''"
+                        :invalid="form.errors.email"
                         autocomplete="username"
                     />
                     <InputError class="mt-2" :message="form.errors.email" />
