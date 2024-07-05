@@ -21,7 +21,7 @@ import { useTheme } from '@/Composables/useTheme.js';
 import breezePreset from '@/Modules/breeze-preset.mjs';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
-const breezeThemePreset = definePreset(Aura, breezePreset);
+const breezeThemePreset = definePreset(Lara, breezePreset);
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
@@ -31,7 +31,7 @@ createInertiaApp({
             import.meta.glob('./Pages/**/*.vue')
         ),
     setup({ el, App, props, plugin }) {
-        // set site theme
+        // set site theme (light/dark mode)
         const { initSiteTheme } = useTheme();
         initSiteTheme();
 

@@ -9,9 +9,10 @@ const props = defineProps({
 </script>
 
 <template>
+    <!-- swap max-w-7xl with container if desired... -->
     <div
         :class="[spacedMobile ? 'px-4' : 'px-0']"
-        class="container mx-auto sm:px-4"
+        class="max-w-7xl mx-auto sm:px-4 lg:px-8"
     >
         <slot />
     </div>

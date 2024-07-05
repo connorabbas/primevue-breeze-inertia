@@ -1,6 +1,6 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
-import ThemeToggleButton from '@/Components/ThemeToggleButton.vue';
+import ToggleThemeButton from '@/Components/ToggleThemeButton.vue';
 
 defineProps({
     canLogin: {
@@ -95,7 +95,7 @@ defineProps({
                                     />
                                 </Link>
                             </template>
-                            <ThemeToggleButton outlined />
+                            <ToggleThemeButton outlined />
                             <div class="mt-6">
                                 <p class="m-0 text-sm text-muted-color">
                                     Laravel v{{ laravelVersion }} (PHP v{{
