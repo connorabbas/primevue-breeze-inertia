@@ -16,38 +16,39 @@ export default {
         colorScheme: {
             light: {
                 surface: {
-                    50: '{gray.50}',
-                    100: '{gray.100}',
-                    200: '{gray.200}',
-                    300: '{gray.300}',
-                    400: '{gray.400}',
-                    500: '{gray.500}',
-                    600: '{gray.600}',
-                    700: '{gray.700}',
-                    800: '{gray.800}',
-                    900: '{gray.900}',
-                    950: '{gray.950}',
+                    50: '{neutral.50}',
+                    100: '{neutral.100}',
+                    200: '{neutral.200}',
+                    300: '{neutral.300}',
+                    400: '{neutral.400}',
+                    500: '{neutral.500}',
+                    600: '{neutral.600}',
+                    700: '{neutral.700}',
+                    800: '{neutral.800}',
+                    900: '{neutral.900}',
+                    950: '{neutral.950}',
                 },
             },
             dark: {
                 surface: {
-                    50: '{gray.50}',
-                    100: '{gray.100}',
-                    200: '{gray.200}',
-                    300: '{gray.300}',
-                    400: '{gray.400}',
-                    500: '{gray.500}',
-                    600: '{gray.600}',
-                    700: '{gray.700}',
-                    800: '{gray.800}',
-                    900: '{gray.900}',
-                    950: '{gray.950}',
+                    50: '{neutral.50}',
+                    100: '{neutral.100}',
+                    200: '{neutral.200}',
+                    300: '{neutral.300}',
+                    400: '{neutral.400}',
+                    500: '{neutral.500}',
+                    600: '{neutral.600}',
+                    700: '{neutral.700}',
+                    800: '{neutral.800}',
+                    900: '{neutral.900}',
+                    950: '{neutral.950}',
                 },
                 /**
-                 * If you want to perfectly match the Laravel breeze dark mode styling (slightly lighter):
-                 * 1. Search and replace dark:bg-surface-900 with dark:bg-surface-800
-                 * 2. Search and replace dark:bg-surface-950 with dark:bg-surface-900
-                 * 3. Uncomment the below formField color token change (matches input field bg with site bg)
+                 * If you want to (mostly) match the Laravel breeze dark mode styling:
+                 * 1. Change the above surface color scheme tokens from 'neutral' to 'gray'
+                 * 2. Within the project, search for dark:bg-surface-900 and replace with dark:bg-surface-800
+                 * 3. Within the project, search for dark:bg-surface-950 and replace with dark:bg-surface-900
+                 * 4. Uncomment the below formField color token change (matches input field bg with site bg)
                  */
                 /* formField: {
                     background: '{surface.900}',

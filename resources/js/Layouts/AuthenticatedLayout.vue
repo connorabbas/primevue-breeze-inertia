@@ -9,7 +9,7 @@ import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import NavLink from '@/Components/NavLink.vue';
 import MobileNavLink from '@/Components/MobileNavLink.vue';
 import ToggleThemeButton from '@/Components/ToggleThemeButton.vue';
-import OuterLayoutContainer from '@/Components/OuterLayoutContainer.vue';
+import Container from '@/Components/Container.vue';
 
 const userMenuItems = [
     {
@@ -61,7 +61,7 @@ watchEffect(() => {
                 class="bg-surface-0 dark:bg-surface-900 border-b border-surface-100 dark:border-surface-800"
             >
                 <!-- Primary Navigation Menu -->
-                <OuterLayoutContainer>
+                <Container>
                     <div class="flex justify-between h-16">
                         <div class="flex">
                             <!-- Logo -->
@@ -87,7 +87,11 @@ watchEffect(() => {
                         </div>
 
                         <div class="hidden md:flex md:items-center md:ms-6">
-                            <ToggleThemeButton text severity="secondary" rounded />
+                            <ToggleThemeButton
+                                text
+                                severity="secondary"
+                                rounded
+                            />
                             <!-- User Dropdown Menu -->
                             <div class="ms-3 relative">
                                 <Menu
@@ -111,8 +115,6 @@ watchEffect(() => {
                                             "
                                             class="p-menu-item-link"
                                             :class="{
-                                                'text-primary':
-                                                    item.isCurrentRoute,
                                                 'flex items-center w-full text-left':
                                                     item.method === 'post',
                                             }"
@@ -152,13 +154,10 @@ watchEffect(() => {
                             </div>
                         </div>
                     </div>
-                </OuterLayoutContainer>
+                </Container>
 
                 <!-- Mobile drawer menu -->
-                <Drawer
-                    v-model:visible="mobileMenuOpen"
-                    position="right"
-                >
+                <Drawer v-model:visible="mobileMenuOpen" position="right">
                     <template #header>
                         <ToggleThemeButton text severity="secondary" rounded />
                     </template>
@@ -214,11 +213,11 @@ watchEffect(() => {
                 class="bg-surface-0 dark:bg-surface-900 shadow"
                 v-if="$slots.header"
             >
-                <OuterLayoutContainer>
+                <Container>
                     <div class="py-6">
                         <slot name="header" />
                     </div>
-                </OuterLayoutContainer>
+                </Container>
             </header>
 
             <!-- Page Content -->

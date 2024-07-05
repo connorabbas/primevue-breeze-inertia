@@ -3,7 +3,6 @@ import '../css/app.css';
 import 'primeicons/primeicons.css';
 import 'primeicons/primeicons.css';
 
-import Lara from '@primevue/themes/lara'; // Lara not ready
 import Aura from '@primevue/themes/aura';
 import { definePreset } from '@primevue/themes';
 

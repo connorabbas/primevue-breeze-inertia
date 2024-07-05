@@ -3,7 +3,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import DeleteUserForm from './Partials/DeleteUserForm.vue';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm.vue';
-import OuterLayoutContainer from '@/Components/OuterLayoutContainer.vue';
+import Container from '@/Components/Container.vue';
 import { Head } from '@inertiajs/vue3';
 
 const props = defineProps({
@@ -25,7 +25,7 @@ const props = defineProps({
             <h2 class="font-bold text-xl leading-tight">Profile</h2>
         </template>
 
-        <OuterLayoutContainer :spaced-mobile="false">
+        <Container :spaced-mobile="false">
             <div class="py-12">
                 <div class="space-y-6">
                     <div
@@ -51,6 +51,6 @@ const props = defineProps({
                     </div>
                 </div>
             </div>
-        </OuterLayoutContainer>
+        </Container>
     </AuthenticatedLayout>
 </template>
