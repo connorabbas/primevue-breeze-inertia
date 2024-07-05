@@ -68,7 +68,7 @@ const updatePassword = () => {
                     type="password"
                     v-model="form.current_password"
                     class="w-full"
-                    :class="form.errors?.current_password ? 'p-invalid' : ''"
+                    :invalid="form.errors.current_password"
                     autocomplete="current-password"
                 />
                 <InputError
@@ -86,7 +86,7 @@ const updatePassword = () => {
                     type="password"
                     v-model="form.password"
                     class="w-full"
-                    :class="form.errors?.password ? 'p-invalid' : ''"
+                    :invalid="form.errors.password"
                     autocomplete="new-password"
                 />
                 <InputError class="mt-2" :message="form.errors?.password" />
@@ -102,9 +102,7 @@ const updatePassword = () => {
                     type="password"
                     v-model="form.password_confirmation"
                     class="w-full"
-                    :class="
-                        form.errors?.password_confirmation ? 'p-invalid' : ''
-                    "
+                    :invalid="form.errors.password_confirmation"
                     autocomplete="new-password"
                 />
                 <InputError

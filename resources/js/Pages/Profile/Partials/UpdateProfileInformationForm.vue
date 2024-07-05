@@ -67,7 +67,7 @@ onMounted(() => {
                     type="text"
                     v-model="form.name"
                     class="w-full"
-                    :class="form.errors?.name ? 'p-invalid' : ''"
+                    :invalid="form.errors?.name"
                     autocomplete="name"
                 />
                 <InputError class="mt-2" :message="form.errors?.name" />
@@ -80,13 +80,12 @@ onMounted(() => {
                     type="email"
                     v-model="form.email"
                     class="w-full"
-                    :class="form.errors?.email ? 'p-invalid' : ''"
+                    :invalid="form.errors?.email"
                     autocomplete="username"
                 />
                 <InputError class="mt-2" :message="form.errors?.email" />
             </div>
 
-            <!-- TODO: test this output -->
             <div v-if="mustVerifyEmail && user.email_verified_at === null">
                 <p class="text-sm mt-2">
                     Your email address is unverified.
@@ -103,7 +102,7 @@ onMounted(() => {
                     v-if="status === 'verification-link-sent'"
                     severity="success"
                     :closable="false"
-                    class="shadow"
+                    class="shadow mt-4"
                 >
                     A new verification link has been sent to your email address.
                 </Message>
