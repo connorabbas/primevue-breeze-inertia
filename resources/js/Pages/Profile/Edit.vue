@@ -29,7 +29,7 @@ const props = defineProps({
             <div class="py-12">
                 <div class="space-y-6">
                     <div
-                        class="p-4 sm:p-8 bg-surface-0 dark:bg-surface-900 shadow rounded-none sm:rounded-xl mb-8"
+                        class="p-4 sm:p-8 bg-surface-0 dark:bg-surface-900 shadow rounded-none sm:rounded-xl"
                     >
                         <UpdateProfileInformationForm
                             :must-verify-email="mustVerifyEmail"
@@ -37,13 +37,15 @@ const props = defineProps({
                             class="max-w-xl"
                         />
                     </div>
+
                     <div
-                        class="p-4 sm:p-8 bg-surface-0 dark:bg-surface-900 shadow rounded-none sm:rounded-xl mb-8"
+                        class="p-4 sm:p-8 bg-surface-0 dark:bg-surface-900 shadow rounded-none sm:rounded-xl"
                     >
                         <UpdatePasswordForm class="max-w-xl" />
                     </div>
+
                     <div
-                        class="p-4 sm:p-8 bg-surface-0 dark:bg-surface-900 shadow rounded-none sm:rounded-xl mb-8"
+                        class="p-4 sm:p-8 bg-surface-0 dark:bg-surface-900 shadow rounded-none sm:rounded-xl"
                     >
                         <DeleteUserForm class="max-w-xl" />
                     </div>

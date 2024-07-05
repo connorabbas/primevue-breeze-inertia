@@ -7,6 +7,7 @@ import Drawer from 'primevue/drawer';
 
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import NavLink from '@/Components/NavLink.vue';
+import MobileNavLink from '@/Components/MobileNavLink.vue';
 import ToggleThemeButton from '@/Components/ToggleThemeButton.vue';
 import OuterLayoutContainer from '@/Components/OuterLayoutContainer.vue';
 
@@ -55,7 +56,7 @@ watchEffect(() => {
     <div>
         <div class="min-h-screen">
             <nav
-                class="bg-surface-0 dark:bg-surface-900 border-b border-surface"
+                class="bg-surface-0 dark:bg-surface-900 border-b border-surface-100 dark:border-surface-800"
             >
                 <!-- Primary Navigation Menu -->
                 <OuterLayoutContainer>
@@ -84,7 +85,7 @@ watchEffect(() => {
                         </div>
 
                         <div class="hidden sm:flex sm:items-center sm:ms-6">
-                            <ToggleThemeButton text severity="secondary" />
+                            <ToggleThemeButton text severity="secondary" rounded />
                             <!-- User Dropdown Menu -->
                             <div class="ms-3 relative">
                                 <Menu
@@ -108,14 +109,16 @@ watchEffect(() => {
                                             "
                                             class="p-menu-item-link"
                                             :class="{
-                                                'text-primary': item.isCurrentRoute,
-                                                'flex items-center w-full text-left': item.method === 'post',
+                                                'text-primary':
+                                                    item.isCurrentRoute,
+                                                'flex items-center w-full text-left':
+                                                    item.method === 'post',
                                             }"
                                             custom
                                         >
                                             <span
                                                 v-show="item.icon"
-                                                :class="[item.icon, 'mr-1']"
+                                                :class="[item.icon]"
                                             />
                                             <span>{{ item.label }}</span>
                                         </Link>
@@ -151,9 +154,53 @@ watchEffect(() => {
                 <!-- Mobile drawer menu -->
                 <Drawer
                     v-model:visible="mobileMenuOpen"
-                    header="Mobile Menu"
                     position="right"
                 >
+                    <template #header>
+                        <ToggleThemeButton text severity="secondary" rounded />
+                    </template>
+                    <div>
+                        <ul class="list-none p-0 m-0 overflow-hidden">
+                            <li>
+                                <MobileNavLink
+                                    :href="route('dashboard')"
+                                    :active="route().current('dashboard')"
+                                >
+                                    <i class="pi pi-home mr-2"></i>
+                                    <span class="font-medium">Dashboard</span>
+                                </MobileNavLink>
+                            </li>
+                        </ul>
+                    </div>
+                    <template #footer>
+                        <div class="flex items-center gap-2">
+                            <Link
+                                :href="route('profile.edit')"
+                                class="flex-auto"
+                            >
+                                <Button
+                                    label="Profile"
+                                    icon="pi pi-user"
+                                    class="w-full"
+                                    outlined
+                                ></Button>
+                            </Link>
+                            <Link
+                                :href="route('logout')"
+                                method="post"
+                                class="flex-auto"
+                                as="div"
+                            >
+                                <Button
+                                    label="Logout"
+                                    icon="pi pi-sign-out"
+                                    class="w-full"
+                                    severity="danger"
+                                    text
+                                ></Button>
+                            </Link>
+                        </div>
+                    </template>
                 </Drawer>
             </nav>
 
