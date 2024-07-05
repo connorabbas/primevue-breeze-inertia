@@ -27,12 +27,12 @@ const userMenuItems = [
     },
 ];
 
-const menu = ref(null);
+const userMenu = ref(null);
 const mobileMenuOpen = ref(false);
 const windowWidth = ref(window.innerWidth);
 
 function toggleUserMenu(event) {
-    menu.value.toggle(event);
+    userMenu.value.toggle(event);
 }
 const updateWidth = () => {
     windowWidth.value = window.innerWidth;
@@ -44,9 +44,11 @@ onMounted(() => {
 onUnmounted(() => {
     window.removeEventListener('resize', updateWidth);
 });
+
 // Watch for windowWidth changes to close drawer on larger screens if it was opened on mobile
+// https://tailwindcss.com/docs/responsive-design
 watchEffect(() => {
-    if (windowWidth.value > 640) {
+    if (windowWidth.value > 768) {
         mobileMenuOpen.value = false;
     }
 });
@@ -66,14 +68,14 @@ watchEffect(() => {
                             <div class="shrink-0 flex items-center">
                                 <Link :href="route('dashboard')">
                                     <ApplicationLogo
-                                        class="block h-9 w-auto fill-current text-surface-900 dark:text-surface-0"
+                                        class="block h-10 w-auto fill-current text-surface-900 dark:text-surface-0"
                                     />
                                 </Link>
                             </div>
 
                             <!-- Navigation Links -->
                             <div
-                                class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex"
+                                class="hidden space-x-8 md:-my-px md:ms-10 md:flex"
                             >
                                 <NavLink
                                     :href="route('dashboard')"
@@ -84,14 +86,14 @@ watchEffect(() => {
                             </div>
                         </div>
 
-                        <div class="hidden sm:flex sm:items-center sm:ms-6">
+                        <div class="hidden md:flex md:items-center md:ms-6">
                             <ToggleThemeButton text severity="secondary" rounded />
                             <!-- User Dropdown Menu -->
                             <div class="ms-3 relative">
                                 <Menu
                                     :model="userMenuItems"
                                     popup
-                                    ref="menu"
+                                    ref="userMenu"
                                     class="shadow"
                                 >
                                     <template #item="{ item, props }">
@@ -132,16 +134,17 @@ watchEffect(() => {
                                     <span class="">{{
                                         $page.props.auth.user.name
                                     }}</span>
-                                    <i class="pi pi-angle-down ml-2"></i>
+                                    <i class="pi pi-angle-down ml-1"></i>
                                 </Button>
                             </div>
                         </div>
 
                         <!-- Hamburger -->
-                        <div class="flex items-center sm:hidden">
+                        <div class="flex items-center md:hidden">
                             <div class="relative">
                                 <Button
                                     text
+                                    rounded
                                     severity="secondary"
                                     icon="pi pi-bars"
                                     @click="mobileMenuOpen = true"
@@ -171,6 +174,8 @@ watchEffect(() => {
                                 </MobileNavLink>
                             </li>
                         </ul>
+                        <!-- Use PanelMenu for nested Links/Actions as needed-->
+                        <!-- https://primevue.org/panelmenu/#router -->
                     </div>
                     <template #footer>
                         <div class="flex items-center gap-2">
