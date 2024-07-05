@@ -58,7 +58,7 @@ onMounted(() => {
                     type="email"
                     v-model="form.email"
                     class="w-full"
-                    :invalid="form.errors.email"
+                    :invalid="Boolean(form.errors.email)"
                     autocomplete="username"
                 />
                 <InputError class="mt-2" :message="form.errors.email" />
@@ -72,7 +72,7 @@ onMounted(() => {
                     type="password"
                     v-model="form.password"
                     class="w-full"
-                    :invalid="form.errors.password"
+                    :invalid="Boolean(form.errors.password)"
                     autocomplete="current-password"
                 />
                 <InputError class="mt-2 mb-1" :message="form.errors.password" />

@@ -48,7 +48,7 @@ onMounted(() => {
                     type="email"
                     v-model="form.email"
                     class="w-full"
-                    :invalid="form.errors.email"
+                    :invalid="Boolean(form.errors.email)"
                     required
                     autocomplete="username"
                 />
@@ -62,7 +62,7 @@ onMounted(() => {
                     type="password"
                     v-model="form.password"
                     class="w-full"
-                    :invalid="form.errors.password"
+                    :invalid="Boolean(form.errors.password)"
                     required
                     autocomplete="new-password"
                 />
@@ -78,7 +78,7 @@ onMounted(() => {
                     type="password"
                     v-model="form.password_confirmation"
                     class="w-full"
-                    :invalid="form.errors.password_confirmation"
+                    :invalid="Boolean(form.errors.password_confirmation)"
                     required
                     autocomplete="new-password"
                 />
