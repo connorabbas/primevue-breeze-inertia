@@ -1,6 +1,5 @@
 <script setup>
-import { ref, onMounted, onUnmounted, watchEffect, computed } from 'vue';
-import { Link } from '@inertiajs/vue3';
+import { ref, onMounted, onUnmounted, watchEffect } from 'vue';
 
 import Menu from 'primevue/menu';
 import Drawer from 'primevue/drawer';
@@ -58,7 +57,12 @@ watchEffect(() => {
     <div>
         <div class="min-h-screen">
             <nav
-                class="bg-surface-0 dark:bg-surface-900 border-b border-surface-100 dark:border-surface-800"
+                class="bg-surface-0 dark:bg-surface-900 border-b"
+                :class="
+                    $slots.header
+                        ? 'border-surface-100 dark:border-surface-800'
+                        : 'border-surface-0 dark:border-surface-900 shadow'
+                "
             >
                 <!-- Primary Navigation Menu -->
                 <Container>

@@ -1,7 +1,7 @@
 <script setup>
-import { Head } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Container from '@/Components/Container.vue';
+import ResponsiveCard from '@/Components/ResponsiveCard.vue';
 </script>
 
 <template>
@@ -12,11 +12,9 @@ import Container from '@/Components/Container.vue';
         </template>
         <Container :spaced-mobile="false">
             <div class="py-12">
-                <div
-                    class="bg-surface-0 dark:bg-surface-900 p-8 shadow rounded-none sm:rounded-xl"
-                >
+                <ResponsiveCard>
                     <p class="m-0">You are logged in!</p>
-                </div>
+                </ResponsiveCard>
             </div>
         </Container>
     </AuthenticatedLayout>

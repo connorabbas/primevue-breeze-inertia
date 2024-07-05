@@ -7,7 +7,7 @@ import Aura from '@primevue/themes/aura';
 import { definePreset } from '@primevue/themes';
 
 import { createApp, h } from 'vue';
-import { createInertiaApp } from '@inertiajs/vue3';
+import { createInertiaApp, Head, Link } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 
@@ -51,6 +51,8 @@ createInertiaApp({
                 },
             })
             .use(ToastService)
+            .component('Head', Head)
+            .component('Link', Link)
             .component('InputText', InputText)
             .component('Button', Button)
             .mount(el);

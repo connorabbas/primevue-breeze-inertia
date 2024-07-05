@@ -1,6 +1,6 @@
 <script setup>
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-import { Link } from '@inertiajs/vue3';
+import ResponsiveCard from '@/Components/ResponsiveCard.vue';
 </script>
 
 <template>
@@ -19,10 +19,10 @@ import { Link } from '@inertiajs/vue3';
             <slot name="message" />
         </div>
 
-        <div
-            class="w-full sm:max-w-md mt-6 px-4 sm:px-6 py-4 bg-surface-0 dark:bg-surface-900 shadow overflow-hidden sm:rounded-lg"
-        >
-            <slot />
+        <div class="w-full sm:max-w-md mt-6">
+            <ResponsiveCard>
+                <slot />
+            </ResponsiveCard>
         </div>
     </div>
 </template>

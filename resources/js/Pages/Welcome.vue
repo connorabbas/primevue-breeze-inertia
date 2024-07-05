@@ -1,6 +1,6 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
 import ToggleThemeButton from '@/Components/ToggleThemeButton.vue';
+import ResponsiveCard from '@/Components/ResponsiveCard.vue';
 
 defineProps({
     canLogin: {
@@ -28,9 +28,7 @@ defineProps({
             class="col-span-12 md:col-span-10 md:col-start-2 lg:col-span-8 lg:col-start-3 h-full"
         >
             <div class="h-screen flex items-center justify-center">
-                <div
-                    class="bg-surface-0 dark:bg-surface-900 p-12 shadow rounded-none sm:rounded-xl"
-                >
+                <ResponsiveCard spacing-classes="p-4 py-6 sm:p-12">
                     <div
                         class="col-span-12 md:col-span-8 text-center md:text-left flex items-center"
                     >
@@ -58,7 +56,6 @@ defineProps({
                                 >
                                 components
                             </p>
-
                             <template v-if="$page.props.auth.user">
                                 <Link :href="route('dashboard')">
                                     <Button
@@ -105,7 +102,7 @@ defineProps({
                             </div>
                         </section>
                     </div>
-                </div>
+                </ResponsiveCard>
             </div>
         </div>
     </div>
