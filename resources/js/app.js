@@ -7,18 +7,15 @@ import { createInertiaApp, Head, Link } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 
-import { definePreset } from '@primevue/themes';
-import Aura from '@primevue/themes/aura';
 import PrimeVue from 'primevue/config';
 import ToastService from 'primevue/toastservice';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 
 import { useTheme } from '@/Composables/useTheme.js';
-import themePreset from '@/Modules/theme-preset.mjs';
+import customizedThemePreset from '@/Modules/theme-preset.mjs';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
-const siteThemePreset = definePreset(Aura, themePreset);
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
@@ -38,7 +35,7 @@ createInertiaApp({
             .use(ZiggyVue, Ziggy)
             .use(PrimeVue, {
                 theme: {
-                    preset: siteThemePreset,
+                    preset: customizedThemePreset,
                     options: {
                         darkModeSelector: '.dark-mode',
                         cssLayer: {

@@ -1,4 +1,7 @@
-export default {
+import Aura from '@primevue/themes/aura';
+import { definePreset } from '@primevue/themes';
+
+const presetOptions = {
     semantic: {
         primary: {
             50: '{indigo.50}',
@@ -16,37 +19,37 @@ export default {
         colorScheme: {
             light: {
                 surface: {
-                    50: '{neutral.50}',
-                    100: '{neutral.100}',
-                    200: '{neutral.200}',
-                    300: '{neutral.300}',
-                    400: '{neutral.400}',
-                    500: '{neutral.500}',
-                    600: '{neutral.600}',
-                    700: '{neutral.700}',
-                    800: '{neutral.800}',
-                    900: '{neutral.900}',
-                    950: '{neutral.950}',
+                    50: '{zinc.50}',
+                    100: '{zinc.100}',
+                    200: '{zinc.200}',
+                    300: '{zinc.300}',
+                    400: '{zinc.400}',
+                    500: '{zinc.500}',
+                    600: '{zinc.600}',
+                    700: '{zinc.700}',
+                    800: '{zinc.800}',
+                    900: '{zinc.900}',
+                    950: '{zinc.950}',
                 },
             },
             dark: {
                 surface: {
-                    50: '{neutral.50}',
-                    100: '{neutral.100}',
-                    200: '{neutral.200}',
-                    300: '{neutral.300}',
-                    400: '{neutral.400}',
-                    500: '{neutral.500}',
-                    600: '{neutral.600}',
-                    700: '{neutral.700}',
-                    800: '{neutral.800}',
-                    900: '{neutral.900}',
-                    950: '{neutral.950}',
+                    50: '{zinc.50}',
+                    100: '{zinc.100}',
+                    200: '{zinc.200}',
+                    300: '{zinc.300}',
+                    400: '{zinc.400}',
+                    500: '{zinc.500}',
+                    600: '{zinc.600}',
+                    700: '{zinc.700}',
+                    800: '{zinc.800}',
+                    900: '{zinc.900}',
+                    950: '{zinc.950}',
                 },
                 /**
                  * If you want to (mostly) match the Laravel breeze dark mode styling:
-                 * 1. Change theme to 'Lara' within the app.js file
-                 * 2. Change the above surface color scheme tokens from 'neutral' to 'gray'
+                 * 1. Change existing preset theme from 'Aura' to 'Lara'
+                 * 2. Change the above surface color scheme tokens from 'zinc' to 'gray'
                  * 3. Within the project, search for dark:bg-surface-900 and replace with dark:bg-surface-800
                  * 4. Within the project, search for dark:bg-surface-950 and replace with dark:bg-surface-900
                  * 5. Uncomment the below formField color token change (matches input field bg with site bg)
@@ -58,3 +61,7 @@ export default {
         },
     },
 };
+
+const themePreset = definePreset(Aura, presetOptions); // Customize an existing theme preset
+
+export default themePreset;
