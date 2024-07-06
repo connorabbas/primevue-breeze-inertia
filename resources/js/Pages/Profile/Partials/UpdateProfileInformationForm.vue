@@ -1,12 +1,9 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-
 import { useForm, usePage } from '@inertiajs/vue3';
-
+import { useToast } from 'primevue/usetoast';
 import Message from 'primevue/message';
 import Toast from 'primevue/toast';
-import { useToast } from 'primevue/usetoast';
-
 import InputError from '@/Components/InputError.vue';
 
 defineProps({
