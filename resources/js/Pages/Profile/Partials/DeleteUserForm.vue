@@ -1,8 +1,11 @@
 <script setup>
-import InputError from '@/Components/InputError.vue';
-import Dialog from 'primevue/dialog';
-import { useForm } from '@inertiajs/vue3';
 import { nextTick, ref, watch } from 'vue';
+
+import { useForm } from '@inertiajs/vue3';
+
+import Dialog from 'primevue/dialog';
+
+import InputError from '@/Components/InputError.vue';
 
 const passwordInput = ref(null);
 const modalOpen = ref(false);

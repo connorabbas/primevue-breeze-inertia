@@ -45,10 +45,11 @@ export default {
                 },
                 /**
                  * If you want to (mostly) match the Laravel breeze dark mode styling:
-                 * 1. Change the above surface color scheme tokens from 'neutral' to 'gray'
-                 * 2. Within the project, search for dark:bg-surface-900 and replace with dark:bg-surface-800
-                 * 3. Within the project, search for dark:bg-surface-950 and replace with dark:bg-surface-900
-                 * 4. Uncomment the below formField color token change (matches input field bg with site bg)
+                 * 1. Change theme to 'Lara' within the app.js file
+                 * 2. Change the above surface color scheme tokens from 'neutral' to 'gray'
+                 * 3. Within the project, search for dark:bg-surface-900 and replace with dark:bg-surface-800
+                 * 4. Within the project, search for dark:bg-surface-950 and replace with dark:bg-surface-900
+                 * 5. Uncomment the below formField color token change (matches input field bg with site bg)
                  */
                 /* formField: {
                     background: '{surface.900}',

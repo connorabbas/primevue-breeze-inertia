@@ -1,10 +1,13 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import GuestLayout from '@/Layouts/GuestLayout.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+
+import { useForm } from '@inertiajs/vue3';
+
 import Checkbox from 'primevue/checkbox';
-import InputError from '@/Components/InputError.vue';
 import Message from 'primevue/message';
+
+import GuestLayout from '@/Layouts/GuestLayout.vue';
+import InputError from '@/Components/InputError.vue';
 
 defineProps({
     canResetPassword: {

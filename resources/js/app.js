@@ -3,14 +3,13 @@ import '../css/app.css';
 import 'primeicons/primeicons.css';
 import 'primeicons/primeicons.css';
 
-import Aura from '@primevue/themes/aura';
-import { definePreset } from '@primevue/themes';
-
 import { createApp, h } from 'vue';
 import { createInertiaApp, Head, Link } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 
+import { definePreset } from '@primevue/themes';
+import Aura from '@primevue/themes/aura';
 import PrimeVue from 'primevue/config';
 import ToastService from 'primevue/toastservice';
 import InputText from 'primevue/inputtext';

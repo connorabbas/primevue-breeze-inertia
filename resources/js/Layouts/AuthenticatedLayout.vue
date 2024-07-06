@@ -1,14 +1,14 @@
 <script setup>
 import { ref, onMounted, onUnmounted, watchEffect } from 'vue';
 
-import Menu from 'primevue/menu';
 import Drawer from 'primevue/drawer';
+import Menu from 'primevue/menu';
 
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-import NavLink from '@/Components/NavLink.vue';
-import MobileNavLink from '@/Components/MobileNavLink.vue';
-import ToggleThemeButton from '@/Components/ToggleThemeButton.vue';
 import Container from '@/Components/Container.vue';
+import MobileNavLink from '@/Components/MobileNavLink.vue';
+import NavLink from '@/Components/NavLink.vue';
+import ToggleThemeButton from '@/Components/ToggleThemeButton.vue';
 
 // User menu (desktop)
 const userMenu = ref(null);
@@ -29,7 +29,7 @@ const userMenuItems = [
 ];
 const toggleUserMenu = (event) => {
     userMenu.value.toggle(event);
-}
+};
 
 // Mobile menu (Drawer)
 const mobileMenuOpen = ref(false);
@@ -67,7 +67,7 @@ watchEffect(() => {
                         <div class="flex">
                             <!-- Logo -->
                             <div class="shrink-0 flex items-center">
-                                <Link :href="route('dashboard')">
+                                <Link :href="route('welcome')">
                                     <ApplicationLogo
                                         class="block h-10 w-auto fill-current text-surface-900 dark:text-surface-0"
                                     />
@@ -187,6 +187,7 @@ watchEffect(() => {
                                     label="Profile"
                                     icon="pi pi-user"
                                     class="w-full"
+                                    severity="secondary"
                                     outlined
                                 ></Button>
                             </Link>

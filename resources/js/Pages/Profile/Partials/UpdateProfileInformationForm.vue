@@ -1,10 +1,13 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import InputError from '@/Components/InputError.vue';
+
+import { useForm, usePage } from '@inertiajs/vue3';
+
+import Message from 'primevue/message';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
-import { Link, useForm, usePage } from '@inertiajs/vue3';
-import Message from 'primevue/message';
+
+import InputError from '@/Components/InputError.vue';
 
 defineProps({
     mustVerifyEmail: {

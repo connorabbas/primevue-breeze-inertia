@@ -1,8 +1,10 @@
 <script setup>
 import { ref, onMounted } from 'vue';
+
+import { useForm } from '@inertiajs/vue3';
+
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import InputError from '@/Components/InputError.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
 
 const form = useForm({
     name: '',

@@ -1,6 +1,6 @@
 <script setup>
-import ToggleThemeButton from '@/Components/ToggleThemeButton.vue';
 import ResponsiveCard from '@/Components/ResponsiveCard.vue';
+import ToggleThemeButton from '@/Components/ToggleThemeButton.vue';
 
 defineProps({
     canLogin: {

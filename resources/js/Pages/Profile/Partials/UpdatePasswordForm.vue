@@ -1,9 +1,12 @@
 <script setup>
-import InputError from '@/Components/InputError.vue';
+import { ref } from 'vue';
+
+import { useForm } from '@inertiajs/vue3';
+
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
-import { useForm } from '@inertiajs/vue3';
-import { ref } from 'vue';
+
+import InputError from '@/Components/InputError.vue';
 
 const currentPasswordInput = ref(null);
 const passwordInput = ref(null);
