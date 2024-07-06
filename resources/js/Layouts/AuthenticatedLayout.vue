@@ -10,6 +10,8 @@ import MobileNavLink from '@/Components/MobileNavLink.vue';
 import ToggleThemeButton from '@/Components/ToggleThemeButton.vue';
 import Container from '@/Components/Container.vue';
 
+// User menu (desktop)
+const userMenu = ref(null);
 const userMenuItems = [
     {
         label: 'Profile',
@@ -25,27 +27,22 @@ const userMenuItems = [
         isCurrentRoute: route().current('logout'),
     },
 ];
-
-const userMenu = ref(null);
-const mobileMenuOpen = ref(false);
-const windowWidth = ref(window.innerWidth);
-
-function toggleUserMenu(event) {
+const toggleUserMenu = (event) => {
     userMenu.value.toggle(event);
 }
+
+// Mobile menu (Drawer)
+const mobileMenuOpen = ref(false);
+const windowWidth = ref(window.innerWidth);
 const updateWidth = () => {
     windowWidth.value = window.innerWidth;
 };
-
 onMounted(() => {
     window.addEventListener('resize', updateWidth);
 });
 onUnmounted(() => {
     window.removeEventListener('resize', updateWidth);
 });
-
-// Watch for windowWidth changes to close drawer on larger screens if it was opened on mobile
-// https://tailwindcss.com/docs/responsive-design
 watchEffect(() => {
     if (windowWidth.value > 768) {
         mobileMenuOpen.value = false;
