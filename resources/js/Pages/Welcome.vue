@@ -37,7 +37,7 @@ defineProps({
                                 >Laravel Breeze</span
                             >
                             <div class="text-6xl text-primary font-bold mb-4">
-                                w/ PrimeVue
+                                & PrimeVue
                             </div>
                             <p
                                 class="mt-0 mb-6 text-muted-color leading-normal"
