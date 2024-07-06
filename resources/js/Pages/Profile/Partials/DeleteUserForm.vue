@@ -1,18 +1,18 @@
 <script setup>
-import InputError from "@/Components/InputError.vue";
-import Dialog from "primevue/dialog";
-import { useForm } from "@inertiajs/vue3";
-import { nextTick, ref, watch } from "vue";
+import { ref, watch, nextTick } from 'vue';
+import { useForm } from '@inertiajs/vue3';
+import Dialog from 'primevue/dialog';
+import InputError from '@/Components/InputError.vue';
 
 const passwordInput = ref(null);
 const modalOpen = ref(false);
 
 const form = useForm({
-    password: "",
+    password: '',
 });
 
 const deleteUser = () => {
-    form.delete(route("profile.destroy"), {
+    form.delete(route('profile.destroy'), {
         preserveScroll: true,
         onSuccess: () => (modalOpen.value = false),
         onError: () => passwordInput.value.$el.focus(),
@@ -40,8 +40,8 @@ watch(modalOpen, (newModalOpen) => {
             header="Are you sure you want to delete your account?"
             :style="{ width: '40rem' }"
         >
-            <div class="mb-4">
-                <p class="m-0 text-color-secondary">
+            <div class="mb-6">
+                <p class="m-0 text-muted-color">
                     Once your account is deleted, all of its resources and data
                     will be permanently deleted. Please enter your password to
                     confirm you would like to permanently delete your account.
@@ -57,7 +57,7 @@ watch(modalOpen, (newModalOpen) => {
                     placeholder="Password"
                     v-model="form.password"
                     class="w-full"
-                    :class="form.errors.password ? 'p-invalid' : ''"
+                    :invalid="Boolean(form.errors.password)"
                     autocomplete="current-password"
                     @keyup.enter="deleteUser"
                 />
@@ -82,16 +82,13 @@ watch(modalOpen, (newModalOpen) => {
             </template>
         </Dialog>
 
-        <header class="mb-5 flex">
-            <div class="w-12 lg:w-10 xl:w-6">
-                <h2 class="text-lg font-medium mt-0">Delete Account</h2>
-                <p class="mb-0 text-sm text-color-secondary">
-                    Once your account is deleted, all of its resources and data
-                    will be permanently deleted. Before deleting your account,
-                    please download any data or information that you wish to
-                    retain.
-                </p>
-            </div>
+        <header>
+            <h2 class="text-lg font-medium mt-0 mb-2">Delete Account</h2>
+            <p class="mb-0 text-sm text-muted-color">
+                Once your account is deleted, all of its resources and data will
+                be permanently deleted. Before deleting your account, please
+                download any data or information that you wish to retain.
+            </p>
         </header>
 
         <Button

@@ -1,77 +1,48 @@
 <script setup>
-import { ref, onMounted, onUnmounted, watchEffect, computed } from "vue";
-import { Link } from "@inertiajs/vue3";
-import Menubar from "primevue/menubar";
-import Menu from "primevue/menu";
-import Sidebar from "primevue/sidebar";
-import OuterLayoutContainer from "@/Components/OuterLayoutContainer.vue";
-import ApplicationLogo from "@/Components/ApplicationLogo.vue";
-import ThemeToggleButton from "@/Components/ThemeToggleButton.vue";
+import { ref, onMounted, onUnmounted, watchEffect } from 'vue';
+import Drawer from 'primevue/drawer';
+import Menu from 'primevue/menu';
+import ApplicationLogo from '@/Components/ApplicationLogo.vue';
+import Container from '@/Components/Container.vue';
+import MobileNavLink from '@/Components/MobileNavLink.vue';
+import NavLink from '@/Components/NavLink.vue';
+import ToggleThemeButton from '@/Components/ToggleThemeButton.vue';
 
-const mainMenuItems = [
-    {
-        label: "Dashboard",
-        href: route("dashboard"),
-        isCurrentRoute: route().current("dashboard"),
-    },
-];
+// User menu (desktop)
+const userMenu = ref(null);
 const userMenuItems = [
     {
-        label: "Profile",
-        href: route("profile.edit"),
-        icon: "pi pi-fw pi-user",
-        isCurrentRoute: route().current("profile.edit"),
+        label: 'Profile',
+        href: route('profile.edit'),
+        icon: 'pi pi-fw pi-user',
+        isCurrentRoute: route().current('profile.edit'),
     },
     {
-        href: route("logout"),
-        label: "Log Out",
-        method: "post",
-        icon: "pi pi-fw pi-sign-out",
-        isCurrentRoute: route().current("logout"),
+        href: route('logout'),
+        label: 'Log Out',
+        method: 'post',
+        icon: 'pi pi-fw pi-sign-out',
+        isCurrentRoute: route().current('logout'),
     },
 ];
-const mobileMenuItems = [
-    {
-        label: "Dashboard",
-        href: route("dashboard"),
-        icon: "pi pi-fw pi-home",
-        isCurrentRoute: route().current("dashboard"),
-    },
-    {
-        label: "Profile",
-        href: route("profile.edit"),
-        icon: "pi pi-fw pi-user",
-        isCurrentRoute: route().current("profile.edit"),
-    },
-    {
-        href: route("logout"),
-        label: "Log Out",
-        method: "post",
-        icon: "pi pi-fw pi-sign-out",
-        isCurrentRoute: route().current("logout"),
-    },
-];
+const toggleUserMenu = (event) => {
+    userMenu.value.toggle(event);
+};
 
-const menu = ref(null);
+// Mobile menu (Drawer)
 const mobileMenuOpen = ref(false);
 const windowWidth = ref(window.innerWidth);
-
-function toggleUserMenu(event) {
-    menu.value.toggle(event);
-}
 const updateWidth = () => {
     windowWidth.value = window.innerWidth;
 };
-
 onMounted(() => {
-    window.addEventListener("resize", updateWidth);
+    window.addEventListener('resize', updateWidth);
 });
 onUnmounted(() => {
-    window.removeEventListener("resize", updateWidth);
+    window.removeEventListener('resize', updateWidth);
 });
-// Watch for windowWidth changes to close sidebar on larger screens if it was opened on mobile
 watchEffect(() => {
-    if (windowWidth.value > 992) {
+    if (windowWidth.value > 768) {
         mobileMenuOpen.value = false;
     }
 });
@@ -79,152 +50,180 @@ watchEffect(() => {
 
 <template>
     <div>
-        <header>
-            <div class="border-bottom-1 surface-border surface-overlay">
-                <OuterLayoutContainer class="pb-0">
-                    <Menubar
-                        :model="mainMenuItems"
-                        class="border-noround border-none surface-overlay px-0"
-                    >
-                        <template #start>
-                            <Link :href="route('welcome')" class="mr-3 h-0">
-                                <ApplicationLogo
-                                    class="h-3rem w-auto pt-1 surface-svg-fill"
-                                />
-                            </Link>
-                        </template>
-                        <template #item="{ item, props, hasSubmenu, root }">
-                            <Link
-                                :href="item.href"
-                                class="hidden sm:hidden md:hidden lg:flex"
-                                :class="[
-                                    'p-menuitem-link',
-                                    item.isCurrentRoute ? 'text-primary' : '',
-                                ]"
-                                custom
+        <div class="min-h-screen">
+            <nav
+                class="bg-surface-0 dark:bg-surface-900 border-b"
+                :class="
+                    $slots.header
+                        ? 'border-surface-100 dark:border-surface-800'
+                        : 'border-surface-0 dark:border-surface-900 shadow'
+                "
+            >
+                <!-- Primary Navigation Menu -->
+                <Container>
+                    <div class="flex justify-between h-16">
+                        <div class="flex">
+                            <!-- Logo -->
+                            <div class="shrink-0 flex items-center">
+                                <Link :href="route('welcome')">
+                                    <ApplicationLogo
+                                        class="block h-10 w-auto fill-current text-surface-900 dark:text-surface-0"
+                                    />
+                                </Link>
+                            </div>
+
+                            <!-- Navigation Links -->
+                            <div
+                                class="hidden space-x-8 md:-my-px md:ms-10 md:flex"
                             >
-                                <span
-                                    v-show="item.icon"
-                                    :class="[item.icon, 'mr-2']"
-                                />
-                                <span>{{ item.label }}</span>
-                                <span
-                                    v-if="hasSubmenu"
-                                    class="pi pi-fw pi-angle-down ml-2"
-                                />
-                            </Link>
-                        </template>
-                        <template #end>
-                            <div class="flex">
-                                <ThemeToggleButton
-                                    plain
-                                    text
-                                    class="inline-flex"
-                                />
-                                <div class="hidden sm:hidden md:hidden lg:flex">
-                                    <Menu
-                                        :model="userMenuItems"
-                                        popup
-                                        ref="menu"
-                                        class="shadow-1 border-1 surface-border"
-                                    >
-                                        <template #item="{ item, props }">
-                                            <Link
-                                                :href="item.href"
-                                                :method="
-                                                    item.method === 'post'
-                                                        ? 'post'
-                                                        : 'get'
-                                                "
-                                                :as="
-                                                    item.method === 'post'
-                                                        ? 'li'
-                                                        : 'a'
-                                                "
-                                                :class="[
-                                                    'p-menuitem-link',
-                                                    item.method === 'post'
-                                                        ? 'flex items-center w-full text-left'
-                                                        : '',
-                                                    item.isCurrentRoute
-                                                        ? 'text-primary'
-                                                        : '',
-                                                ]"
-                                                custom
-                                            >
-                                                <span
-                                                    v-show="item.icon"
-                                                    :class="[item.icon, 'mr-2']"
-                                                />
-                                                <span>{{ item.label }}</span>
-                                            </Link>
-                                        </template>
-                                    </Menu>
-                                    <Button
-                                        plain
-                                        text
-                                        class="p-menuitem-text inline-flex"
-                                        @click="toggleUserMenu($event)"
-                                    >
-                                        <span class="">{{
-                                            $page.props.auth.user.name
-                                        }}</span>
-                                        <i class="pi pi-angle-down ml-2"></i>
-                                    </Button>
-                                </div>
+                                <NavLink
+                                    :href="route('dashboard')"
+                                    :active="route().current('dashboard')"
+                                >
+                                    Dashboard
+                                </NavLink>
+                            </div>
+                        </div>
+
+                        <div class="hidden md:flex md:items-center md:ms-6">
+                            <ToggleThemeButton
+                                text
+                                severity="secondary"
+                                rounded
+                            />
+                            <!-- User Dropdown Menu -->
+                            <div class="ms-3 relative">
+                                <Menu
+                                    :model="userMenuItems"
+                                    popup
+                                    ref="userMenu"
+                                    class="shadow"
+                                >
+                                    <template #item="{ item, props }">
+                                        <Link
+                                            :href="item.href"
+                                            :method="
+                                                item.method === 'post'
+                                                    ? 'post'
+                                                    : 'get'
+                                            "
+                                            :as="
+                                                item.method === 'post'
+                                                    ? 'li'
+                                                    : 'a'
+                                            "
+                                            class="p-menu-item-link"
+                                            :class="{
+                                                'flex items-center w-full text-left':
+                                                    item.method === 'post',
+                                            }"
+                                            custom
+                                        >
+                                            <span
+                                                v-show="item.icon"
+                                                :class="[item.icon]"
+                                            />
+                                            <span>{{ item.label }}</span>
+                                        </Link>
+                                    </template>
+                                </Menu>
                                 <Button
-                                    plain
                                     text
-                                    class="flex sm:flex lg:hidden xl:hidden"
+                                    severity="secondary"
+                                    @click="toggleUserMenu($event)"
+                                >
+                                    <span class="">{{
+                                        $page.props.auth.user.name
+                                    }}</span>
+                                    <i class="pi pi-angle-down ml-1"></i>
+                                </Button>
+                            </div>
+                        </div>
+
+                        <!-- Hamburger -->
+                        <div class="flex items-center md:hidden">
+                            <div class="relative">
+                                <Button
+                                    text
+                                    rounded
+                                    severity="secondary"
                                     icon="pi pi-bars"
                                     @click="mobileMenuOpen = true"
                                 />
                             </div>
-                        </template>
-                    </Menubar>
-                </OuterLayoutContainer>
-            </div>
-            <!-- Mobile sidebar menu -->
-            <Sidebar
-                v-model:visible="mobileMenuOpen"
-                header="Menu"
-                position="right"
+                        </div>
+                    </div>
+                </Container>
+
+                <!-- Mobile drawer menu -->
+                <Drawer v-model:visible="mobileMenuOpen" position="right">
+                    <template #header>
+                        <ToggleThemeButton text severity="secondary" rounded />
+                    </template>
+                    <div>
+                        <ul class="list-none p-0 m-0 overflow-hidden">
+                            <li>
+                                <MobileNavLink
+                                    :href="route('dashboard')"
+                                    :active="route().current('dashboard')"
+                                >
+                                    <i class="pi pi-home mr-2"></i>
+                                    <span class="font-medium">Dashboard</span>
+                                </MobileNavLink>
+                            </li>
+                        </ul>
+                        <!-- Use PanelMenu for nested Links/Actions as needed-->
+                        <!-- https://primevue.org/panelmenu/#router -->
+                    </div>
+                    <template #footer>
+                        <div class="flex items-center gap-2">
+                            <Link
+                                :href="route('profile.edit')"
+                                class="flex-auto"
+                            >
+                                <Button
+                                    label="Profile"
+                                    icon="pi pi-user"
+                                    class="w-full"
+                                    severity="secondary"
+                                    outlined
+                                ></Button>
+                            </Link>
+                            <Link
+                                :href="route('logout')"
+                                method="post"
+                                class="flex-auto"
+                                as="div"
+                            >
+                                <Button
+                                    label="Logout"
+                                    icon="pi pi-sign-out"
+                                    class="w-full"
+                                    severity="danger"
+                                    text
+                                ></Button>
+                            </Link>
+                        </div>
+                    </template>
+                </Drawer>
+            </nav>
+
+            <!-- Page Heading -->
+            <header
+                class="bg-surface-0 dark:bg-surface-900 shadow"
+                v-if="$slots.header"
             >
-                <ul class="list-none m-0 p-0">
-                    <li v-for="(item, index) in mobileMenuItems" :key="index">
-                        <Link
-                            :href="item.href"
-                            :method="item.method === 'post' ? 'post' : 'get'"
-                            :as="item.method === 'post' ? 'li' : 'a'"
-                            class="flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors no-underline"
-                            :class="[
-                                item.method === 'post'
-                                    ? 'flex items-center w-full text-left'
-                                    : '',
-                                item.isCurrentRoute ? 'text-primary' : '',
-                            ]"
-                            custom
-                        >
-                            <span v-show="item.icon" :class="[item.icon]" />
-                            <span class="ml-2">{{ item.label }}</span>
-                        </Link>
-                    </li>
-                </ul>
-            </Sidebar>
-        </header>
-        <main>
-            <slot name="header" />
-            <OuterLayoutContainer :spaced-mobile="false">
+                <Container>
+                    <div class="py-6">
+                        <slot name="header" />
+                    </div>
+                </Container>
+            </header>
+
+            <!-- Page Content -->
+            <main>
                 <slot />
-            </OuterLayoutContainer>
-        </main>
+            </main>
+        </div>
     </div>
 </template>
-
-<style scoped>
-@media screen and (max-width: 992px) {
-    :deep(.p-menubar .p-menubar-button) {
-        display: none;
-    }
-}
-</style>
