@@ -2,7 +2,6 @@
 import { ref } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import { useToast } from 'primevue/usetoast';
-import Toast from 'primevue/toast';
 import InputError from '@/Components/InputError.vue';
 
 const currentPasswordInput = ref(null);
@@ -46,8 +45,6 @@ const updatePassword = () => {
 
 <template>
     <section>
-        <Toast />
-
         <header>
             <h2 class="text-lg font-medium mt-0 mb-2">Update Password</h2>
             <p class="mb-0 text-sm text-muted-color">
