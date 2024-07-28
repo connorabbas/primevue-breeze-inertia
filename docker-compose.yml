@@ -1,16 +1,13 @@
 services:
-    laravel.test:
+    primevue_intertia:
         build:
-            context: ./docker/8.3
+            context: ./vendor/laravel/sail/runtimes/8.3
             dockerfile: Dockerfile
             args:
                 WWWGROUP: '${WWWGROUP}'
         image: sail-8.3/app
         extra_hosts:
             - 'host.docker.internal:host-gateway'
-        ports:
-            - '${APP_PORT:-80}:80'
-            - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
         environment:
             WWWUSER: '${WWWUSER}'
             LARAVEL_SAIL: 1
@@ -19,14 +16,21 @@ services:
             IGNITION_LOCAL_SITES_PATH: '${PWD}'
         volumes:
             - '.:/var/www/html'
+        ports:
+            - '8002:80' # adjust as needed
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.primevue_intertia.rule=Host(`primevue-breeze-inertia.localhost`)"
+            - "traefik.http.services.primevue_intertia.loadbalancer.server.port=80"
         networks:
             - sail
+            - proxy
         depends_on:
             - mysql
     mysql:
         image: 'mysql/mysql-server:8.0'
         ports:
-            - '${FORWARD_DB_PORT:-3306}:3306'
+            - '3308:3306'
         environment:
             MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
             MYSQL_ROOT_HOST: '%'
@@ -50,6 +54,8 @@ services:
 networks:
     sail:
         driver: bridge
+    proxy:
+        name: traefik_network
 volumes:
     sail-mysql:
         driver: local
