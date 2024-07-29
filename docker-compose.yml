@@ -17,7 +17,7 @@ services:
         volumes:
             - '.:/var/www/html'
         ports:
-            - '8002:80' # adjust as needed
+            - '8002:80'
         labels:
             - "traefik.enable=true"
             - "traefik.http.routers.primevue_intertia.rule=Host(`primevue-breeze-inertia.localhost`)"
@@ -26,36 +26,34 @@ services:
             - sail
             - proxy
         depends_on:
-            - mysql
-    mysql:
-        image: 'mysql/mysql-server:8.0'
-        ports:
-            - '3308:3306'
-        environment:
-            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
-            MYSQL_ROOT_HOST: '%'
-            MYSQL_DATABASE: '${DB_DATABASE}'
-            MYSQL_USER: '${DB_USERNAME}'
-            MYSQL_PASSWORD: '${DB_PASSWORD}'
-            MYSQL_ALLOW_EMPTY_PASSWORD: 1
-        volumes:
-            - 'sail-mysql:/var/lib/mysql'
-            - './docker/mysql/create-testing-database.sh:/docker-entrypoint-initdb.d/10-create-testing-database.sh'
-        networks:
-            - sail
-        healthcheck:
-            test:
-                - CMD
-                - mysqladmin
-                - ping
-                - '-p${DB_PASSWORD}'
-            retries: 3
-            timeout: 5s
+            - mariadb
+    # https://stackoverflow.com/questions/75251748/mysql-not-starting-on-docker
+    # laravel sail Another process with pid 62 is using unix socket file.
+    mariadb:
+      image: 'mariadb:11'
+      ports:
+          - '3308:3306'
+      environment:
+          MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+          MYSQL_ROOT_HOST: "%"
+          MYSQL_DATABASE: '${DB_DATABASE}'
+          MYSQL_USER: '${DB_USERNAME}'
+          MYSQL_PASSWORD: '${DB_PASSWORD}'
+          MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      volumes:
+          - 'sail-mariadb:/var/lib/mysql'
+          - './vendor/laravel/sail/database/mariadb/create-testing-database.sh:/docker-entrypoint-initdb.d/10-create-testing-database.sh'
+      networks:
+          - sail
+      healthcheck:
+          test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+          retries: 3
+          timeout: 5s
 networks:
     sail:
         driver: bridge
     proxy:
         name: traefik_network
 volumes:
-    sail-mysql:
+    sail-mariadb:
         driver: local
