@@ -14,8 +14,10 @@
 Homestead.json
 Homestead.yaml
 auth.json
+docker-compose.yml
 npm-debug.log
 yarn-error.log
 /.fleet
 /.idea
 /.vscode
+/.devcontainer
