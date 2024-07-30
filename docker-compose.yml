@@ -8,6 +8,9 @@ services:
         image: sail-8.3/app
         extra_hosts:
             - 'host.docker.internal:host-gateway'
+        ports:
+            - '${APP_PORT:-80}:80'
+            - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
         environment:
             WWWUSER: '${WWWUSER}'
             LARAVEL_SAIL: 1
@@ -16,8 +19,6 @@ services:
             IGNITION_LOCAL_SITES_PATH: '${PWD}'
         volumes:
             - '.:/var/www/html'
-        ports:
-            - '8002:80'
         labels:
             - "traefik.enable=true"
             - "traefik.http.routers.primevue_intertia.rule=Host(`primevue-breeze-inertia.localhost`)"
@@ -27,12 +28,10 @@ services:
             - proxy
         depends_on:
             - mariadb
-    # https://stackoverflow.com/questions/75251748/mysql-not-starting-on-docker
-    # laravel sail Another process with pid 62 is using unix socket file.
     mariadb:
       image: 'mariadb:11'
       ports:
-          - '3308:3306'
+          - '${FORWARD_DB_PORT:-3306}:3306'
       environment:
           MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
           MYSQL_ROOT_HOST: "%"
