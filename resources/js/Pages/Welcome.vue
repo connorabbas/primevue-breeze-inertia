@@ -33,13 +33,15 @@ defineProps({
                     <div class="text-6xl text-primary font-bold mb-4">
                         & PrimeVue
                     </div>
-                    <p class="mt-0 mb-6 text-muted-color leading-normal">
+                    <p class="mt-0 mb-1 text-muted-color leading-normal">
                         A starter kit using the Vue/Inertia option for
                         <a
                             href="https://laravel.com/docs/master/starter-kits#laravel-breeze"
                             class="underline text-primary hover:text-color"
                             >Laravel Breeze</a
-                        >
+                        >,
+                    </p>
+                    <p class="mt-0 mb-6 text-muted-color leading-normal">
                         utilizing
                         <a
                             href="https://primevue.org/"
