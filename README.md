@@ -4,12 +4,12 @@ A starter kit using [Laravel Breeze](https://laravel.com/docs/master/starter-kit
 ## Installation 
 1. Clone the repo (or download the zip)
    ```
-   git clone https://github.com/connorabbas/primevue-auth-starter.git
+   git clone https://github.com/connorabbas/primevue-breeze-inertia.git
    ```
 
 2. Step into the project directory
    ```
-   cd ./primevue-auth-starter
+   cd ./primevue-breeze-inertia
    ```
 
 3. Install the framework and other packages
