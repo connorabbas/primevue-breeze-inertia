@@ -3,7 +3,6 @@ import { ref, onMounted } from 'vue';
 import { useForm, usePage } from '@inertiajs/vue3';
 import { useToast } from 'primevue/usetoast';
 import Message from 'primevue/message';
-import Toast from 'primevue/toast';
 import InputError from '@/Components/InputError.vue';
 
 defineProps({
@@ -48,8 +47,6 @@ onMounted(() => {
 
 <template>
     <section>
-        <Toast />
-
         <header>
             <h2 class="text-lg font-medium mt-0 mb-2">Profile Information</h2>
             <p class="mb-0 text-sm text-muted-color">

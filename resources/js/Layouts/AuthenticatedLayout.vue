@@ -2,6 +2,7 @@
 import { ref, onMounted, onUnmounted, watchEffect } from 'vue';
 import Drawer from 'primevue/drawer';
 import Menu from 'primevue/menu';
+import Toast from 'primevue/toast';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Container from '@/Components/Container.vue';
 import MobileNavLink from '@/Components/MobileNavLink.vue';
@@ -221,6 +222,7 @@ watchEffect(() => {
             </header>
 
             <!-- Page Content -->
+            <Toast />
             <main>
                 <slot />
             </main>
