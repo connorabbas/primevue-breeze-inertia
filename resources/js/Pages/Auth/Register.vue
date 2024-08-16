@@ -28,8 +28,6 @@ onMounted(() => {
     <GuestLayout>
         <Head title="Register" />
 
-        {{ form }}
-
         <form @submit.prevent="submit">
             <div class="mb-6">
                 <label for="name" class="block mb-2">Name</label>

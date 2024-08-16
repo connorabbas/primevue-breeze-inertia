@@ -13,7 +13,7 @@ import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 
 import { useTheme } from '@/Composables/useTheme.js';
-import customizedThemePreset from '@/Modules/theme-preset.mjs';
+import customThemePreset from '@/theme-preset.js';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -34,16 +34,7 @@ createInertiaApp({
             .use(plugin)
             .use(ZiggyVue, Ziggy)
             .use(PrimeVue, {
-                theme: {
-                    preset: customizedThemePreset,
-                    options: {
-                        darkModeSelector: '.dark-mode',
-                        cssLayer: {
-                            name: 'primevue',
-                            order: 'tailwind-base, primevue, tailwind-utilities',
-                        },
-                    },
-                },
+                theme: customThemePreset,
             })
             .use(ToastService)
             .component('Head', Head)
