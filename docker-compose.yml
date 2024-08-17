@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+    primevue_intertia: # make sure to set as APP_SERVICE value in .env
+        build:
+            context: ./docker/8.3
+            dockerfile: Dockerfile
+            args:
+                WWWGROUP: '${WWWGROUP}'
+        image: sail-8.3/app
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+        ports:
+            - '${APP_PORT:-80}:80'
+        environment:
+            WWWUSER: '${WWWUSER}'
+            LARAVEL_SAIL: 1
+            XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
+            XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
+            IGNITION_LOCAL_SITES_PATH: '${PWD}'
+        volumes:
+            - '.:/var/www/html'
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.primevue_intertia.rule=Host(`primevue-breeze-inertia.localhost`)"
+            - "traefik.http.services.primevue_intertia.loadbalancer.server.port=80"
+        networks:
+          - proxy
+          - database
+
+networks:
+    proxy:
+      name: traefik_network
+    database:
+      name: mariadb_network
+      external: true
