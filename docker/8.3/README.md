@@ -58,6 +58,5 @@ volumes:
 networks:
   database:
     name: mariadb_network
-    external: true
 
 ```
