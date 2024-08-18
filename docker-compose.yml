@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-    primevue_intertia: # make sure to set as APP_SERVICE value in .env
+    primevue_inertia: # make sure to set as APP_SERVICE value in .env
         build:
             context: ./docker/8.3
             dockerfile: Dockerfile
@@ -23,8 +23,8 @@ services:
             - '.:/var/www/html'
         labels:
             - "traefik.enable=true"
-            - "traefik.http.routers.primevue_intertia.rule=Host(`primevue-breeze-inertia.localhost`)"
-            - "traefik.http.services.primevue_intertia.loadbalancer.server.port=80"
+            - "traefik.http.routers.primevue_inertia.rule=Host(`primevue-breeze-inertia.localhost`)"
+            - "traefik.http.services.primevue_inertia.loadbalancer.server.port=80"
         networks:
           - proxy
           - database
