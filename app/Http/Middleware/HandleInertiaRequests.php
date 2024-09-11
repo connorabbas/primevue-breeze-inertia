@@ -2,8 +2,9 @@
 
 namespace App\Http\Middleware;
 
-use Illuminate\Http\Request;
 use Inertia\Middleware;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -29,10 +30,18 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        if (Auth::guard('web')->check()) {
+            $authenticatedUser = $request->user('web');
+        } elseif (Auth::guard('admin')->check()) {
+            $authenticatedUser = $request->user('admin');
+        } else {
+            $authenticatedUser = $request->user();
+        }
+
         return [
             ...parent::share($request),
             'auth' => [
-                'user' => $request->user(),
+                'user' => $authenticatedUser,
             ],
         ];
     }

@@ -2,6 +2,7 @@
 import ResponsiveCard from '@/Components/ResponsiveCard.vue';
 import ToggleThemeButton from '@/Components/ToggleThemeButton.vue';
 
+// TODO: check isAdmin
 defineProps({
     canLogin: {
         type: Boolean,
