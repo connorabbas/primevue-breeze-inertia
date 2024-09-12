@@ -48,6 +48,12 @@ A starter kit using [Laravel Breeze](https://laravel.com/docs/master/starter-kit
    npm run dev
    ```
 
+## Create New Admin User
+Since there is no registration page for admins, use the following artisan command:
+```
+php artisan admin:create
+```
+
 ## Theme
 This starter kit provides a light/dark mode and custom theme functionality provided by the powerful PrimeVue theming system, using styled mode and custom design token values.
 
