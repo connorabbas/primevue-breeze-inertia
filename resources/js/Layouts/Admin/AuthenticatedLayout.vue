@@ -1,16 +1,14 @@
 <script setup>
-import { ref, onMounted, onUnmounted, watchEffect } from 'vue';
-import Drawer from 'primevue/drawer';
+import { ref } from 'vue';
 import Menu from 'primevue/menu';
 import Toast from 'primevue/toast';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Container from '@/Components/Container.vue';
-import MobileNavLink from '@/Components/MobileNavLink.vue';
-import NavLink from '@/Components/NavLink.vue';
 import ToggleThemeButton from '@/Components/ToggleThemeButton.vue';
 import Tag from 'primevue/tag';
+import DrawerMenu from './Partials/DrawerMenu.vue';
 
-// User menu (desktop)
+// User menu
 const userMenu = ref(null);
 const userMenuItems = [
     {
@@ -18,30 +16,14 @@ const userMenuItems = [
         label: 'Log Out',
         method: 'post',
         icon: 'pi pi-fw pi-sign-out',
-        isCurrentRoute: false,
     },
 ];
 const toggleUserMenu = (event) => {
     userMenu.value.toggle(event);
 };
 
-// Mobile menu (Drawer)
-const mobileMenuOpen = ref(false);
-const windowWidth = ref(window.innerWidth);
-const updateWidth = () => {
-    windowWidth.value = window.innerWidth;
-};
-onMounted(() => {
-    window.addEventListener('resize', updateWidth);
-});
-onUnmounted(() => {
-    window.removeEventListener('resize', updateWidth);
-});
-watchEffect(() => {
-    if (windowWidth.value > 768) {
-        mobileMenuOpen.value = false;
-    }
-});
+// Drawer menu
+const drawerOpen = ref(false);
 </script>
 
 <template>
@@ -61,32 +43,38 @@ watchEffect(() => {
                         <div class="flex">
                             <!-- Logo -->
                             <div class="shrink-0 flex items-center">
-                                <Link :href="route('welcome')">
+                                <Button
+                                    text
+                                    rounded
+                                    severity="secondary"
+                                    icon="pi pi-bars"
+                                    @click="drawerOpen = true"
+                                    :pt="{
+                                        icon: {
+                                            class: 'text-xl',
+                                        },
+                                    }"
+                                    class="mr-5"
+                                />
+                                <Link :href="route('welcome')" class="mr-5">
                                     <ApplicationLogo
                                         class="block h-10 w-auto fill-current text-surface-900 dark:text-surface-0"
                                     />
                                 </Link>
-                                <Tag class="ms-4" value="Primary">ADMIN</Tag>
-                            </div>
-
-                            <!-- Navigation Links -->
-                            <div
-                                class="hidden space-x-8 md:-my-px md:ms-10 md:flex"
-                            >
-                                <NavLink
-                                    :href="route('admin.dashboard')"
-                                    :active="route().current('admin.dashboard')"
-                                >
-                                    Dashboard
-                                </NavLink>
+                                <Tag value="Primary">ADMIN</Tag>
                             </div>
                         </div>
 
-                        <div class="hidden md:flex md:items-center md:ms-6">
+                        <div class="flex items-center ms-6">
                             <ToggleThemeButton
                                 text
                                 severity="secondary"
                                 rounded
+                                :pt="{
+                                    icon: {
+                                        class: 'text-xl md:text-base',
+                                    },
+                                }"
                             />
                             <!-- User Dropdown Menu -->
                             <div class="ms-3 relative">
@@ -125,6 +113,7 @@ watchEffect(() => {
                                     </template>
                                 </Menu>
                                 <Button
+                                    class="hidden md:flex"
                                     text
                                     severity="secondary"
                                     @click="toggleUserMenu($event)"
@@ -134,63 +123,26 @@ watchEffect(() => {
                                     }}</span>
                                     <i class="pi pi-angle-down ml-1"></i>
                                 </Button>
-                            </div>
-                        </div>
-
-                        <!-- Hamburger -->
-                        <div class="flex items-center md:hidden">
-                            <div class="relative">
                                 <Button
+                                    class="flex md:hidden"
+                                    icon="pi pi-user"
                                     text
                                     rounded
                                     severity="secondary"
-                                    icon="pi pi-bars"
-                                    @click="mobileMenuOpen = true"
+                                    :pt="{
+                                        icon: {
+                                            class: 'text-xl',
+                                        },
+                                    }"
+                                    @click="toggleUserMenu($event)"
                                 />
                             </div>
                         </div>
                     </div>
                 </Container>
 
-                <!-- Mobile drawer menu -->
-                <Drawer v-model:visible="mobileMenuOpen" position="right">
-                    <template #header>
-                        <ToggleThemeButton text severity="secondary" rounded />
-                    </template>
-                    <div>
-                        <ul class="list-none p-0 m-0 overflow-hidden">
-                            <li>
-                                <MobileNavLink
-                                    :href="route('admin.dashboard')"
-                                    :active="route().current('admin.dashboard')"
-                                >
-                                    <i class="pi pi-home mr-2"></i>
-                                    <span class="font-medium">Dashboard</span>
-                                </MobileNavLink>
-                            </li>
-                        </ul>
-                        <!-- Use PanelMenu for nested Links/Actions as needed-->
-                        <!-- https://primevue.org/panelmenu/#router -->
-                    </div>
-                    <template #footer>
-                        <div class="flex items-center gap-2">
-                            <Link
-                                :href="route('admin.logout')"
-                                method="post"
-                                class="flex-auto"
-                                as="div"
-                            >
-                                <Button
-                                    label="Logout"
-                                    icon="pi pi-sign-out"
-                                    class="w-full"
-                                    severity="danger"
-                                    text
-                                ></Button>
-                            </Link>
-                        </div>
-                    </template>
-                </Drawer>
+                <!-- Slide out drawer menu -->
+                <DrawerMenu v-model="drawerOpen" />
             </nav>
 
             <!-- Page Heading -->

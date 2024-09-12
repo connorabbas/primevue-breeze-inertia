@@ -7,9 +7,6 @@ import ResponsiveCard from '@/Components/ResponsiveCard.vue';
 <template>
     <Head title="Dashboard" />
     <AuthenticatedAdminLayout>
-        <template #header>
-            <h2 class="font-bold text-xl leading-tight">Dashboard</h2>
-        </template>
         <Container :spaced-mobile="false">
             <div class="py-12">
                 <ResponsiveCard>

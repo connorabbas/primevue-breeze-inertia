@@ -168,13 +168,11 @@ watchEffect(() => {
                                     :href="route('dashboard')"
                                     :active="route().current('dashboard')"
                                 >
-                                    <i class="pi pi-home mr-2"></i>
+                                    <i class="pi pi-th-large mr-2"></i>
                                     <span class="font-medium">Dashboard</span>
                                 </MobileNavLink>
                             </li>
                         </ul>
-                        <!-- Use PanelMenu for nested Links/Actions as needed-->
-                        <!-- https://primevue.org/panelmenu/#router -->
                     </div>
                     <template #footer>
                         <div class="flex items-center gap-2">

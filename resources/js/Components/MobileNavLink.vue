@@ -13,7 +13,7 @@ const props = defineProps({
 <template>
     <Link
         :href="href"
-        class="flex items-center cursor-pointer p-4 rounded-lg text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors"
+        class="flex items-center cursor-pointer px-4 py-2 rounded-lg text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors"
         :class="{ '!text-primary': active }"
     >
         <slot />
