@@ -91,13 +91,13 @@ onMounted(() => {
                     </div>
                 </div>
                 <div class="flex justify-end items-center">
-                    <!-- <Link
+                    <Link
                         v-if="canResetPassword"
-                        :href="route('password.request')"
+                        :href="route('admin.password.request')"
                         class="mr-4 underline text-muted-color hover:text-color"
                     >
                         Forgot your password?
-                    </Link> -->
+                    </Link>
                     <Button
                         raised
                         type="submit"

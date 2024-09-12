@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Route;
 use App\Http\Requests\Admin\LoginRequest;
 
 class AuthenticatedSessionController extends Controller
@@ -18,7 +19,7 @@ class AuthenticatedSessionController extends Controller
     public function create(): Response
     {
         return Inertia::render('Admin/Auth/Login', [
-            //'canResetPassword' => Route::has('password.request'), // TODO
+            'canResetPassword' => Route::has('admin.password.request'),
             'status' => session('status'),
         ]);
     }
