@@ -4,7 +4,7 @@ A starter kit using [Laravel Breeze](https://laravel.com/docs/master/starter-kit
 ## Installation 
 1. Clone the repo (or download the zip)
    ```
-   git clone https://github.com/connorabbas/primevue-breeze-inertia.git
+   git clone --single-branch --branch admin-panel https://github.com/connorabbas/primevue-breeze-inertia.git
    ```
 
 2. Step into the project directory
@@ -48,11 +48,13 @@ A starter kit using [Laravel Breeze](https://laravel.com/docs/master/starter-kit
    npm run dev
    ```
 
-## Create New Admin User
+## Admin Area
 Since there is no registration page for admins, use the following artisan command:
 ```
 php artisan admin:create
 ```
+
+Use the `/admin/login` route to login.
 
 ## Theme
 This starter kit provides a light/dark mode and custom theme functionality provided by the powerful PrimeVue theming system, using styled mode and custom design token values.
