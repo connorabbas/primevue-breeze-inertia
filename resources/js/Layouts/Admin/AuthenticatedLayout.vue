@@ -161,8 +161,8 @@ watchEffect(() => {
                         <ul class="list-none p-0 m-0 overflow-hidden">
                             <li>
                                 <MobileNavLink
-                                    :href="route('dashboard')"
-                                    :active="route().current('dashboard')"
+                                    :href="route('admin.dashboard')"
+                                    :active="route().current('admin.dashboard')"
                                 >
                                     <i class="pi pi-home mr-2"></i>
                                     <span class="font-medium">Dashboard</span>
