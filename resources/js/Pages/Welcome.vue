@@ -1,13 +1,16 @@
 <script setup>
+import { computed } from 'vue';
 import ResponsiveCard from '@/Components/ResponsiveCard.vue';
 import ToggleThemeButton from '@/Components/ToggleThemeButton.vue';
 
-// TODO: check isAdmin
-defineProps({
+const props = defineProps({
     canLogin: {
         type: Boolean,
     },
     canRegister: {
+        type: Boolean,
+    },
+    isAdmin: {
         type: Boolean,
     },
     laravelVersion: {
@@ -18,6 +21,10 @@ defineProps({
         type: String,
         required: true,
     },
+});
+
+const dashboardRoute = computed(() => {
+    return props.isAdmin ? route('admin.dashboard') : route('dashboard');
 });
 </script>
 
@@ -52,7 +59,7 @@ defineProps({
                         components
                     </p>
                     <template v-if="$page.props.auth.user">
-                        <Link :href="route('dashboard')">
+                        <Link :href="dashboardRoute">
                             <Button
                                 raised
                                 label="Dashboard"
@@ -60,7 +67,7 @@ defineProps({
                                 class="mr-4"
                             />
                         </Link>
-                        <Link :href="route('profile.edit')">
+                        <Link v-if="!isAdmin" :href="route('profile.edit')">
                             <Button
                                 outlined
                                 label="Profile"
