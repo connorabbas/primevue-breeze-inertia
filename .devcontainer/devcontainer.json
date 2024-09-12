@@ -1,35 +1,36 @@
 // https://aka.ms/devcontainer.json
 {
-	"name": "PrimeVue Inertia",
-	"dockerComposeFile": [
-		"../docker-compose.yml"
-	],
-	"service": "primevue_inertia",
-	"workspaceFolder": "/var/www/html",
-	"customizations": {
-		"vscode": {
-			"extensions": [
-				"absszero.vscode-laravel-goto",
-				"amiralizadeh9480.laravel-extra-intellisense",
-				"bmewburn.vscode-intelephense-client",
-				"codingyu.laravel-goto-view",
-				"eamodio.gitlens",
-				"esbenp.prettier-vscode",
-				"mikestead.dotenv",
-				"recca0120.vscode-phpunit",
-				"streetsidesoftware.code-spell-checker",
-				"MehediDracula.php-namespace-resolver",
-				"onecentlin.laravel-blade",
-				"hollowtree.vue-snippets",
-				"Vue.volar",
-				"shd101wyy.markdown-preview-enhanced"
-			],
-			"settings": {}
-		}
-	},
-	"remoteUser": "sail",
-	"postCreateCommand": "chown -R 1000:1000 /var/www/html 2>/dev/null || true"
-	// "forwardPorts": [],
-	// "runServices": [],
-	// "shutdownAction": "none",
+    "name": "PrimeVue Inertia",
+    "dockerComposeFile": [
+        "../docker-compose.yml"
+    ],
+    "service": "primevue_inertia",
+    "workspaceFolder": "/var/www/html",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "absszero.vscode-laravel-goto",
+                "amiralizadeh9480.laravel-extra-intellisense",
+                "bmewburn.vscode-intelephense-client",
+                "codingyu.laravel-goto-view",
+                "eamodio.gitlens",
+                "esbenp.prettier-vscode",
+                "mikestead.dotenv",
+                "recca0120.vscode-phpunit",
+                "streetsidesoftware.code-spell-checker",
+                "MehediDracula.php-namespace-resolver",
+                "onecentlin.laravel-blade",
+                "hollowtree.vue-snippets",
+                "Vue.volar",
+                "shd101wyy.markdown-preview-enhanced",
+                "calebporzio.better-phpunit"
+            ],
+            "settings": {}
+        }
+    },
+    "remoteUser": "sail",
+    "postCreateCommand": "chown -R 1000:1000 /var/www/html 2>/dev/null || true"
+    // "forwardPorts": [],
+    // "runServices": [],
+    // "shutdownAction": "none",
 }
