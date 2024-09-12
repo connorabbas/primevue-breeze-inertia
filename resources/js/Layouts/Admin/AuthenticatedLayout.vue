@@ -12,6 +12,12 @@ import DrawerMenu from './Partials/DrawerMenu.vue';
 const userMenu = ref(null);
 const userMenuItems = [
     {
+        label: 'Profile',
+        href: route('admin.profile.edit'),
+        icon: 'pi pi-fw pi-user',
+        isCurrentRoute: route().current('admin.profile.edit'),
+    },
+    {
         href: route('admin.logout'),
         label: 'Log Out',
         method: 'post',

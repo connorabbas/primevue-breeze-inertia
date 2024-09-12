@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\Auth\PasswordController;
 use App\Http\Controllers\Admin\Auth\NewPasswordController;
 use App\Http\Controllers\Admin\Auth\VerifyEmailController;
 use App\Http\Controllers\Admin\Auth\PasswordResetLinkController;
@@ -34,6 +35,7 @@ Route::prefix('admin')
             Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
                 ->middleware('throttle:6,1')
                 ->name('verification.send');
+            Route::put('password', [PasswordController::class, 'update'])->name('password.update');
             Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
                 ->name('logout');
         });
