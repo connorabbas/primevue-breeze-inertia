@@ -7,6 +7,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 class CreateAdminCommand extends Command
 {
@@ -44,16 +45,14 @@ class CreateAdminCommand extends Command
             return;
         }
 
-        // Incase of using admins with roles, using spatie/laravel-permission
-        //$roles = Role::pluck('name');
-        //$chosenRoles = $this->choice('Which roles should this admin have?', $roles->toArray(), null, null, true);
-
-        $user = Admin::create([
+        $admin = Admin::create([
             'name' => $name,
             'email' => $email,
             'password' => Hash::make($password),
         ]);
-        //$user->assignRole($chosenRoles);
+        if ($admin instanceof MustVerifyEmail) {
+            $admin->sendEmailVerificationNotification();
+        }
 
         $this->info('Admin successfully created!');
     }

@@ -16,14 +16,15 @@
                 "eamodio.gitlens",
                 "esbenp.prettier-vscode",
                 "mikestead.dotenv",
-                "recca0120.vscode-phpunit",
                 "streetsidesoftware.code-spell-checker",
                 "MehediDracula.php-namespace-resolver",
+                "hbenl.vscode-test-explorer",
+                "ms-vscode.test-adapter-converter",
+                "recca0120.vscode-phpunit",
                 "onecentlin.laravel-blade",
                 "hollowtree.vue-snippets",
                 "Vue.volar",
-                "shd101wyy.markdown-preview-enhanced",
-                "calebporzio.better-phpunit"
+                "shd101wyy.markdown-preview-enhanced"
             ],
             "settings": {}
         }

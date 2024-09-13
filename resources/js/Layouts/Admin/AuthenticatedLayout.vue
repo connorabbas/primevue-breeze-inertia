@@ -6,6 +6,7 @@ import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Container from '@/Components/Container.vue';
 import ToggleThemeButton from '@/Components/ToggleThemeButton.vue';
 import LinksMenu from '@/Components/LinksMenu.vue';
+import LinksMenuBar from '@/Components/LinksMenuBar.vue';
 import Tag from 'primevue/tag';
 import DrawerMenu from './Partials/DrawerMenu.vue';
 
@@ -47,78 +48,91 @@ const drawerOpen = ref(false);
             >
                 <!-- Primary Navigation Menu -->
                 <Container>
-                    <div class="flex justify-between h-16">
-                        <div class="flex">
-                            <!-- Logo -->
-                            <div class="shrink-0 flex items-center">
-                                <Button
-                                    text
-                                    rounded
-                                    severity="secondary"
-                                    icon="pi pi-bars"
-                                    @click="drawerOpen = true"
-                                    :pt="{
-                                        icon: {
-                                            class: 'text-xl',
-                                        },
-                                    }"
-                                    class="mr-5"
-                                />
-                                <Link :href="route('welcome')" class="mr-5">
-                                    <ApplicationLogo
-                                        class="block h-10 w-auto fill-current text-surface-900 dark:text-surface-0"
+                    <LinksMenuBar
+                        :pt="{
+                            root: {
+                                class: 'px-0 py-3 border-0 rounded-none',
+                            },
+                            button: {
+                                class: 'hidden',
+                            },
+                        }"
+                    >
+                        <template #start>
+                            <div class="flex">
+                                <!-- Logo -->
+                                <div class="shrink-0 flex items-center">
+                                    <Button
+                                        text
+                                        rounded
+                                        severity="secondary"
+                                        icon="pi pi-bars"
+                                        @click="drawerOpen = true"
+                                        :pt="{
+                                            icon: {
+                                                class: 'text-xl',
+                                            },
+                                        }"
+                                        class="mr-5"
                                     />
-                                </Link>
-                                <Tag value="Primary">ADMIN</Tag>
+                                    <Link :href="route('welcome')" class="mr-5">
+                                        <ApplicationLogo
+                                            class="block h-10 w-auto fill-current text-surface-900 dark:text-surface-0"
+                                        />
+                                    </Link>
+                                    <Tag value="Primary">ADMIN</Tag>
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="flex items-center ms-6">
-                            <ToggleThemeButton
-                                text
-                                severity="secondary"
-                                rounded
-                                :pt="{
-                                    icon: {
-                                        class: 'text-xl md:text-base',
-                                    },
-                                }"
-                            />
-                            <!-- User Dropdown Menu -->
-                            <div class="ms-3 relative">
-                                <LinksMenu
-                                    :model="userMenuItems"
-                                    popup
-                                    ref="userMenu"
-                                    class="shadow"
-                                />
-                                <Button
-                                    class="hidden md:flex"
+                        </template>
+                        <template #end>
+                            <div class="flex items-center ms-6">
+                                <ToggleThemeButton
                                     text
                                     severity="secondary"
-                                    @click="toggleUserMenu($event)"
-                                >
-                                    <span class="">{{
-                                        $page.props.auth.user.name
-                                    }}</span>
-                                    <i class="pi pi-angle-down ml-1"></i>
-                                </Button>
-                                <Button
-                                    class="flex md:hidden"
-                                    icon="pi pi-user"
-                                    text
                                     rounded
-                                    severity="secondary"
                                     :pt="{
                                         icon: {
-                                            class: 'text-xl',
+                                            class: 'text-xl md:text-base',
                                         },
                                     }"
-                                    @click="toggleUserMenu($event)"
                                 />
+                                <!-- User Dropdown Menu -->
+                                <div class="ms-3 relative">
+                                    <LinksMenu
+                                        :model="userMenuItems"
+                                        popup
+                                        ref="userMenu"
+                                        class="shadow"
+                                    />
+                                    <Button
+                                        class="hidden md:flex"
+                                        text
+                                        size="small"
+                                        severity="secondary"
+                                        @click="toggleUserMenu($event)"
+                                    >
+                                        <span class="text-base">
+                                            {{ $page.props.auth.user.name }}
+                                        </span>
+                                        <i class="pi pi-angle-down ml-1"></i>
+                                    </Button>
+                                    <Button
+                                        class="flex md:hidden"
+                                        icon="pi pi-user"
+                                        text
+                                        rounded
+                                        severity="secondary"
+                                        :pt="{
+                                            icon: {
+                                                class: 'text-xl',
+                                            },
+                                        }"
+                                        @click="toggleUserMenu($event)"
+                                    />
+                                </div>
                             </div>
-                        </div>
-                    </div>
+                        </template>
+                    </LinksMenuBar>
                 </Container>
 
                 <!-- Slide out drawer menu -->
