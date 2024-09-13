@@ -7,8 +7,8 @@ import { Head } from '@inertiajs/vue3';
 
 const props = defineProps({
     auth: Object,
+    urlParams: Object,
     users: [Array, Object],
-    paginateSize: [Number, String],
 });
 </script>
 
@@ -22,7 +22,7 @@ const props = defineProps({
         <Container :spaced-mobile="false">
             <div class="py-12">
                 <ResponsiveCard>
-                    <DataTable :users="users" :paginateSize="paginateSize" />
+                    <DataTable :urlParams="urlParams" :users="users" />
                 </ResponsiveCard>
             </div>
         </Container>

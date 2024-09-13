@@ -18,7 +18,6 @@ class UserController extends Controller
         return Inertia::render('Admin/Users/Index', [
             'urlParams' => $request->all(),
             'users' => $users,
-            'paginateSize' => $paginateSize,
         ]);
     }
 }

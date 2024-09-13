@@ -9,7 +9,6 @@ import Menu from 'primevue/menu';
 const props = defineProps({
     urlParams: Object,
     users: [Array, Object],
-    paginateSize: [Number, String],
 });
 
 // User context menu
