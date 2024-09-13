@@ -15,9 +15,9 @@ const props = defineProps({
 <template>
     <Head title="Users" />
     <AuthenticatedAdminLayout>
-        <template #header>
+        <!-- <template #header>
             <h2 class="font-bold text-xl leading-tight">Users</h2>
-        </template>
+        </template> -->
 
         <Container :spaced-mobile="false">
             <div class="py-12">
