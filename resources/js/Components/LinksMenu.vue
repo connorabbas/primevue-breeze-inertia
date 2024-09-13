@@ -18,8 +18,12 @@ defineExpose({
                 class="p-menu-item-link"
                 custom
             >
-                <span v-show="item.icon" :class="item.icon" class="mr-1" />
-                <span>{{ item.label }}</span>
+                <span
+                    v-show="item.icon"
+                    :class="item.icon"
+                    class="p-menu-item-icon"
+                />
+                <span class="p-menu-item-label">{{ item.label }}</span>
             </Link>
             <a
                 v-else
@@ -27,8 +31,12 @@ defineExpose({
                 :target="item.target"
                 v-bind="props.action"
             >
-                <span v-show="item.icon" :class="item.icon" class="mr-1" />
-                <span>{{ item.label }}</span>
+                <span
+                    v-show="item.icon"
+                    :class="item.icon"
+                    class="p-menu-item-icon"
+                />
+                <span class="p-menu-item-label">{{ item.label }}</span>
             </a>
         </template>
     </Menu>

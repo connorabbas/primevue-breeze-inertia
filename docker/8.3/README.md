@@ -60,3 +60,8 @@ networks:
     name: mariadb_network
 
 ```
+```sql
+# init.sql
+GRANT ALL PRIVILEGES ON *.* TO 'docker_mariadb'@'%';
+FLUSH PRIVILEGES;
+```
