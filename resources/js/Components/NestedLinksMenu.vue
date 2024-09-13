@@ -31,8 +31,8 @@ import PanelMenu from 'primevue/panelmenu';
                         : 'text-surface-700 dark:text-surface-0'
                 "
             >
-                <span :class="item.icon" />
-                <span class="ml-2">{{ item.label }}</span>
+                <span v-show="item.icon" :class="item.icon" class="mr-2" />
+                <span>{{ item.label }}</span>
             </Link>
             <a
                 v-else
@@ -40,16 +40,9 @@ import PanelMenu from 'primevue/panelmenu';
                 :href="item.url"
                 :target="item.target"
             >
-                <span :class="item.icon" />
-                <span class="ml-2">{{ item.label }}</span>
-                <span
-                    v-if="item.items"
-                    class="pi ml-auto"
-                    :class="{
-                        'pi-angle-down': !item.active,
-                        'pi-angle-up': item.active,
-                    }"
-                />
+                <span v-show="item.icon" :class="item.icon" class="mr-2" />
+                <span>{{ item.label }}</span>
+                <span v-if="item.items" class="pi pi-angle-down ml-auto" />
             </a>
         </template>
     </PanelMenu>

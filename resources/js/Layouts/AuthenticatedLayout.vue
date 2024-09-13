@@ -1,33 +1,34 @@
 <script setup>
 import { ref, onMounted, onUnmounted, watchEffect } from 'vue';
+import { useForm } from '@inertiajs/vue3';
 import Drawer from 'primevue/drawer';
-import Menu from 'primevue/menu';
 import Toast from 'primevue/toast';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Container from '@/Components/Container.vue';
+import LinksMenu from '@/Components/LinksMenu.vue';
 import MobileNavLink from '@/Components/MobileNavLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ToggleThemeButton from '@/Components/ToggleThemeButton.vue';
 
 // User menu (desktop)
+const logoutForm = useForm({});
 const userMenu = ref(null);
 const userMenuItems = [
     {
         label: 'Profile',
-        href: route('profile.edit'),
+        route: route('profile.edit'),
         icon: 'pi pi-fw pi-user',
-        isCurrentRoute: route().current('profile.edit'),
     },
     {
-        href: route('logout'),
         label: 'Log Out',
-        method: 'post',
         icon: 'pi pi-fw pi-sign-out',
-        isCurrentRoute: route().current('logout'),
+        command: () => {
+            logoutForm.post(route('logout'));
+        },
     },
 ];
 const toggleUserMenu = (event) => {
-    userMenu.value.toggle(event);
+    userMenu.value.childRef.toggle(event);
 };
 
 // Mobile menu (Drawer)
@@ -94,40 +95,12 @@ watchEffect(() => {
                             />
                             <!-- User Dropdown Menu -->
                             <div class="ms-3 relative">
-                                <Menu
+                                <LinksMenu
                                     :model="userMenuItems"
                                     popup
                                     ref="userMenu"
                                     class="shadow"
-                                >
-                                    <template #item="{ item, props }">
-                                        <Link
-                                            :href="item.href"
-                                            :method="
-                                                item.method === 'post'
-                                                    ? 'post'
-                                                    : 'get'
-                                            "
-                                            :as="
-                                                item.method === 'post'
-                                                    ? 'li'
-                                                    : 'a'
-                                            "
-                                            class="p-menu-item-link"
-                                            :class="{
-                                                'flex items-center w-full text-left':
-                                                    item.method === 'post',
-                                            }"
-                                            custom
-                                        >
-                                            <span
-                                                v-show="item.icon"
-                                                :class="[item.icon]"
-                                            />
-                                            <span>{{ item.label }}</span>
-                                        </Link>
-                                    </template>
-                                </Menu>
+                                />
                                 <Button
                                     text
                                     severity="secondary"

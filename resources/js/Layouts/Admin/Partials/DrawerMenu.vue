@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted, watchEffect } from 'vue';
 import Drawer from 'primevue/drawer';
-import LinksPanelMenu from '@/Components/LinksPanelMenu.vue';
+import NestedLinksMenu from '@/Components/NestedLinksMenu.vue';
 
 // Menu Items
 const currentRoute = route().current();
@@ -101,19 +101,19 @@ watchEffect(() => {
                 <p class="text-muted-color font-bold uppercase text-sm mb-2">
                     Home
                 </p>
-                <LinksPanelMenu :model="homeMenuItems" class="w-full" />
+                <NestedLinksMenu :model="homeMenuItems" class="w-full" />
             </div>
             <div class="mb-5">
                 <p class="text-muted-color font-bold uppercase text-sm mb-2">
                     Analytics
                 </p>
-                <LinksPanelMenu :model="analyticsMenuItems" class="w-full" />
+                <NestedLinksMenu :model="analyticsMenuItems" class="w-full" />
             </div>
             <div class="mb-5">
                 <p class="text-muted-color font-bold uppercase text-sm mb-2">
                     Example Nested
                 </p>
-                <LinksPanelMenu
+                <NestedLinksMenu
                     :model="exampleNestedMenuItems"
                     class="w-full"
                 />
