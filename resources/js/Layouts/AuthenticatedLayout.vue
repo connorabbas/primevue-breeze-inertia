@@ -95,7 +95,7 @@ watchEffect(() => {
                         :model="mainMenuItems"
                         :pt="{
                             root: {
-                                class: 'px-0 border-0 rounded-none',
+                                class: 'px-0 py-3 border-0 rounded-none',
                             },
                             button: {
                                 class: 'hidden',
@@ -129,12 +129,13 @@ watchEffect(() => {
                                     />
                                     <Button
                                         text
+                                        size="small"
                                         severity="secondary"
                                         @click="toggleUserMenu($event)"
                                     >
-                                        <span class="">{{
-                                            $page.props.auth.user.name
-                                        }}</span>
+                                        <span class="text-base">
+                                            {{ $page.props.auth.user.name }}
+                                        </span>
                                         <i class="pi pi-angle-down ml-1"></i>
                                     </Button>
                                 </div>

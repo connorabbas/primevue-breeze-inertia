@@ -19,15 +19,18 @@ defineExpose({
                 v-if="item.route"
                 :href="item.route"
                 class="p-menubar-item-link"
-                :class="
-                    item.active
-                        ? 'text-primary'
-                        : 'text-surface-700 dark:text-surface-0'
-                "
+                :class="{
+                    'font-bold text-primary dark:text-primary-300 bg-primary-50 dark:bg-primary-950 rounded-lg':
+                        item.active,
+                }"
                 custom
             >
-                <span v-show="item.icon" :class="item.icon" class="mr-1" />
-                <span>{{ item.label }}</span>
+                <span
+                    v-show="item.icon"
+                    :class="item.icon"
+                    class="p-menu-item-icon"
+                />
+                <span class="p-menu-item-label">{{ item.label }}</span>
             </Link>
             <a
                 v-else
@@ -36,8 +39,12 @@ defineExpose({
                 v-bind="props.action"
                 class="p-menubar-item-link"
             >
-                <span v-show="item.icon" :class="item.icon" class="mr-1" />
-                <span>{{ item.label }}</span>
+                <span
+                    v-show="item.icon"
+                    :class="item.icon"
+                    class="p-menu-item-icon"
+                />
+                <span class="p-menu-item-label">{{ item.label }}</span>
                 <i
                     v-if="hasSubmenu"
                     :class="[
