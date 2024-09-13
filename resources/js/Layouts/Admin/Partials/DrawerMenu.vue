@@ -19,6 +19,14 @@ const homeMenuItems = ref([
         active: currentRoute == 'admin.dashboard',
     },
 ]);
+const analyticsMenuItems = ref([
+    {
+        label: 'Users',
+        icon: 'pi pi-user',
+        route: route('admin.users.index'),
+        active: currentRoute == 'admin.users.index',
+    },
+]);
 const exampleNestedMenuItems = ref([
     {
         label: 'Files',
@@ -94,6 +102,12 @@ watchEffect(() => {
                     Home
                 </p>
                 <LinksPanelMenu :model="homeMenuItems" class="w-full" />
+            </div>
+            <div class="mb-5">
+                <p class="text-muted-color font-bold uppercase text-sm mb-2">
+                    Analytics
+                </p>
+                <LinksPanelMenu :model="analyticsMenuItems" class="w-full" />
             </div>
             <div class="mb-5">
                 <p class="text-muted-color font-bold uppercase text-sm mb-2">
