@@ -16,6 +16,7 @@ class UserController extends Controller
         $users = User::paginate($paginateSize);
 
         return Inertia::render('Admin/Users/Index', [
+            'urlParams' => $request->all(),
             'users' => $users,
             'paginateSize' => $paginateSize,
         ]);
