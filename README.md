@@ -1,6 +1,8 @@
 # Laravel Breeze & PrimeVue
 A starter kit using [Laravel Breeze](https://laravel.com/docs/master/starter-kits#laravel-breeze) with the [Intertia.js](https://inertiajs.com/) Vue option, utilizing [PrimeVue](https://primevue.org/) components.
 
+Need an admin panel? [There's a branch for that.](https://github.com/connorabbas/primevue-breeze-inertia/tree/admin-panel)
+
 ## Installation 
 1. Clone the repo (or download the zip)
    ```
