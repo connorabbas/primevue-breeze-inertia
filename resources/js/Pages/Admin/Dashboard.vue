@@ -2,13 +2,15 @@
 import AuthenticatedAdminLayout from '@/Layouts/Admin/AuthenticatedLayout.vue';
 import Container from '@/Components/Container.vue';
 import ResponsiveCard from '@/Components/ResponsiveCard.vue';
+
+const pageTitle = 'Dashboard';
 </script>
 
 <template>
-    <Head title="Dashboard" />
-    <AuthenticatedAdminLayout>
+    <Head :title="pageTitle" />
+    <AuthenticatedAdminLayout :page-title="pageTitle">
         <Container :spaced-mobile="false">
-            <div class="py-12">
+            <div>
                 <ResponsiveCard>
                     <p class="m-0">You are logged in as an Admin!</p>
                 </ResponsiveCard>

@@ -15,18 +15,24 @@ const props = defineProps({
         type: String,
     },
 });
+
+const pageTitle = 'Profile';
+const breadcrumbs = [
+    { label: 'Dashboard', route: route('admin.dashboard') },
+    { label: pageTitle, route: route('admin.profile.edit') },
+    { label: 'Edit' },
+];
 </script>
 
 <template>
-    <Head title="Profile" />
+    <Head :title="pageTitle" />
 
-    <AdminAuthenticatedLayout>
-        <template #header>
-            <h2 class="font-bold text-xl leading-tight">Profile</h2>
-        </template>
-
+    <AdminAuthenticatedLayout
+        :page-title="pageTitle"
+        :breadcrumbs="breadcrumbs"
+    >
         <Container :spaced-mobile="false">
-            <div class="py-12">
+            <div class="">
                 <div class="space-y-6">
                     <ResponsiveCard>
                         <UpdateProfileInformationForm
