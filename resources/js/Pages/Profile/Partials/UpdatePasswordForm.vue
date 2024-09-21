@@ -1,11 +1,11 @@
 <script setup>
-import { ref } from 'vue';
+import { useTemplateRef } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import { useToast } from 'primevue/usetoast';
 import InputError from '@/Components/InputError.vue';
 
-const currentPasswordInput = ref(null);
-const passwordInput = ref(null);
+const currentPasswordInput = useTemplateRef('current-password-input');
+const passwordInput = useTemplateRef('password-input');
 
 const toast = useToast();
 const form = useForm({
@@ -61,7 +61,7 @@ const updatePassword = () => {
                 <InputText
                     required
                     id="current_password"
-                    ref="currentPasswordInput"
+                    ref="current-password-input"
                     type="password"
                     v-model="form.current_password"
                     class="w-full"
@@ -79,7 +79,7 @@ const updatePassword = () => {
                 <InputText
                     required
                     id="password"
-                    ref="passwordInput"
+                    ref="password-input"
                     type="password"
                     v-model="form.password"
                     class="w-full"

@@ -1,10 +1,10 @@
 <script setup>
-import { ref, watch, nextTick } from 'vue';
+import { ref, useTemplateRef, watch, nextTick } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import Dialog from 'primevue/dialog';
 import InputError from '@/Components/InputError.vue';
 
-const passwordInput = ref(null);
+const passwordInput = useTemplateRef('password-input');
 const modalOpen = ref(false);
 
 const form = useForm({
@@ -52,7 +52,7 @@ watch(modalOpen, (newModalOpen) => {
                 <InputText
                     required
                     id="password"
-                    ref="passwordInput"
+                    ref="password-input"
                     type="password"
                     placeholder="Password"
                     v-model="form.password"
