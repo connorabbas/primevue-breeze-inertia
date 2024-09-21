@@ -5,7 +5,7 @@ import { useToast } from 'primevue/usetoast';
 import InputError from '@/Components/InputError.vue';
 
 const currentPasswordInput = useTemplateRef('current-password-input');
-const passwordInput = useTemplateRef('password-input');
+const newPasswordInput = useTemplateRef('new-password-input');
 
 const toast = useToast();
 const form = useForm({
@@ -32,7 +32,7 @@ const updatePassword = () => {
         onError: () => {
             if (form.errors?.password) {
                 form.reset('password', 'password_confirmation');
-                passwordInput.value.$el.focus();
+                newPasswordInput.value.$el.focus();
             }
             if (form.errors?.current_password) {
                 form.reset('current_password');
@@ -79,7 +79,7 @@ const updatePassword = () => {
                 <InputText
                     required
                     id="password"
-                    ref="password-input"
+                    ref="new-password-input"
                     type="password"
                     v-model="form.password"
                     class="w-full"

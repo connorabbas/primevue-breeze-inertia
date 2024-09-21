@@ -1,5 +1,5 @@
 <script setup>
-import { ref, useTemplateRef, watch, nextTick } from 'vue';
+import { ref, useTemplateRef } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import Dialog from 'primevue/dialog';
 import InputError from '@/Components/InputError.vue';
@@ -20,25 +20,21 @@ const deleteUser = () => {
     });
 };
 
-watch(modalOpen, (newModalOpen) => {
-    if (newModalOpen) {
-        nextTick(() => {
-            passwordInput.value.$el.focus();
-        });
-    } else {
-        form.clearErrors();
-    }
-});
+function focusPasswordInput() {
+    passwordInput.value.$el.focus();
+}
 </script>
 
 <template>
     <section class="space-y-6">
         <Dialog
+            :draggable="false"
             position="center"
             v-model:visible="modalOpen"
             modal
             header="Are you sure you want to delete your account?"
             :style="{ width: '40rem' }"
+            @show="focusPasswordInput"
         >
             <div class="mb-6">
                 <p class="m-0 text-muted-color">
