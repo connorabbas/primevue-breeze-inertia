@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, onUnmounted, watchEffect } from 'vue';
+import { ref, useTemplateRef, onMounted, onUnmounted, watchEffect } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import Drawer from 'primevue/drawer';
 import Toast from 'primevue/toast';
@@ -7,10 +7,11 @@ import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Container from '@/Components/Container.vue';
 import LinksMenu from '@/Components/LinksMenu.vue';
 import LinksMenuBar from '@/Components/LinksMenuBar.vue';
-import NestedLinksMenu from '@/Components/NestedLinksMenu.vue';
+import LinksPanelMenu from '@/Components/LinksPanelMenu.vue';
 import ToggleThemeButton from '@/Components/ToggleThemeButton.vue';
 
 const currentRoute = route().current();
+const logoutForm = useForm({});
 function logout() {
     logoutForm.post(route('logout'));
 }
@@ -25,8 +26,7 @@ const mainMenuItems = [
 ];
 
 // User menu (desktop)
-const logoutForm = useForm({});
-const userMenu = ref(null);
+const userMenu = useTemplateRef('user-menu');
 const userMenuItems = [
     {
         label: 'Profile',
@@ -124,7 +124,7 @@ watchEffect(() => {
                                     <LinksMenu
                                         :model="userMenuItems"
                                         popup
-                                        ref="userMenu"
+                                        ref="user-menu"
                                         class="shadow"
                                     />
                                     <Button
@@ -170,7 +170,7 @@ watchEffect(() => {
                                 >
                                     Home
                                 </p>
-                                <NestedLinksMenu
+                                <LinksPanelMenu
                                     :model="homeMobileMenuItems"
                                     class="w-full"
                                 />

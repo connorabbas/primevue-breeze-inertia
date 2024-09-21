@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { useTemplateRef, onMounted } from 'vue';
 import { useForm, usePage } from '@inertiajs/vue3';
 import { useToast } from 'primevue/usetoast';
 import Message from 'primevue/message';
@@ -14,7 +14,7 @@ defineProps({
     },
 });
 
-const nameInput = ref(null);
+const nameInput = useTemplateRef('name-input');
 
 const user = usePage().props.auth.user;
 const toast = useToast();
@@ -59,7 +59,7 @@ onMounted(() => {
                 <label for="name" class="block mb-2">Name</label>
                 <InputText
                     required
-                    ref="nameInput"
+                    ref="name-input"
                     id="name"
                     type="text"
                     v-model="form.name"
