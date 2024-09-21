@@ -1,16 +1,15 @@
 <script setup>
-import { ref } from 'vue';
+import { useTemplateRef } from 'vue';
 import Menu from 'primevue/menu';
 
-const childRef = ref(null);
-
+const childRef = useTemplateRef('child-ref');
 defineExpose({
     childRef,
 });
 </script>
 
 <template>
-    <Menu ref="childRef">
+    <Menu ref="child-ref">
         <template #item="{ item, props }">
             <Link
                 v-if="item.route"

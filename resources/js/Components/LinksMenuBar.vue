@@ -1,16 +1,15 @@
 <script setup>
-import { ref } from 'vue';
+import { useTemplateRef } from 'vue';
 import Menubar from 'primevue/menubar';
 
-const childRef = ref(null);
-
+const childRef = useTemplateRef('child-ref');
 defineExpose({
     childRef,
 });
 </script>
 
 <template>
-    <Menubar ref="childRef">
+    <Menubar ref="child-ref">
         <template v-if="$slots.start" #start>
             <slot name="start"></slot>
         </template>

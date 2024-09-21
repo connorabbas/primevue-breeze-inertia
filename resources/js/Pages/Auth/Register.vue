@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { useTemplateRef, onMounted } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import InputError from '@/Components/InputError.vue';
@@ -11,7 +11,7 @@ const form = useForm({
     password_confirmation: '',
 });
 
-const nameInput = ref(null);
+const nameInput = useTemplateRef('name-input');
 
 const submit = () => {
     form.post(route('register'), {
@@ -32,7 +32,7 @@ onMounted(() => {
             <div class="mb-6">
                 <label for="name" class="block mb-2">Name</label>
                 <InputText
-                    ref="nameInput"
+                    ref="name-input"
                     id="name"
                     type="text"
                     v-model="form.name"
