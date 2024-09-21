@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, useTemplateRef } from 'vue';
 import { Head } from '@inertiajs/vue3';
 import { useDataTable } from '@/Composables/useDataTable.js';
 import { FilterMatchMode } from '@primevue/core/api';
@@ -25,8 +25,8 @@ const breadcrumbs = [
 
 // User context menu
 const selectedRowData = ref({});
-const contextMenu = ref(null);
-const contextMenuItems = [
+const userContextMenu = useTemplateRef('user-context-menu');
+const userContextMenuItems = [
     {
         label: 'Manage User',
         icon: 'pi pi-pencil',
@@ -35,10 +35,10 @@ const contextMenuItems = [
         },
     },
 ];
-function toggleContextMenu(event, rowData) {
+function toggleUserContextMenu(event, rowData) {
     selectedRowData.value = rowData;
-    if (contextMenu.value) {
-        contextMenu.value.toggle(event);
+    if (userContextMenu.value) {
+        userContextMenu.value.toggle(event);
     }
 }
 
@@ -87,9 +87,9 @@ parseUrlParams(props.urlParams);
             <div>
                 <ResponsiveCard spacingClasses="p-3">
                     <Menu
-                        ref="contextMenu"
+                        ref="user-context-menu"
                         class="shadow"
-                        :model="contextMenuItems"
+                        :model="userContextMenuItems"
                         popup
                     />
                     <DataTable
@@ -163,7 +163,7 @@ parseUrlParams(props.urlParams);
                                     rounded
                                     icon="pi pi-ellipsis-v"
                                     @click="
-                                        toggleContextMenu(
+                                        toggleUserContextMenu(
                                             $event,
                                             slotProps.data
                                         )

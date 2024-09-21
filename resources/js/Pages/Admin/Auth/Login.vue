@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { useTemplateRef, onMounted } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import Checkbox from 'primevue/checkbox';
 import Message from 'primevue/message';
@@ -15,7 +15,7 @@ defineProps({
     },
 });
 
-const emailInput = ref(null);
+const emailInput = useTemplateRef('email-input');
 
 const form = useForm({
     email: '',
@@ -54,7 +54,7 @@ onMounted(() => {
                     <label for="email" class="block mb-2">Email</label>
                     <InputText
                         required
-                        ref="emailInput"
+                        ref="email-input"
                         id="email"
                         type="email"
                         v-model="form.email"

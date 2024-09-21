@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, useTemplateRef } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import Toast from 'primevue/toast';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
@@ -25,7 +25,7 @@ const props = defineProps({
 
 // User menu
 const logoutForm = useForm({});
-const userMenu = ref(null);
+const userMenu = useTemplateRef('user-menu');
 const userMenuItems = [
     {
         label: 'Profile',
@@ -113,7 +113,7 @@ const drawerOpen = ref(false);
                                 <LinksMenu
                                     :model="userMenuItems"
                                     popup
-                                    ref="userMenu"
+                                    ref="user-menu"
                                     class="shadow"
                                 />
                                 <Button
