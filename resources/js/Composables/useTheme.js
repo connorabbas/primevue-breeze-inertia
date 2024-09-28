@@ -1,22 +1,20 @@
 import { ref } from 'vue';
 
-const currentTheme = ref(localStorage.getItem('selectedTheme') || 'light');
+const currentTheme = ref('light');
 
-function initSiteTheme() {
-    setTheme(currentTheme.value);
+if (import.meta.env.SSR === false) {
+    currentTheme.value = localStorage.getItem('selectedTheme') || 'light';
 }
 
 function setTheme(theme) {
-    const domHtml = document.documentElement;
-    domHtml.classList.toggle('dark-mode', theme === 'dark');
-    saveThemePreference(theme);
-}
-
-function saveThemePreference(theme) {
+    if (import.meta.env.SSR === false) {
+        const domHtml = document.documentElement;
+        domHtml.classList.toggle('dark-mode', theme === 'dark');
+        localStorage.setItem('selectedTheme', theme);
+    }
     currentTheme.value = theme;
-    localStorage.setItem('selectedTheme', theme);
 }
 
 export function useTheme() {
-    return { initSiteTheme, setTheme, currentTheme };
+    return { setTheme, currentTheme };
 }

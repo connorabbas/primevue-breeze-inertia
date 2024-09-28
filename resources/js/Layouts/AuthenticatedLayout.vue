@@ -61,21 +61,23 @@ const homeMobileMenuItems = ref([
     },
 ]);
 const mobileMenuOpen = ref(false);
-const windowWidth = ref(window.innerWidth);
-const updateWidth = () => {
-    windowWidth.value = window.innerWidth;
-};
-onMounted(() => {
-    window.addEventListener('resize', updateWidth);
-});
-onUnmounted(() => {
-    window.removeEventListener('resize', updateWidth);
-});
-watchEffect(() => {
-    if (windowWidth.value > 768) {
-        mobileMenuOpen.value = false;
-    }
-});
+if (import.meta.env.SSR === false) {
+    const windowWidth = ref(window.innerWidth);
+    const updateWidth = () => {
+        windowWidth.value = window.innerWidth;
+    };
+    onMounted(() => {
+        window.addEventListener('resize', updateWidth);
+    });
+    onUnmounted(() => {
+        window.removeEventListener('resize', updateWidth);
+    });
+    watchEffect(() => {
+        if (windowWidth.value > 768) {
+            mobileMenuOpen.value = false;
+        }
+    });
+}
 </script>
 
 <template>

@@ -2,7 +2,7 @@ import './bootstrap';
 import '../css/app.css';
 import 'primeicons/primeicons.css';
 
-import { createApp, h } from 'vue';
+import { createSSRApp, h } from 'vue';
 import { createInertiaApp, Head, Link } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
@@ -26,11 +26,11 @@ createInertiaApp({
         ),
     setup({ el, App, props, plugin }) {
         // set site theme (light/dark mode)
-        const { initSiteTheme } = useTheme();
-        initSiteTheme();
+        const { setTheme, currentTheme } = useTheme();
+        setTheme(currentTheme.value);
 
         // start the app
-        return createApp({ render: () => h(App, props) })
+        return createSSRApp({ render: () => h(App, props) })
             .use(plugin)
             .use(ZiggyVue, Ziggy)
             .use(PrimeVue, {
