@@ -23,6 +23,7 @@
     "dependencies": {
         "@vue/server-renderer": "^3.5.10",
         "@vueuse/integrations": "^11.1.0",
+        "universal-cookie": "^7.2.0",
         "ziggy-js": "^2.3.0"
     }
 }
