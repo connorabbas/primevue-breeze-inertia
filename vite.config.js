@@ -37,7 +37,7 @@ export default ({ mode }) => {
             port: devPort,
         },
         ssr: {
-            noExternal: ['primevue'],
+            //noExternal: ['primevue'],
         },
     });
 };

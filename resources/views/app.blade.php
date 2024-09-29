@@ -30,7 +30,7 @@
 </head>
 
 <body
-    class="font-sans antialiased h-full bg-surface-100 dark:bg-surface-950 {{ Cookie::get('selectedTheme') == 'dark' ? 'dark-mode' : '' }}"
+    class="font-sans antialiased h-full bg-surface-100 dark:bg-surface-950"
 >
     @inertia
 </body>

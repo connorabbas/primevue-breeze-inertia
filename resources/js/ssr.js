@@ -38,21 +38,19 @@ createServer((page) =>
             global.route = (name, params, absolute, config = Ziggy) =>
                 routeFn(name, params, absolute, config);
 
-            return (
-                createSSRApp({
-                    render: () => h(App, props),
+            return createSSRApp({
+                render: () => h(App, props),
+            })
+                .use(plugin)
+                .use(ZiggyVue, Ziggy)
+                .use(PrimeVue, {
+                    theme: customThemePreset,
                 })
-                    .use(ZiggyVue, Ziggy)
-                    .use(PrimeVue, {
-                        theme: customThemePreset,
-                    })
-                    .use(ToastService)
-                    .component('Head', Head)
-                    .component('Link', Link)
-                    .component('InputText', InputText)
-                    .component('Button', Button)
-                    .use(plugin)
-            );
+                .use(ToastService)
+                .component('Head', Head)
+                .component('Link', Link)
+                .component('InputText', InputText)
+                .component('Button', Button);
         },
         progress: {
             color: 'var(--p-primary-500)',

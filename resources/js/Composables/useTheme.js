@@ -23,9 +23,9 @@ function setTheme(theme) {
     currentTheme.value = theme;
 
     // reload page, new styles needed
-    if (import.meta.env.SSR === false && themeChanged) {
+    /* if (import.meta.env.SSR === false && themeChanged) {
         window.location.reload();
-    }
+    } */
 }
 
 export function useTheme() {
