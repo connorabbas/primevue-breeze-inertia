@@ -4,6 +4,14 @@
 
 @layer tailwind-base {
     @tailwind base;
+    @layer base {
+        input,
+        textarea,
+        select,
+        button {
+            all: revert;
+        }
+    }
 }
 
 @layer tailwind-utilities {
