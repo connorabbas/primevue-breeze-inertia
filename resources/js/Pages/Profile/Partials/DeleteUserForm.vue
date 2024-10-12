@@ -46,6 +46,7 @@ function focusPasswordInput() {
 
             <div>
                 <InputText
+                    autofocus
                     required
                     id="password"
                     ref="password-input"
