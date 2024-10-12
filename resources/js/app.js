@@ -9,6 +9,7 @@ import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 
 import PrimeVue from 'primevue/config';
 import ToastService from 'primevue/toastservice';
+import Tooltip from 'primevue/tooltip';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 
@@ -41,6 +42,7 @@ createInertiaApp({
             .component('Link', Link)
             .component('InputText', InputText)
             .component('Button', Button)
+            .directive('tooltip', Tooltip)
             .mount(el);
     },
     progress: {

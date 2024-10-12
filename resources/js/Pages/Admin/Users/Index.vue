@@ -168,6 +168,7 @@ parseUrlParams(props.urlParams);
                                             slotProps.data
                                         )
                                     "
+                                    v-tooltip.top="'Show User Actions'"
                                 />
                             </template>
                         </Column>
