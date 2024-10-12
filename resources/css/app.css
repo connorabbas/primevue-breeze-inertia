@@ -1,18 +1,7 @@
 @import "custom.css";
+@import "custom-preflight.css" layer(tailwind-base);
 
 @layer tailwind-base, primevue, tailwind-utilities;
-
-@layer tailwind-base {
-    @tailwind base;
-    @layer base {
-        input,
-        textarea,
-        select,
-        button {
-            all: revert;
-        }
-    }
-}
 
 @layer tailwind-utilities {
     @tailwind components;

@@ -24,7 +24,7 @@ import PanelMenu from 'primevue/panelmenu';
                 v-if="item.route"
                 :href="item.route"
                 custom
-                class="flex items-center cursor-pointer px-4 py-2"
+                class="flex items-center cursor-pointer no-underline px-4 py-2"
                 :class="
                     item.active
                         ? 'text-primary'
@@ -40,7 +40,7 @@ import PanelMenu from 'primevue/panelmenu';
             </Link>
             <a
                 v-else
-                class="flex items-center cursor-pointer text-surface-700 dark:text-surface-0 px-4 py-2"
+                class="flex items-center cursor-pointer no-underline text-surface-700 dark:text-surface-0 px-4 py-2"
                 :href="item.url"
                 :target="item.target"
             >

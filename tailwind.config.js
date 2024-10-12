@@ -15,6 +15,6 @@ module.exports = {
             },
         },
     },
-    plugins: [require('tailwindcss-primeui')],
+    plugins: [require('postcss-import'), require('tailwindcss-primeui')],
     darkMode: ['selector', '.dark-mode'],
 };
