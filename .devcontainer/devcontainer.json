@@ -10,18 +10,15 @@
         "vscode": {
             "extensions": [
                 "absszero.vscode-laravel-goto",
-                "amiralizadeh9480.laravel-extra-intellisense",
-                "bmewburn.vscode-intelephense-client",
                 "codingyu.laravel-goto-view",
+                "onecentlin.laravel-blade",
+                "amiralizadeh9480.laravel-extra-intellisense",
+                "DEVSENSE.phptools-vscode",
+                "MehediDracula.php-namespace-resolver",
                 "eamodio.gitlens",
                 "esbenp.prettier-vscode",
                 "mikestead.dotenv",
                 "streetsidesoftware.code-spell-checker",
-                "MehediDracula.php-namespace-resolver",
-                "hbenl.vscode-test-explorer",
-                "ms-vscode.test-adapter-converter",
-                "recca0120.vscode-phpunit",
-                "onecentlin.laravel-blade",
                 "hollowtree.vue-snippets",
                 "Vue.volar",
                 "shd101wyy.markdown-preview-enhanced"
