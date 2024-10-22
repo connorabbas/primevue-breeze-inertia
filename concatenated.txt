@@ -1,0 +1,104 @@
+
+
+==== app\Services\UserService.php ====
+
+<?php
+
+namespace App\Services;
+
+use App\DataTransferObjects\UserFiltersDto;
+use App\Models\User;
+
+class UserService
+{
+    public function getUsers(UserFiltersDto $filters): mixed
+    {
+        $query = User::query()
+            ->when($filters->name, function ($query) use ($filters) {
+                $query->where('name', 'like', "%" . $filters->name . "%");
+            })
+            ->when($filters->email, function ($query) use ($filters) {
+                $query->where('email', 'like', "%" . $filters->email . "%");
+            });
+
+        if ($filters->sortField && $filters->sortDirection) {
+            $query->orderBy($filters->sortField, $filters->sortDirection);
+        } else {
+            $query->orderBy('created_at', 'desc');
+        }
+
+        $results = ($filters->perPage && $filters->currentPage)
+            ? $query->paginate(perPage: $filters->perPage, page: $filters->currentPage)
+            : $query->get();
+
+        return $results;
+    }
+}
+
+
+==== app\Http\Controllers\Admin\UserController.php ====
+
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\DataTransferObjects\UserFiltersDto;
+use Inertia\Inertia;
+use Inertia\Response;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Services\UserService;
+
+class UserController extends Controller
+{
+    public function __construct(public UserService $userService)
+    {
+    }
+
+    public function index(Request $request): Response
+    {
+        $users = $this->userService->getUsers(
+            UserFiltersDto::fromDataTableRequest($request)
+        );
+
+        return Inertia::render('Admin/Users/Index', [
+            'urlParams' => $request->all(),
+            'users' => $users,
+        ]);
+    }
+}
+
+
+==== app\DataTransferObjects\UserFiltersDto.php ====
+
+<?php
+
+namespace App\DataTransferObjects;
+
+use Illuminate\Http\Request;
+
+class UserFiltersDto
+{
+    public function __construct(
+        public ?int $perPage = null,
+        public ?int $currentPage = null,
+        public ?string $name = null,
+        public ?string $email = null,
+        public ?string $sortField = null,
+        public ?string $sortDirection = 'asc',
+    ) {
+    }
+
+    public static function fromDataTableRequest(Request $request): self
+    {
+        $filters = $request->input('filters');
+        return new self(
+            perPage: (int) $request->input('rows', 20),
+            currentPage: (int) $request->input('page', 1),
+            name: $filters['name']['value'] ?? null,
+            email: $filters['email']['value'] ?? null,
+            sortField: $request->input('sortField'),
+            sortDirection: $request->input('sortOrder', 1) == 1 ? 'asc' : 'desc',
+        );
+    }
+}
