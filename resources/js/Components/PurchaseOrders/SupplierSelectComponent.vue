@@ -36,9 +36,6 @@ const selectedValue = computed({
 
 <template>
     <div>
-        <div v-if="process.env.NODE_ENV === 'development'" class="mb-2 text-xs text-gray-500">
-            Available suppliers: {{ suppliers.length }}
-        </div>
 
         <label for="supplier" class="block text-sm font-medium text-gray-700">
             Select Supplier

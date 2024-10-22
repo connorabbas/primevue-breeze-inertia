@@ -1,3639 +1,20 @@
 
 
-==== resources\js\app.js ====
-
-import './bootstrap';
-import '../css/app.css';
-import 'primeicons/primeicons.css';
-
-import { createApp, h } from 'vue';
-import { createInertiaApp, Head, Link } from '@inertiajs/vue3';
-import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
-import { ZiggyVue } from '../../vendor/tightenco/ziggy';
-
-import PrimeVue from 'primevue/config';
-import ToastService from 'primevue/toastservice';
-import Tooltip from 'primevue/tooltip';
-import InputText from 'primevue/inputtext';
-import Button from 'primevue/button';
-
-import { useTheme } from '@/Composables/useTheme.js';
-import customThemePreset from '@/theme-preset.js';
-
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
-
-createInertiaApp({
-    title: (title) => `${title} - ${appName}`,
-    resolve: (name) =>
-        resolvePageComponent(
-            `./Pages/${name}.vue`,
-            import.meta.glob('./Pages/**/*.vue')
-        ),
-    setup({ el, App, props, plugin }) {
-        // set site theme (light/dark mode)
-        const { initSiteTheme } = useTheme();
-        initSiteTheme();
-
-        // start the app
-        return createApp({ render: () => h(App, props) })
-            .use(plugin)
-            .use(ZiggyVue, Ziggy)
-            .use(PrimeVue, {
-                theme: customThemePreset,
-            })
-            .use(ToastService)
-            .component('Head', Head)
-            .component('Link', Link)
-            .component('InputText', InputText)
-            .component('Button', Button)
-            .directive('tooltip', Tooltip)
-            .mount(el);
-    },
-    progress: {
-        color: 'var(--p-primary-500)',
-    },
-});
-
-
-==== resources\js\bootstrap.js ====
-
-import axios from 'axios';
-window.axios = axios;
-
-window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-
-
-==== resources\js\Components\ApplicationLogo.vue ====
-
-<template>
-    <svg viewBox="0 0 316 316" xmlns="http://www.w3.org/2000/svg">
-        <path
-            d="M305.8 81.125C305.77 80.995 305.69 80.885 305.65 80.755C305.56 80.525 305.49 80.285 305.37 80.075C305.29 79.935 305.17 79.815 305.07 79.685C304.94 79.515 304.83 79.325 304.68 79.175C304.55 79.045 304.39 78.955 304.25 78.845C304.09 78.715 303.95 78.575 303.77 78.475L251.32 48.275C249.97 47.495 248.31 47.495 246.96 48.275L194.51 78.475C194.33 78.575 194.19 78.725 194.03 78.845C193.89 78.955 193.73 79.045 193.6 79.175C193.45 79.325 193.34 79.515 193.21 79.685C193.11 79.815 192.99 79.935 192.91 80.075C192.79 80.285 192.71 80.525 192.63 80.755C192.58 80.875 192.51 80.995 192.48 81.125C192.38 81.495 192.33 81.875 192.33 82.265V139.625L148.62 164.795V52.575C148.62 52.185 148.57 51.805 148.47 51.435C148.44 51.305 148.36 51.195 148.32 51.065C148.23 50.835 148.16 50.595 148.04 50.385C147.96 50.245 147.84 50.125 147.74 49.995C147.61 49.825 147.5 49.635 147.35 49.485C147.22 49.355 147.06 49.265 146.92 49.155C146.76 49.025 146.62 48.885 146.44 48.785L93.99 18.585C92.64 17.805 90.98 17.805 89.63 18.585L37.18 48.785C37 48.885 36.86 49.035 36.7 49.155C36.56 49.265 36.4 49.355 36.27 49.485C36.12 49.635 36.01 49.825 35.88 49.995C35.78 50.125 35.66 50.245 35.58 50.385C35.46 50.595 35.38 50.835 35.3 51.065C35.25 51.185 35.18 51.305 35.15 51.435C35.05 51.805 35 52.185 35 52.575V232.235C35 233.795 35.84 235.245 37.19 236.025L142.1 296.425C142.33 296.555 142.58 296.635 142.82 296.725C142.93 296.765 143.04 296.835 143.16 296.865C143.53 296.965 143.9 297.015 144.28 297.015C144.66 297.015 145.03 296.965 145.4 296.865C145.5 296.835 145.59 296.775 145.69 296.745C145.95 296.655 146.21 296.565 146.45 296.435L251.36 236.035C252.72 235.255 253.55 233.815 253.55 232.245V174.885L303.81 145.945C305.17 145.165 306 143.725 306 142.155V82.265C305.95 81.875 305.89 81.495 305.8 81.125ZM144.2 227.205L100.57 202.515L146.39 176.135L196.66 147.195L240.33 172.335L208.29 190.625L144.2 227.205ZM244.75 114.995V164.795L226.39 154.225L201.03 139.625V89.825L219.39 100.395L244.75 114.995ZM249.12 57.105L292.81 82.265L249.12 107.425L205.43 82.265L249.12 57.105ZM114.49 184.425L96.13 194.995V85.305L121.49 70.705L139.85 60.135V169.815L114.49 184.425ZM91.76 27.425L135.45 52.585L91.76 77.745L48.07 52.585L91.76 27.425ZM43.67 60.135L62.03 70.705L87.39 85.305V202.545V202.555V202.565C87.39 202.735 87.44 202.895 87.46 203.055C87.49 203.265 87.49 203.485 87.55 203.695V203.705C87.6 203.875 87.69 204.035 87.76 204.195C87.84 204.375 87.89 204.575 87.99 204.745C87.99 204.745 87.99 204.755 88 204.755C88.09 204.905 88.22 205.035 88.33 205.175C88.45 205.335 88.55 205.495 88.69 205.635L88.7 205.645C88.82 205.765 88.98 205.855 89.12 205.965C89.28 206.085 89.42 206.225 89.59 206.325C89.6 206.325 89.6 206.325 89.61 206.335C89.62 206.335 89.62 206.345 89.63 206.345L139.87 234.775V285.065L43.67 229.705V60.135ZM244.75 229.705L148.58 285.075V234.775L219.8 194.115L244.75 179.875V229.705ZM297.2 139.625L253.49 164.795V114.995L278.85 100.395L297.21 89.825V139.625H297.2Z"
-        />
-    </svg>
-</template>
-
-
-==== resources\js\Components\Container.vue ====
-
-<script setup>
-const props = defineProps({
-    spacedMobile: {
-        type: Boolean,
-        default: true,
-        required: false,
-    },
-});
-</script>
-
-<template>
-    <div
-        :class="[spacedMobile ? 'px-4' : 'px-0']"
-        class="max-w-screen-xl mx-auto sm:px-4"
-    >
-        <slot />
-    </div>
-</template>
-
-
-==== resources\js\Components\InputError.vue ====
-
-<script setup>
-defineProps({
-    message: {
-        type: String,
-    },
-});
-</script>
-
-<template>
-    <div v-show="message">
-        <p class="text-sm text-red-500 dark:text-red-300">
-            {{ message }}
-        </p>
-    </div>
-</template>
-
-
-==== resources\js\Components\LinksBreadcrumb.vue ====
-
-<script setup>
-import Breadcrumb from 'primevue/breadcrumb';
-</script>
-
-<template>
-    <Breadcrumb
-        :pt="{
-            root: {
-                class: 'p-0 bg-transparent',
-            },
-        }"
-        :home="{
-            icon: 'pi pi-home',
-            route: route('welcome'),
-        }"
-    >
-        <template #item="{ item, props }">
-            <Link
-                v-if="item.route"
-                :href="item.route"
-                class="p-breadcrumb-item-link"
-                custom
-            >
-                <span
-                    v-show="item.icon"
-                    :class="item.icon"
-                    class="p-breadcrumb-item-icon"
-                />
-                <span class="p-breadcrumb-item-label">{{ item.label }}</span>
-            </Link>
-            <a
-                v-else
-                :href="item.url"
-                :target="item.target"
-                v-bind="props.action"
-            >
-                <span
-                    v-show="item.icon"
-                    :class="item.icon"
-                    class="p-breadcrumb-item-icon"
-                />
-                <span class="p-breadcrumb-item-label">{{ item.label }}</span>
-            </a>
-        </template>
-        <template #separator> / </template>
-    </Breadcrumb>
-</template>
-
-
-==== resources\js\Components\LinksMenu.vue ====
-
-<script setup>
-import { useTemplateRef } from 'vue';
-import Menu from 'primevue/menu';
-
-const childRef = useTemplateRef('child-ref');
-defineExpose({
-    childRef,
-});
-</script>
-
-<template>
-    <Menu ref="child-ref">
-        <template #item="{ item, props }">
-            <Link
-                v-if="item.route"
-                :href="item.route"
-                class="p-menu-item-link"
-                custom
-            >
-                <span
-                    v-show="item.icon"
-                    :class="item.icon"
-                    class="p-menu-item-icon"
-                />
-                <span class="p-menu-item-label">{{ item.label }}</span>
-            </Link>
-            <a
-                v-else
-                :href="item.url"
-                :target="item.target"
-                v-bind="props.action"
-            >
-                <span
-                    v-show="item.icon"
-                    :class="item.icon"
-                    class="p-menu-item-icon"
-                />
-                <span class="p-menu-item-label">{{ item.label }}</span>
-            </a>
-        </template>
-    </Menu>
-</template>
-
-
-==== resources\js\Components\LinksMenuBar.vue ====
-
-<script setup>
-import { useTemplateRef } from 'vue';
-import Menubar from 'primevue/menubar';
-
-const childRef = useTemplateRef('child-ref');
-defineExpose({
-    childRef,
-});
-</script>
-
-<template>
-    <Menubar ref="child-ref">
-        <template v-if="$slots.start" #start>
-            <slot name="start"></slot>
-        </template>
-        <template #item="{ item, props, hasSubmenu, root }">
-            <Link
-                v-if="item.route"
-                :href="item.route"
-                class="p-menubar-item-link"
-                :class="{
-                    'font-bold text-primary dark:text-primary-300 bg-primary-50 dark:bg-primary-950 rounded-lg':
-                        item.active,
-                }"
-                custom
-            >
-                <span
-                    v-show="item.icon"
-                    :class="item.icon"
-                    class="p-menu-item-icon"
-                />
-                <span class="p-menu-item-label">{{ item.label }}</span>
-            </Link>
-            <a
-                v-else
-                :href="item.url"
-                :target="item.target"
-                v-bind="props.action"
-                class="p-menubar-item-link"
-            >
-                <span
-                    v-show="item.icon"
-                    :class="item.icon"
-                    class="p-menu-item-icon"
-                />
-                <span class="p-menu-item-label">{{ item.label }}</span>
-                <i
-                    v-if="hasSubmenu"
-                    :class="[
-                        'pi pi-angle-down',
-                        {
-                            'pi-angle-down ml-2': root,
-                            'pi-angle-right ml-auto': !root,
-                        },
-                    ]"
-                ></i>
-            </a>
-        </template>
-        <template v-if="$slots.end" #end>
-            <slot name="end"></slot>
-        </template>
-    </Menubar>
-</template>
-
-
-==== resources\js\Components\LinksPanelMenu.vue ====
-
-<script setup>
-import PanelMenu from 'primevue/panelmenu';
-</script>
-
-<template>
-    <PanelMenu
-        :pt="{
-            root: {
-                class: 'p-0 m-0 gap-1',
-            },
-            panel: {
-                class: 'p-0 border-0',
-            },
-            header: {
-                class: 'p-0 border-0',
-            },
-            itemContent: {
-                class: 'gap-1',
-            },
-        }"
-    >
-        <template #item="{ item }">
-            <Link
-                v-if="item.route"
-                :href="item.route"
-                custom
-                class="flex items-center cursor-pointer no-underline px-4 py-2"
-                :class="
-                    item.active
-                        ? 'text-primary'
-                        : 'text-surface-700 dark:text-surface-0'
-                "
-            >
-                <span
-                    v-show="item.icon"
-                    :class="item.icon"
-                    class="p-panelmenu-item-icon mr-2"
-                />
-                <span>{{ item.label }}</span>
-            </Link>
-            <a
-                v-else
-                class="flex items-center cursor-pointer no-underline text-surface-700 dark:text-surface-0 px-4 py-2"
-                :href="item.url"
-                :target="item.target"
-            >
-                <span
-                    v-show="item.icon"
-                    :class="item.icon"
-                    class="p-panelmenu-item-icon mr-2"
-                />
-                <span>{{ item.label }}</span>
-                <span v-if="item.items" class="pi pi-angle-down ml-auto" />
-            </a>
-        </template>
-    </PanelMenu>
-</template>
-
-
-==== resources\js\Components\PurchaseOrders\AddressSelectComponent.vue ====
-
-<script setup>
-import { computed } from 'vue';
-import Dropdown from 'primevue/dropdown';
-
-const props = defineProps({
-    modelValue: {
-        type: Object,
-        required: true,
-        default: () => ({
-            billTo: null,
-            shipFrom: null,
-            shipTo: null,
-            returnTo: null
-        })
-    },
-    availableAddresses: {
-        type: Object,
-        required: true,
-        default: () => ({
-            billTo: [],
-            shipFrom: [],
-            shipTo: [],
-            returnTo: []
-        })
-    }
-});
-
-const emit = defineEmits(['update:modelValue']);
-
-const formatAddress = (address) => {
-    if (!address) return '';
-    return [
-        address.street1,
-        address.street2,
-        address.city,
-        address.state,
-        address.postal_code,
-        address.country
-    ].filter(Boolean).join(', ');
-};
-
-const formattedAddresses = computed(() => ({
-    billTo: props.availableAddresses.billTo?.map(addr => ({
-        ...addr,
-        label: formatAddress(addr)
-    })) || [],
-    shipFrom: props.availableAddresses.shipFrom?.map(addr => ({
-        ...addr,
-        label: formatAddress(addr)
-    })) || [],
-    shipTo: props.availableAddresses.shipTo?.map(addr => ({
-        ...addr,
-        label: formatAddress(addr)
-    })) || [],
-    returnTo: props.availableAddresses.returnTo?.map(addr => ({
-        ...addr,
-        label: formatAddress(addr)
-    })) || []
-}));
-
-const updateAddress = (type, value) => {
-    emit('update:modelValue', {
-        ...props.modelValue,
-        [type]: value
-    });
-};
-</script>
-
-<template>
-    <div class="space-y-4">
-        <div v-for="(addresses, type) in formattedAddresses" :key="type">
-            <label :for="type" class="block text-sm font-medium text-gray-700 capitalize">
-                {{ type.replace(/([A-Z])/g, ' $1').trim() }} Address
-            </label>
-            <Dropdown
-                :id="type"
-                v-model="modelValue[type]"
-                :options="addresses"
-                optionLabel="label"
-                :placeholder="`Select ${type.replace(/([A-Z])/g, ' $1').trim()} Address`"
-                class="w-full mt-1"
-                @change="(e) => updateAddress(type, e.value)"
-            />
-        </div>
-    </div>
-</template>
-
-
-==== resources\js\Components\PurchaseOrders\PartsDataTableComponent.vue ====
-
-<script setup>
-import { ref, computed } from 'vue';
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
-import InputNumber from 'primevue/inputnumber';
-import Button from 'primevue/button';
-
-const props = defineProps({
-    availableParts: {
-        type: Array,
-        required: true,
-        default: () => []
-    },
-    selectedParts: {
-        type: Array,
-        required: true,
-        default: () => []
-    }
-});
-
-const emit = defineEmits(['add-part', 'update-quantity', 'remove-part']);
-
-// Local state for selected items
-const selectedItems = ref([]);
-
-const formatCurrency = (value) => {
-    return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD'
-    }).format(value);
-};
-
-const getCostPerPart = (part) => {
-    return part.replenishment_data?.purchaseTerms?.[0]?.cost_per_part || 0;
-};
-
-const getOrderQuantity = (partId) => {
-    const selectedPart = props.selectedParts.find(part => part.part_id === partId);
-    return selectedPart ? selectedPart.quantity_ordered : 0;
-};
-
-const calculateTotalCost = (part) => {
-    const quantity = getOrderQuantity(part.id);
-    return quantity * getCostPerPart(part);
-};
-
-const handleQuantityChange = (part, quantity) => {
-    if (quantity > 0) {
-        const existingPart = props.selectedParts.find(p => p.part_id === part.id);
-        if (existingPart) {
-            emit('update-quantity', part.id, quantity);
-        } else {
-            emit('add-part', {
-                id: part.id,
-                part_number: part.part_number,
-                description: part.description,
-                replenishment_data: part.replenishment_data
-            });
-        }
-    } else {
-        emit('remove-part', part.id);
-    }
-};
-</script>
-
-<template>
-    <DataTable
-        v-model:selection="selectedItems"
-        :value="availableParts"
-        dataKey="id"
-        :paginator="true"
-        :rows="10"
-        :rowHover="true"
-        responsiveLayout="scroll"
-        class="p-datatable-sm"
-    >
-        <Column field="part_number" header="Part Number" sortable />
-        <Column field="description" header="Description" sortable />
-        <Column field="unit_cost" header="Unit Cost" sortable>
-            <template #body="slotProps">
-                {{ formatCurrency(getCostPerPart(slotProps.data)) }}
-            </template>
-        </Column>
-        <Column header="Order Quantity">
-            <template #body="slotProps">
-                <InputNumber
-                    :model-value="getOrderQuantity(slotProps.data.id)"
-                    :min="0"
-                    :showButtons="true"
-                    @update:model-value="(value) => handleQuantityChange(slotProps.data, value)"
-                />
-            </template>
-        </Column>
-        <Column header="Total Cost">
-            <template #body="slotProps">
-                {{ formatCurrency(calculateTotalCost(slotProps.data)) }}
-            </template>
-        </Column>
-        <Column header="Actions">
-            <template #body="slotProps">
-                <Button
-                    icon="pi pi-trash"
-                    class="p-button-rounded p-button-danger p-button-text"
-                    @click="emit('remove-part', slotProps.data.id)"
-                    v-tooltip.top="'Remove Part'"
-                />
-            </template>
-        </Column>
-    </DataTable>
-</template>
-
-
-==== resources\js\Components\PurchaseOrders\SupplierSelectComponent.vue ====
-
-<script setup>
-import { computed, ref } from 'vue';
-import Select from 'primevue/select';
-
-const props = defineProps({
-    modelValue: {
-        type: [Number, null],
-        required: true
-    },
-    suppliers: {
-        type: Array,
-        required: true,
-        default: () => []
-    },
-    loading: {
-        type: Boolean,
-        default: false
-    }
-});
-
-const emit = defineEmits(['update:modelValue']);
-
-// Debug mode computed
-const isDebug = ref(process.env.NODE_ENV === 'development');
-
-const formattedSuppliers = computed(() => {
-    console.log('Formatting suppliers:', props.suppliers);
-    return props.suppliers.map(supplier => ({
-        label: `${supplier.name} (${supplier.account_number})`,
-        value: supplier.id,
-        ...supplier
-    }));
-});
-
-const selectedValue = computed({
-    get: () => props.modelValue,
-    set: (value) => emit('update:modelValue', value)
-});
-</script>
-
-<template>
-    <div>
-        <!-- Debug output -->
-        <div v-if="isDebug" class="mb-2 text-xs text-gray-500">
-            Available suppliers: {{ suppliers.length }}
-        </div>
-
-        <label for="supplier" class="block text-sm font-medium text-gray-700">
-            Select Supplier
-        </label>
-        <Select
-            id="supplier"
-            v-model="selectedValue"
-            :options="formattedSuppliers"
-            optionLabel="label"
-            optionValue="value"
-            placeholder="Select a supplier"
-            class="w-full"
-            :loading="loading"
-        />
-    </div>
-</template>
-
-
-==== resources\js\Components\ResponsiveCard.vue ====
-
-<script setup>
-const props = defineProps({
-    spacingClasses: {
-        type: String,
-        required: false,
-        default: 'p-4 py-6 sm:p-8',
-    },
-});
-</script>
-
-<template>
-    <div
-        class="bg-surface-0 dark:bg-surface-900 shadow rounded-none sm:rounded-xl overflow-hidden"
-        :class="spacingClasses"
-    >
-        <slot />
-    </div>
-</template>
-
-
-==== resources\js\Components\ToggleThemeButton.vue ====
-
-<script setup>
-import { useTheme } from '@/Composables/useTheme.js';
-
-const { currentTheme, setTheme } = useTheme();
-
-function toggleTheme() {
-    const newTheme = currentTheme.value === 'light' ? 'dark' : 'light';
-    setTheme(newTheme);
-}
-</script>
-
-<template>
-    <Button
-        title="Change theme"
-        :icon="currentTheme === 'light' ? 'pi pi-sun' : 'pi pi-moon'"
-        @click="toggleTheme"
-    />
-</template>
-
-
-==== resources\js\Composables\useDataTable.js ====
-
-import { ref, computed } from 'vue';
-import { router } from '@inertiajs/vue3';
-
-export function useDataTable(defaultFilters = {}, only = ['urlParams']) {
-    const dataTableDefaults = {
-        filters: defaultFilters,
-        sortField: '',
-        sortOrder: 1,
-        currentPage: 1,
-        rowsPerPage: 20,
-    };
-
-    const filters = ref(dataTableDefaults.filters);
-    const sortField = ref(dataTableDefaults.sortField);
-    const sortOrder = ref(dataTableDefaults.sortOrder);
-    const currentPage = ref(dataTableDefaults.currentPage);
-    const rowsPerPage = ref(dataTableDefaults.rowsPerPage);
-
-    const firstDatasetIndex = computed(() => {
-        return (currentPage.value - 1) * rowsPerPage.value;
-    });
-
-    function fetchData() {
-        return new Promise((resolve, reject) => {
-            router.reload({
-                only,
-                data: {
-                    filters: filters.value,
-                    sortField: sortField.value,
-                    sortOrder: sortOrder.value,
-                    page: currentPage.value,
-                    rows: rowsPerPage.value,
-                },
-                preserveState: true,
-                onSuccess: (page) => {
-                    resolve(page);
-                },
-                onError: (errors) => {
-                    reject(errors);
-                },
-            });
-        });
-    }
-
-    function onPage(event) {
-        currentPage.value = event.page + 1;
-        rowsPerPage.value = event.rows;
-        fetchData().then(() => {
-            scrollToTop();
-        });
-    }
-
-    function onSort(event) {
-        sortField.value = event.sortField;
-        sortOrder.value = event.sortOrder;
-        fetchData();
-    }
-
-    function onFilter(event) {
-        currentPage.value = 1;
-        filters.value = event.filters;
-        fetchData();
-    }
-
-    function scrollToTop() {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth',
-        });
-    }
-
-    function reset() {
-        filters.value = dataTableDefaults.filters;
-        sortField.value = dataTableDefaults.sortField;
-        sortOrder.value = dataTableDefaults.sortOrder;
-        currentPage.value = dataTableDefaults.currentPage;
-        rowsPerPage.value = dataTableDefaults.rowsPerPage;
-        fetchData();
-    }
-
-    function parseUrlParams(urlParams) {
-        filters.value = urlParams?.filters || dataTableDefaults.filters;
-        sortField.value = urlParams?.sortField || dataTableDefaults.sortField;
-        sortOrder.value =
-            parseInt(urlParams?.sortOrder) || dataTableDefaults.sortOrder;
-        currentPage.value =
-            parseInt(urlParams?.page) || dataTableDefaults.currentPage;
-        rowsPerPage.value =
-            parseInt(urlParams?.rows) || dataTableDefaults.rowsPerPage;
-    }
-
-    return {
-        filters,
-        sortField,
-        sortOrder,
-        currentPage,
-        rowsPerPage,
-        firstDatasetIndex,
-        onPage,
-        onSort,
-        onFilter,
-        reset,
-        fetchData,
-        parseUrlParams,
-    };
-}
-
-
-==== resources\js\Composables\usePurchaseOrderForm.js ====
-
-// usePurchaseOrderForm.js
-import { ref, computed, watch } from 'vue';
-import { router } from '@inertiajs/vue3';
-import { useToast } from 'primevue/usetoast';
-
-export function usePurchaseOrderForm(initialData = {}) {
-    const toast = useToast();
-
-    // Form State
-    const form = ref({
-        supplier_id: null,
-        location_id: null,
-        parts: [],
-        addresses: {
-            billTo: null,
-            shipFrom: null,
-            shipTo: null,
-            returnTo: null
-        },
-        special_instructions: '',
-        tax_rate: initialData.defaultTaxRate || 8.0,
-        additional_costs: 0,
-    });
-
-    // UI State
-    const loading = ref(false);
-    const errors = ref({});
-    const processing = ref(false);
-
-    // Selected Entity References
-    const selectedSupplier = ref(null);
-
-    // Computed Properties
-    const availableSuppliers = computed(() => {
-        return initialData.availableSuppliers || [];
-    });
-
-    const supplierParts = computed(() => {
-        if (!selectedSupplier.value) return [];
-        const supplier = availableSuppliers.value.find(s => s.id === form.value.supplier_id);
-        return supplier?.parts || [];
-    });
-
-    const supplierAddresses = computed(() => {
-        if (!selectedSupplier.value) return {};
-        const supplier = availableSuppliers.value.find(s => s.id === form.value.supplier_id);
-        return supplier?.addresses || {};
-    });
-
-    const subtotal = computed(() => {
-        return form.value.parts.reduce((total, part) => {
-            return total + (part.quantity_ordered * part.unit_cost);
-        }, 0);
-    });
-
-    const taxAmount = computed(() => {
-        return (subtotal.value * form.value.tax_rate) / 100;
-    });
-
-    const totalCost = computed(() => {
-        return subtotal.value + taxAmount.value + Number(form.value.additional_costs);
-    });
-
-    // Watchers
-    watch(() => form.value.supplier_id, (newSupplierId) => {
-        if (newSupplierId) {
-            const supplier = availableSuppliers.value.find(s => s.id === newSupplierId);
-            if (supplier) {
-                selectedSupplier.value = supplier;
-                // Set default addresses if available
-                const addresses = supplier.addresses || {};
-                form.value.addresses = {
-                    billTo: addresses.billTo?.[0] || null,
-                    shipFrom: addresses.shipFrom?.[0] || null,
-                    shipTo: null,
-                    returnTo: null
-                };
-            } else {
-                resetSupplierData();
-            }
-        } else {
-            resetSupplierData();
-        }
-    });
-
-    // Helper Functions
-    function resetSupplierData() {
-        selectedSupplier.value = null;
-        form.value.parts = [];
-        form.value.addresses = {
-            billTo: null,
-            shipFrom: null,
-            shipTo: null,
-            returnTo: null
-        };
-    }
-
-    function showToast(severity, summary, detail) {
-        toast.add({
-            severity,
-            summary,
-            detail,
-            life: 3000
-        });
-    }
-
-    // Part Management
-    function addPart(part) {
-        if (!part?.id) return;
-
-        if (form.value.parts.some(p => p.part_id === part.id)) {
-            showToast('error', 'Error', 'Part already added to order');
-            return;
-        }
-
-        const purchaseTerms = part.replenishment_data?.purchaseTerms?.[0];
-        if (!purchaseTerms) {
-            showToast('error', 'Error', 'No pricing information available');
-            return;
-        }
-
-        form.value.parts.push({
-            part_id: part.id,
-            quantity_ordered: 1,
-            unit_cost: purchaseTerms.cost_per_part,
-            total_cost: purchaseTerms.cost_per_part,
-            part_number: part.part_number,
-            description: part.description
-        });
-    }
-
-    function removePart(partId) {
-        form.value.parts = form.value.parts.filter(p => p.part_id !== partId);
-    }
-
-    function updatePartQuantity(partId, quantity) {
-        const part = form.value.parts.find(p => p.part_id === partId);
-        if (part) {
-            part.quantity_ordered = quantity;
-            part.total_cost = quantity * part.unit_cost;
-        }
-    }
-
-    // Form Validation
-    function validateForm() {
-        errors.value = {};
-
-        if (!form.value.supplier_id) {
-            errors.value.supplier_id = 'Please select a supplier';
-        }
-
-        if (!form.value.parts.length) {
-            errors.value.parts = 'Please add at least one part';
-        }
-
-        if (!form.value.addresses.billTo) {
-            errors.value.billTo = 'Please select a billing address';
-        }
-
-        if (!form.value.addresses.shipFrom) {
-            errors.value.shipFrom = 'Please select a shipping address';
-        }
-
-        return Object.keys(errors.value).length === 0;
-    }
-
-    // Form Submission
-    async function submit() {
-        if (!validateForm()) return;
-
-        processing.value = true;
-        try {
-            await router.post(route('purchase-orders.store'), {
-                ...form.value,
-                total_cost: totalCost.value
-            }, {
-                onSuccess: () => {
-                    showToast('success', 'Success', 'Purchase order created successfully');
-                    reset();
-                },
-                onError: (errors) => {
-                    showToast('error', 'Error', 'Failed to create purchase order');
-                    errors.value = errors;
-                }
-            });
-        } finally {
-            processing.value = false;
-        }
-    }
-
-    async function saveDraft() {
-        if (!validateForm()) return;
-
-        processing.value = true;
-        try {
-            await router.post(route('purchase-orders.draft'), {
-                ...form.value,
-                total_cost: totalCost.value
-            }, {
-                onSuccess: () => {
-                    showToast('success', 'Success', 'Draft saved successfully');
-                    reset();
-                },
-                onError: (errors) => {
-                    showToast('error', 'Error', 'Failed to save draft');
-                    errors.value = errors;
-                }
-            });
-        } finally {
-            processing.value = false;
-        }
-    }
-
-    function reset() {
-        form.value = {
-            supplier_id: null,
-            location_id: null,
-            parts: [],
-            addresses: {
-                billTo: null,
-                shipFrom: null,
-                shipTo: null,
-                returnTo: null
-            },
-            special_instructions: '',
-            tax_rate: initialData.defaultTaxRate || 8.0,
-            additional_costs: 0,
-        };
-        selectedSupplier.value = null;
-        errors.value = {};
-    }
-
-    return {
-        // State
-        form,
-        loading,
-        errors,
-        processing,
-        selectedSupplier,
-
-        // Computed
-        availableSuppliers,
-        supplierParts,
-        supplierAddresses,
-        subtotal,
-        taxAmount,
-        totalCost,
-
-        // Methods
-        addPart,
-        removePart,
-        updatePartQuantity,
-        saveDraft,
-        submit,
-        reset,
-    };
-}
-
-
-==== resources\js\Composables\useTheme.js ====
-
-import { ref } from 'vue';
-
-const currentTheme = ref(localStorage.getItem('selectedTheme') || 'light');
-
-function initSiteTheme() {
-    setTheme(currentTheme.value);
-}
-
-function setTheme(theme) {
-    const domHtml = document.documentElement;
-    domHtml.classList.toggle('dark-mode', theme === 'dark');
-    saveThemePreference(theme);
-}
-
-function saveThemePreference(theme) {
-    currentTheme.value = theme;
-    localStorage.setItem('selectedTheme', theme);
-}
-
-export function useTheme() {
-    return { initSiteTheme, setTheme, currentTheme };
-}
-
-
-==== resources\js\Layouts\Admin\AuthenticatedLayout.vue ====
-
-<script setup>
-import { ref, useTemplateRef } from 'vue';
-import { useForm } from '@inertiajs/vue3';
-import Toast from 'primevue/toast';
-import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-import Container from '@/Components/Container.vue';
-import ToggleThemeButton from '@/Components/ToggleThemeButton.vue';
-import LinksBreadcrumb from '@/Components/LinksBreadcrumb.vue';
-import LinksMenu from '@/Components/LinksMenu.vue';
-import LinksMenuBar from '@/Components/LinksMenuBar.vue';
-import Tag from 'primevue/tag';
-import DrawerMenu from './Partials/DrawerMenu.vue';
-
-const props = defineProps({
-    pageTitle: {
-        required: false,
-        type: String,
-    },
-    breadcrumbs: {
-        required: false,
-        type: Array,
-        default: () => [],
-    },
-});
-
-// User menu
-const logoutForm = useForm({});
-const userMenu = useTemplateRef('user-menu');
-const userMenuItems = [
-    {
-        label: 'Profile',
-        route: route('admin.profile.edit'),
-        icon: 'pi pi-fw pi-user',
-    },
-    {
-        label: 'Log Out',
-        icon: 'pi pi-fw pi-sign-out',
-        command: () => {
-            logoutForm.post(route('admin.logout'));
-        },
-    },
-];
-const toggleUserMenu = (event) => {
-    userMenu.value.childRef.toggle(event);
-};
-
-// Drawer menu
-const drawerOpen = ref(false);
-</script>
-
-<template>
-    <div class="h-screen flex flex-col">
-        <!-- Navigation Menu -->
-        <nav
-            class="bg-surface-0 dark:bg-surface-900 border-b mb-8"
-            :class="
-                $slots.header
-                    ? 'border-surface-100 dark:border-surface-800'
-                    : 'border-surface-0 dark:border-surface-900 shadow'
-            "
-        >
-            <Container>
-                <LinksMenuBar
-                    :pt="{
-                        root: {
-                            class: 'px-0 py-3 border-0 rounded-none',
-                        },
-                        button: {
-                            class: 'hidden',
-                        },
-                    }"
-                >
-                    <template #start>
-                        <div class="flex">
-                            <!-- Logo -->
-                            <div class="shrink-0 flex items-center">
-                                <Button
-                                    text
-                                    rounded
-                                    severity="secondary"
-                                    icon="pi pi-bars"
-                                    @click="drawerOpen = true"
-                                    :pt="{
-                                        icon: {
-                                            class: 'text-xl',
-                                        },
-                                    }"
-                                    class="mr-5"
-                                />
-                                <Link :href="route('welcome')" class="mr-5">
-                                    <ApplicationLogo
-                                        class="block h-10 w-auto fill-current text-surface-900 dark:text-surface-0"
-                                    />
-                                </Link>
-                                <Tag value="Primary">ADMIN</Tag>
-                            </div>
-                        </div>
-                    </template>
-                    <template #end>
-                        <div class="flex items-center ms-6">
-                            <ToggleThemeButton
-                                text
-                                severity="secondary"
-                                rounded
-                                :pt="{
-                                    icon: {
-                                        class: 'text-xl md:text-base',
-                                    },
-                                }"
-                            />
-                            <!-- User Dropdown Menu -->
-                            <div class="ms-3 relative">
-                                <LinksMenu
-                                    :model="userMenuItems"
-                                    popup
-                                    ref="user-menu"
-                                    class="shadow"
-                                />
-                                <Button
-                                    class="hidden md:flex"
-                                    text
-                                    size="small"
-                                    severity="secondary"
-                                    @click="toggleUserMenu($event)"
-                                >
-                                    <span class="text-base">
-                                        {{ $page.props.auth.user.name }}
-                                    </span>
-                                    <i class="pi pi-angle-down ml-1"></i>
-                                </Button>
-                                <Button
-                                    class="flex md:hidden"
-                                    icon="pi pi-user"
-                                    text
-                                    rounded
-                                    severity="secondary"
-                                    :pt="{
-                                        icon: {
-                                            class: 'text-xl',
-                                        },
-                                    }"
-                                    @click="toggleUserMenu($event)"
-                                />
-                            </div>
-                        </div>
-                    </template>
-                </LinksMenuBar>
-            </Container>
-            <DrawerMenu v-model="drawerOpen" />
-        </nav>
-
-        <!-- Page Heading -->
-        <header v-if="pageTitle" class="mb-6">
-            <Container>
-                <div class="flex items-end justify-between flex-wrap">
-                    <div>
-                        <LinksBreadcrumb
-                            v-if="breadcrumbs.length"
-                            :model="breadcrumbs"
-                            class="mb-4"
-                        />
-                        <h1
-                            class="font-bold text-2xl sm:text-3xl leading-tight"
-                        >
-                            {{ pageTitle }}
-                        </h1>
-                    </div>
-                    <div>
-                        <div v-if="$slots.headerEnd">
-                            <slot name="headerEnd" />
-                        </div>
-                    </div>
-                </div>
-            </Container>
-        </header>
-
-        <!-- Page Content -->
-        <main class="grow">
-            <Toast />
-            <slot />
-        </main>
-
-        <!-- Footer -->
-        <footer
-            class="w-full mt-10 border-t border-surface-100 dark:border-surface-800"
-        >
-            <div
-                class="flex justify-center bg-surface-0 dark:bg-surface-900 py-6"
-            >
-                <p class="text-muted-color">
-                    Your Company - {{ new Date().getFullYear() }}
-                </p>
-            </div>
-        </footer>
-    </div>
-</template>
-
-
-==== resources\js\Layouts\Admin\GuestLayout.vue ====
-
-<script setup>
-import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-import ResponsiveCard from '@/Components/ResponsiveCard.vue';
-import Toast from 'primevue/toast';
-import Tag from 'primevue/tag';
-</script>
-
-<template>
-    <div
-        class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0"
-    >
-        <div class="mb-4">
-            <Link href="/">
-                <ApplicationLogo
-                    class="w-20 h-20 fill-current text-surface-900 dark:text-surface-0"
-                />
-            </Link>
-        </div>
-        <div>
-            <Tag value="Primary" class="text-xl">ADMIN</Tag>
-        </div>
-
-        <div v-if="$slots.message" class="w-full sm:max-w-md mt-6 px-4 sm:px-0">
-            <slot name="message" />
-        </div>
-
-        <div class="w-full sm:max-w-md mt-6">
-            <Toast />
-            <ResponsiveCard>
-                <slot />
-            </ResponsiveCard>
-        </div>
-    </div>
-</template>
-
-
-==== resources\js\Layouts\Admin\Partials\DrawerMenu.vue ====
-
-<script setup>
-import { ref, onMounted, onUnmounted, watchEffect } from 'vue';
-import Drawer from 'primevue/drawer';
-import LinksPanelMenu from '@/Components/LinksPanelMenu.vue';
-
-// Menu Items
-const currentRoute = route().current();
-const homeMenuItems = ref([
-    {
-        label: 'Welcome',
-        icon: 'pi pi-home',
-        route: route('welcome'),
-        active: currentRoute == 'welcome',
-    },
-    {
-        label: 'Dashboard',
-        icon: 'pi pi-th-large',
-        route: route('admin.dashboard'),
-        active: currentRoute == 'admin.dashboard',
-    },
-]);
-const analyticsMenuItems = ref([
-    {
-        label: 'Users',
-        icon: 'pi pi-user',
-        route: route('admin.users.index'),
-        active: currentRoute == 'admin.users.index',
-    },
-]);
-const exampleNestedMenuItems = ref([
-    {
-        label: 'Files',
-        icon: 'pi pi-file',
-        items: [
-            {
-                label: 'Images',
-                icon: 'pi pi-image',
-                items: [
-                    {
-                        label: 'Logos',
-                        icon: 'pi pi-image',
-                    },
-                ],
-            },
-        ],
-    },
-    {
-        label: 'Cloud',
-        icon: 'pi pi-cloud',
-        items: [
-            {
-                label: 'Upload',
-                icon: 'pi pi-cloud-upload',
-                command: () => {
-                    alert('Example using programmatic functionality');
-                }
-            },
-            {
-                label: 'Download',
-                icon: 'pi pi-cloud-download',
-            },
-            {
-                label: 'Sync',
-                icon: 'pi pi-refresh',
-            },
-        ],
-    },
-]);
-
-// Drawer behavior
-const model = defineModel();
-const menuBackdrop = ref(false);
-const windowWidth = ref(window.innerWidth);
-const updateWidth = () => {
-    windowWidth.value = window.innerWidth;
-};
-onMounted(() => {
-    window.addEventListener('resize', updateWidth);
-});
-onUnmounted(() => {
-    window.removeEventListener('resize', updateWidth);
-});
-watchEffect(() => {
-    if (windowWidth.value <= 768) {
-        menuBackdrop.value = true;
-    } else {
-        menuBackdrop.value = false;
-    }
-});
-</script>
-
-<template>
-    <Drawer
-        v-model:visible="model"
-        position="left"
-        :modal="menuBackdrop"
-        :showCloseIcon="menuBackdrop"
-    >
-        <div>
-            <div class="mb-5">
-                <p class="text-muted-color font-bold uppercase text-sm mb-2">
-                    Home
-                </p>
-                <LinksPanelMenu :model="homeMenuItems" class="w-full" />
-            </div>
-            <div class="mb-5">
-                <p class="text-muted-color font-bold uppercase text-sm mb-2">
-                    Analytics
-                </p>
-                <LinksPanelMenu :model="analyticsMenuItems" class="w-full" />
-            </div>
-            <div class="mb-5">
-                <p class="text-muted-color font-bold uppercase text-sm mb-2">
-                    Example Nested
-                </p>
-                <LinksPanelMenu
-                    :model="exampleNestedMenuItems"
-                    class="w-full"
-                />
-            </div>
-        </div>
-    </Drawer>
-</template>
-
-
-==== resources\js\Layouts\AuthenticatedLayout.vue ====
-
-<script setup>
-import { ref, useTemplateRef, onMounted, onUnmounted, watchEffect } from 'vue';
-import { useForm } from '@inertiajs/vue3';
-import Drawer from 'primevue/drawer';
-import Toast from 'primevue/toast';
-import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-import Container from '@/Components/Container.vue';
-import LinksMenu from '@/Components/LinksMenu.vue';
-import LinksMenuBar from '@/Components/LinksMenuBar.vue';
-import LinksPanelMenu from '@/Components/LinksPanelMenu.vue';
-import ToggleThemeButton from '@/Components/ToggleThemeButton.vue';
-
-const currentRoute = route().current();
-const logoutForm = useForm({});
-function logout() {
-    logoutForm.post(route('logout'));
-}
-
-// Main menu
-const mainMenuItems = [
-    {
-        label: 'Dashboard',
-        route: route('dashboard'),
-        active: currentRoute == 'dashboard',
-    },
-];
-
-// User menu (desktop)
-const userMenu = useTemplateRef('user-menu');
-const userMenuItems = [
-    {
-        label: 'Profile',
-        route: route('profile.edit'),
-        icon: 'pi pi-fw pi-user',
-    },
-    {
-        label: 'Log Out',
-        icon: 'pi pi-fw pi-sign-out',
-        command: () => {
-            logout();
-        },
-    },
-];
-const toggleUserMenu = (event) => {
-    userMenu.value.childRef.toggle(event);
-};
-
-// Mobile menu (Drawer)
-const homeMobileMenuItems = ref([
-    {
-        label: 'Welcome',
-        icon: 'pi pi-home',
-        route: route('welcome'),
-        active: currentRoute == 'welcome',
-    },
-    {
-        label: 'Dashboard',
-        icon: 'pi pi-th-large',
-        route: route('dashboard'),
-        active: currentRoute == 'dashboard',
-    },
-]);
-const mobileMenuOpen = ref(false);
-const windowWidth = ref(window.innerWidth);
-const updateWidth = () => {
-    windowWidth.value = window.innerWidth;
-};
-onMounted(() => {
-    window.addEventListener('resize', updateWidth);
-});
-onUnmounted(() => {
-    window.removeEventListener('resize', updateWidth);
-});
-watchEffect(() => {
-    if (windowWidth.value > 768) {
-        mobileMenuOpen.value = false;
-    }
-});
-</script>
-
-<template>
-    <div>
-        <div class="min-h-screen">
-            <nav
-                class="bg-surface-0 dark:bg-surface-900 border-b"
-                :class="
-                    $slots.header
-                        ? 'border-surface-100 dark:border-surface-800'
-                        : 'border-surface-0 dark:border-surface-900 shadow'
-                "
-            >
-                <!-- Primary Navigation Menu -->
-                <Container>
-                    <LinksMenuBar
-                        :model="mainMenuItems"
-                        :pt="{
-                            root: {
-                                class: 'px-0 py-3 border-0 rounded-none',
-                            },
-                            button: {
-                                class: 'hidden',
-                            },
-                        }"
-                    >
-                        <template #start>
-                            <!-- Logo -->
-                            <div class="shrink-0 flex items-center mr-5">
-                                <Link :href="route('welcome')">
-                                    <ApplicationLogo
-                                        class="block h-10 w-auto fill-current text-surface-900 dark:text-surface-0"
-                                    />
-                                </Link>
-                            </div>
-                        </template>
-                        <template #end>
-                            <div class="hidden md:flex md:items-center md:ms-6">
-                                <ToggleThemeButton
-                                    text
-                                    severity="secondary"
-                                    rounded
-                                />
-                                <!-- User Dropdown Menu -->
-                                <div class="ms-3 relative">
-                                    <LinksMenu
-                                        :model="userMenuItems"
-                                        popup
-                                        ref="user-menu"
-                                        class="shadow"
-                                    />
-                                    <Button
-                                        text
-                                        size="small"
-                                        severity="secondary"
-                                        @click="toggleUserMenu($event)"
-                                    >
-                                        <span class="text-base">
-                                            {{ $page.props.auth.user.name }}
-                                        </span>
-                                        <i class="pi pi-angle-down ml-1"></i>
-                                    </Button>
-                                </div>
-                            </div>
-
-                            <!-- Hamburger -->
-                            <div class="flex items-center md:hidden">
-                                <div class="relative">
-                                    <Button
-                                        text
-                                        rounded
-                                        severity="secondary"
-                                        icon="pi pi-bars"
-                                        @click="mobileMenuOpen = true"
-                                    />
-                                </div>
-                            </div>
-                        </template>
-                    </LinksMenuBar>
-                </Container>
-
-                <!-- Mobile drawer menu -->
-                <Drawer v-model:visible="mobileMenuOpen" position="right">
-                    <template #header>
-                        <ToggleThemeButton text severity="secondary" rounded />
-                    </template>
-                    <div>
-                        <div>
-                            <div class="mb-5">
-                                <p
-                                    class="text-muted-color font-bold uppercase text-sm mb-2"
-                                >
-                                    Home
-                                </p>
-                                <LinksPanelMenu
-                                    :model="homeMobileMenuItems"
-                                    class="w-full"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <template #footer>
-                        <div class="flex items-center gap-2">
-                            <Link
-                                :href="route('profile.edit')"
-                                class="flex-auto"
-                            >
-                                <Button
-                                    label="Profile"
-                                    icon="pi pi-user"
-                                    class="w-full"
-                                    severity="secondary"
-                                    outlined
-                                ></Button>
-                            </Link>
-                            <Button
-                                label="Logout"
-                                icon="pi pi-sign-out"
-                                class="flex-auto"
-                                severity="danger"
-                                text
-                                @click="logout"
-                            ></Button>
-                        </div>
-                    </template>
-                </Drawer>
-            </nav>
-
-            <!-- Page Heading -->
-            <header
-                class="bg-surface-0 dark:bg-surface-900 shadow"
-                v-if="$slots.header"
-            >
-                <Container>
-                    <div class="py-6">
-                        <slot name="header" />
-                    </div>
-                </Container>
-            </header>
-
-            <!-- Page Content -->
-            <Toast />
-            <main>
-                <slot />
-            </main>
-        </div>
-    </div>
-</template>
-
-
-==== resources\js\Layouts\GuestLayout.vue ====
-
-<script setup>
-import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-import ResponsiveCard from '@/Components/ResponsiveCard.vue';
-import Toast from 'primevue/toast';
-</script>
-
-<template>
-    <div
-        class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0"
-    >
-        <div>
-            <Link href="/">
-                <ApplicationLogo
-                    class="w-20 h-20 fill-current text-surface-900 dark:text-surface-0"
-                />
-            </Link>
-        </div>
-
-        <div v-if="$slots.message" class="w-full sm:max-w-md mt-6 px-4 sm:px-0">
-            <slot name="message" />
-        </div>
-
-        <div class="w-full sm:max-w-md mt-6">
-            <Toast />
-            <ResponsiveCard>
-                <slot />
-            </ResponsiveCard>
-        </div>
-    </div>
-</template>
-
-
-==== resources\js\Pages\Admin\Auth\ForgotPassword.vue ====
-
-<script setup>
-import { useTemplateRef, onMounted } from 'vue';
-import { useForm } from '@inertiajs/vue3';
-import Message from 'primevue/message';
-import AdminGuestLayout from '@/Layouts/Admin/GuestLayout.vue';
-import InputError from '@/Components/InputError.vue';
-
-defineProps({
-    status: {
-        type: String,
-    },
-});
-
-const emailInput = useTemplateRef('email-input');
-
-const form = useForm({
-    email: '',
-});
-
-const submit = () => {
-    form.post(route('admin.password.email'));
-};
-
-onMounted(() => {
-    emailInput.value.$el.focus();
-});
-</script>
-
-<template>
-    <AdminGuestLayout>
-        <Head title="Forgot Password" />
-
-        <template #message v-if="status">
-            <Message severity="success" :closable="false" class="shadow">
-                {{ status }}
-            </Message>
-        </template>
-
-        <div class="mb-6 text-sm text-muted-color">
-            Forgot your password? No problem. Just let us know your email
-            address and we will email you a password reset link that will allow
-            you to choose a new one.
-        </div>
-
-        <form @submit.prevent="submit">
-            <div class="mb-6">
-                <label for="email" class="block mb-2">Email</label>
-                <InputText
-                    required
-                    ref="email-input"
-                    id="email"
-                    type="email"
-                    v-model="form.email"
-                    class="w-full"
-                    :invalid="Boolean(form.errors.email)"
-                    autocomplete="username"
-                />
-                <InputError class="mt-2" :message="form.errors.email" />
-            </div>
-
-            <div class="flex justify-end items-center">
-                <Button
-                    raised
-                    type="submit"
-                    :loading="form.processing"
-                    label="Email Password Reset Link"
-                    severity="contrast"
-                />
-            </div>
-        </form>
-    </AdminGuestLayout>
-</template>
-
-
-==== resources\js\Pages\Admin\Auth\Login.vue ====
-
-<script setup>
-import { useTemplateRef, onMounted } from 'vue';
-import { useForm } from '@inertiajs/vue3';
-import Checkbox from 'primevue/checkbox';
-import Message from 'primevue/message';
-import AdminGuestLayout from '@/Layouts/Admin/GuestLayout.vue';
-import InputError from '@/Components/InputError.vue';
-
-defineProps({
-    canResetPassword: {
-        type: Boolean,
-    },
-    status: {
-        type: String,
-    },
-});
-
-const emailInput = useTemplateRef('email-input');
-
-const form = useForm({
-    email: '',
-    password: '',
-    remember: false,
-});
-
-const submit = () => {
-    form.post(route('admin.login'), {
-        onFinish: () => form.reset('password'),
-    });
-};
-
-onMounted(() => {
-    emailInput.value.$el.focus();
-});
-</script>
-
-<template>
-    <AdminGuestLayout>
-        <Head title="Log in" />
-
-        <template #message v-if="status">
-            <Message
-                severity="success"
-                :closable="false"
-                class="shadow"
-            >
-                {{ status }}
-            </Message>
-        </template>
-
-        <div>
-            <form @submit.prevent="submit">
-                <div class="mb-6">
-                    <label for="email" class="block mb-2">Email</label>
-                    <InputText
-                        required
-                        ref="email-input"
-                        id="email"
-                        type="email"
-                        v-model="form.email"
-                        class="w-full"
-                        :invalid="Boolean(form.errors.email)"
-                        autocomplete="username"
-                    />
-                    <InputError class="mt-2" :message="form.errors.email" />
-                </div>
-                <div class="mb-6">
-                    <label for="password" class="block mb-2">Password</label>
-                    <InputText
-                        required
-                        id="password"
-                        type="password"
-                        v-model="form.password"
-                        class="w-full"
-                        :invalid="Boolean(form.errors.password)"
-                        autocomplete="current-password"
-                    />
-                    <InputError class="mt-2 mb-1" :message="form.errors.password" />
-                </div>
-                <div class="mb-8">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center">
-                            <Checkbox
-                                id="remember"
-                                :binary="true"
-                                v-model="form.remember"
-                                class="mr-2"
-                            ></Checkbox>
-                            <label for="remember">Remember me</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex justify-end items-center">
-                    <Link
-                        v-if="canResetPassword"
-                        :href="route('admin.password.request')"
-                        class="mr-4 underline text-muted-color hover:text-color"
-                    >
-                        Forgot your password?
-                    </Link>
-                    <Button
-                        raised
-                        type="submit"
-                        :loading="form.processing"
-                        label="Log In"
-                        severity="contrast"
-                    />
-                </div>
-            </form>
-        </div>
-    </AdminGuestLayout>
-</template>
-
-
-==== resources\js\Pages\Admin\Auth\ResetPassword.vue ====
-
-<script setup>
-import { useTemplateRef, onMounted } from 'vue';
-import { useForm } from '@inertiajs/vue3';
-import AdminGuestLayout from '@/Layouts/Admin/GuestLayout.vue';
-import InputError from '@/Components/InputError.vue';
-
-const props = defineProps({
-    email: {
-        type: String,
-        required: true,
-    },
-    token: {
-        type: String,
-        required: true,
-    },
-});
-
-const emailInput = useTemplateRef('email-input');
-
-const form = useForm({
-    token: props.token,
-    email: props.email,
-    password: '',
-    password_confirmation: '',
-});
-
-const submit = () => {
-    form.post(route('admin.password.store'), {
-        onFinish: () => form.reset('password', 'password_confirmation'),
-    });
-};
-
-onMounted(() => {
-    emailInput.value.$el.focus();
-});
-</script>
-
-<template>
-    <AdminGuestLayout>
-        <Head title="Reset Password" />
-
-        <form @submit.prevent="submit">
-            <div class="mb-6">
-                <label for="email" class="block mb-2">Email</label>
-                <InputText
-                    ref="email-input"
-                    id="email"
-                    type="email"
-                    v-model="form.email"
-                    class="w-full"
-                    :invalid="Boolean(form.errors.email)"
-                    required
-                    autocomplete="username"
-                />
-                <InputError class="mt-2" :message="form.errors.email" />
-            </div>
-
-            <div class="mb-6">
-                <label for="password" class="block mb-2">Password</label>
-                <InputText
-                    id="password"
-                    type="password"
-                    v-model="form.password"
-                    class="w-full"
-                    :invalid="Boolean(form.errors.password)"
-                    required
-                    autocomplete="new-password"
-                />
-                <InputError class="mt-2 mb-1" :message="form.errors.password" />
-            </div>
-
-            <div class="mb-6">
-                <label for="password_confirmation" class="block mb-2"
-                    >Password</label
-                >
-                <InputText
-                    id="password_confirmation"
-                    type="password"
-                    v-model="form.password_confirmation"
-                    class="w-full"
-                    :invalid="Boolean(form.errors.password_confirmation)"
-                    required
-                    autocomplete="new-password"
-                />
-                <InputError
-                    class="mt-2 mb-1"
-                    :message="form.errors.password_confirmation"
-                />
-            </div>
-
-            <div class="flex justify-end items-center">
-                <Button
-                    raised
-                    type="submit"
-                    :loading="form.processing"
-                    label="Reset Password"
-                    severity="contrast"
-                />
-            </div>
-        </form>
-    </AdminGuestLayout>
-</template>
-
-
-==== resources\js\Pages\Admin\Auth\VerifyEmail.vue ====
-
-<script setup>
-import { computed } from 'vue';
-import { useForm } from '@inertiajs/vue3';
-import Message from 'primevue/message';
-import AdminGuestLayout from '@/Layouts/Admin/GuestLayout.vue';
-
-const props = defineProps({
-    status: {
-        type: String,
-    },
-});
-
-const form = useForm({});
-
-const submit = () => {
-    form.post(route('admin.verification.send'));
-};
-
-const verificationLinkSent = computed(
-    () => props.status === 'verification-link-sent'
-);
-</script>
-
-<template>
-    <AdminGuestLayout>
-        <Head title="Email Verification" />
-
-        <template #message v-if="verificationLinkSent">
-            <Message severity="success" :closable="false" class="shadow">
-                A new verification link has been sent to the email address you
-                provided during registration.
-            </Message>
-        </template>
-
-        <div class="mb-6 text-sm text-muted-color">
-            Before getting started, could you verify your
-            email address by clicking on the link we just emailed to you? If you
-            didn't receive the email, we will gladly send you another.
-        </div>
-
-        <form @submit.prevent="submit">
-            <div class="mt-6 flex justify-between items-center">
-                <Button
-                    raised
-                    type="submit"
-                    :loading="form.processing"
-                    label="Resend Verification Email"
-                    severity="contrast"
-                />
-                <Link
-                    :href="route('admin.logout')"
-                    method="post"
-                    class="text-muted-color underline text-muted-color hover:text-color"
-                    >Log Out</Link
-                >
-            </div>
-        </form>
-    </AdminGuestLayout>
-</template>
-
-
-==== resources\js\Pages\Admin\Dashboard.vue ====
-
-<script setup>
-import AuthenticatedAdminLayout from '@/Layouts/Admin/AuthenticatedLayout.vue';
-import Container from '@/Components/Container.vue';
-import ResponsiveCard from '@/Components/ResponsiveCard.vue';
-
-const pageTitle = 'Dashboard';
-</script>
-
-<template>
-    <Head :title="pageTitle" />
-    <AuthenticatedAdminLayout :page-title="pageTitle">
-        <Container :spaced-mobile="false">
-            <div>
-                <ResponsiveCard>
-                    <p class="m-0">You are logged in as an Admin!</p>
-                </ResponsiveCard>
-            </div>
-        </Container>
-    </AuthenticatedAdminLayout>
-</template>
-
-
-==== resources\js\Pages\Admin\Profile\Edit.vue ====
-
-<script setup>
-import AdminAuthenticatedLayout from '@/Layouts/Admin/AuthenticatedLayout.vue';
-import Container from '@/Components/Container.vue';
-import ResponsiveCard from '@/Components/ResponsiveCard.vue';
-import DeleteUserForm from './Partials/DeleteUserForm.vue';
-import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue';
-import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm.vue';
-
-const props = defineProps({
-    auth: Object,
-    mustVerifyEmail: {
-        type: Boolean,
-    },
-    status: {
-        type: String,
-    },
-});
-
-const pageTitle = 'Profile';
-const breadcrumbs = [
-    { label: 'Dashboard', route: route('admin.dashboard') },
-    { label: pageTitle, route: route('admin.profile.edit') },
-    { label: 'Edit' },
-];
-</script>
-
-<template>
-    <Head :title="pageTitle" />
-
-    <AdminAuthenticatedLayout
-        :page-title="pageTitle"
-        :breadcrumbs="breadcrumbs"
-    >
-        <Container :spaced-mobile="false">
-            <div class="">
-                <div class="space-y-6">
-                    <ResponsiveCard>
-                        <UpdateProfileInformationForm
-                            :must-verify-email="mustVerifyEmail"
-                            :status="status"
-                            class="max-w-xl"
-                        />
-                    </ResponsiveCard>
-
-                    <ResponsiveCard>
-                        <UpdatePasswordForm class="max-w-xl" />
-                    </ResponsiveCard>
-
-                    <ResponsiveCard>
-                        <DeleteUserForm class="max-w-xl" />
-                    </ResponsiveCard>
-                </div>
-            </div>
-        </Container>
-    </AdminAuthenticatedLayout>
-</template>
-
-
-==== resources\js\Pages\Admin\Profile\Partials\DeleteUserForm.vue ====
-
-<script setup>
-import { ref, useTemplateRef } from 'vue';
-import { useForm } from '@inertiajs/vue3';
-import Dialog from 'primevue/dialog';
-import InputError from '@/Components/InputError.vue';
-
-const passwordInput = useTemplateRef('password-input');
-const modalOpen = ref(false);
-
-const form = useForm({
-    password: '',
-});
-
-const deleteUser = () => {
-    form.delete(route('admin.profile.destroy'), {
-        preserveScroll: true,
-        onSuccess: () => (modalOpen.value = false),
-        onError: () => passwordInput.value.$el.focus(),
-        onFinish: () => form.reset(),
-    });
-};
-
-function focusPasswordInput() {
-    passwordInput.value.$el.focus();
-}
-</script>
-
-<template>
-    <section class="space-y-6">
-        <Dialog
-            :draggable="false"
-            position="center"
-            v-model:visible="modalOpen"
-            modal
-            header="Are you sure you want to delete your account?"
-            :style="{ width: '40rem' }"
-            @show="focusPasswordInput"
-        >
-            <div class="mb-6">
-                <p class="m-0 text-muted-color">
-                    Once your account is deleted, all of its resources and data
-                    will be permanently deleted. Please enter your password to
-                    confirm you would like to permanently delete your account.
-                </p>
-            </div>
-
-            <div>
-                <InputText
-                    required
-                    id="password"
-                    ref="password-input"
-                    type="password"
-                    placeholder="Password"
-                    v-model="form.password"
-                    class="w-full"
-                    :invalid="Boolean(form.errors.password)"
-                    autocomplete="current-password"
-                    @keyup.enter="deleteUser"
-                    autofocus
-                />
-                <InputError class="mt-2" :message="form.errors.password" />
-            </div>
-
-            <template #footer>
-                <Button
-                    class="mr-2"
-                    label="Cancel"
-                    plain
-                    text
-                    @click="modalOpen = false"
-                />
-                <Button
-                    raised
-                    @click="deleteUser"
-                    :loading="form.processing"
-                    label="Delete Account"
-                    severity="danger"
-                />
-            </template>
-        </Dialog>
-
-        <header>
-            <h2 class="text-lg font-medium mt-0 mb-2">Delete Account</h2>
-            <p class="mb-0 text-sm text-muted-color">
-                Once your account is deleted, all of its resources and data will
-                be permanently deleted. Before deleting your account, please
-                download any data or information that you wish to retain.
-            </p>
-        </header>
-
-        <Button
-            raised
-            @click="modalOpen = true"
-            label="Delete Account"
-            severity="danger"
-        />
-    </section>
-</template>
-
-
-==== resources\js\Pages\Admin\Profile\Partials\UpdatePasswordForm.vue ====
-
-<script setup>
-import { useTemplateRef } from 'vue';
-import { useForm } from '@inertiajs/vue3';
-import { useToast } from 'primevue/usetoast';
-import InputError from '@/Components/InputError.vue';
-
-const currentPasswordInput = useTemplateRef('current-password-input');
-const newPasswordInput = useTemplateRef('new-password-input');
-
-const toast = useToast();
-const form = useForm({
-    current_password: '',
-    password: '',
-    password_confirmation: '',
-});
-
-const showSuccessToast = () => {
-    toast.add({
-        severity: 'success',
-        summary: 'Saved',
-        detail: 'Your password has been updated',
-        life: 3000,
-    });
-};
-const updatePassword = () => {
-    form.put(route('admin.password.update'), {
-        preserveScroll: true,
-        onSuccess: () => {
-            form.reset();
-            showSuccessToast();
-        },
-        onError: () => {
-            if (form.errors?.password) {
-                form.reset('password', 'password_confirmation');
-                newPasswordInput.value.$el.focus();
-            }
-            if (form.errors?.current_password) {
-                form.reset('current_password');
-                currentPasswordInput.value.$el.focus();
-            }
-        },
-    });
-};
-</script>
-
-<template>
-    <section>
-        <header>
-            <h2 class="text-lg font-medium mt-0 mb-2">Update Password</h2>
-            <p class="mb-0 text-sm text-muted-color">
-                Ensure your account is using a long, random password to stay
-                secure.
-            </p>
-        </header>
-
-        <form @submit.prevent="updatePassword" class="mt-6 space-y-6">
-            <div>
-                <label for="current_password" class="block mb-2"
-                    >Current Password</label
-                >
-                <InputText
-                    required
-                    id="current_password"
-                    ref="current-password-input"
-                    type="password"
-                    v-model="form.current_password"
-                    class="w-full"
-                    :invalid="Boolean(form.errors.current_password)"
-                    autocomplete="current-password"
-                />
-                <InputError
-                    class="mt-2"
-                    :message="form.errors?.current_password"
-                />
-            </div>
-
-            <div>
-                <label for="password" class="block mb-2">New Password</label>
-                <InputText
-                    required
-                    id="password"
-                    ref="new-password-input"
-                    type="password"
-                    v-model="form.password"
-                    class="w-full"
-                    :invalid="Boolean(form.errors.password)"
-                    autocomplete="new-password"
-                />
-                <InputError class="mt-2" :message="form.errors?.password" />
-            </div>
-
-            <div>
-                <label for="password_confirmation" class="block mb-2"
-                    >Confirm Password</label
-                >
-                <InputText
-                    required
-                    id="password_confirmation"
-                    type="password"
-                    v-model="form.password_confirmation"
-                    class="w-full"
-                    :invalid="Boolean(form.errors.password_confirmation)"
-                    autocomplete="new-password"
-                />
-                <InputError
-                    class="mt-2"
-                    :message="form.errors?.password_confirmation"
-                />
-            </div>
-
-            <div class="flex items-center gap-4">
-                <Button
-                    raised
-                    type="submit"
-                    :loading="form.processing"
-                    label="Save"
-                    severity="contrast"
-                />
-
-                <Transition
-                    enter-active-class="transition ease-in-out"
-                    enter-from-class="opacity-0"
-                    leave-active-class="transition ease-in-out"
-                    leave-to-class="opacity-0"
-                >
-                    <p
-                        v-if="form.recentlySuccessful"
-                        class="text-sm text-muted-color"
-                    >
-                        Saved.
-                    </p>
-                </Transition>
-            </div>
-        </form>
-    </section>
-</template>
-
-
-==== resources\js\Pages\Admin\Profile\Partials\UpdateProfileInformationForm.vue ====
-
-<script setup>
-import { useTemplateRef, onMounted } from 'vue';
-import { useForm, usePage } from '@inertiajs/vue3';
-import { useToast } from 'primevue/usetoast';
-import Message from 'primevue/message';
-import InputError from '@/Components/InputError.vue';
-
-defineProps({
-    mustVerifyEmail: {
-        type: Boolean,
-    },
-    status: {
-        type: String,
-    },
-});
-
-const nameInput = useTemplateRef('name-input');
-
-const user = usePage().props.auth.user;
-const toast = useToast();
-const form = useForm({
-    name: user.name,
-    email: user.email,
-});
-
-const showSuccessToast = () => {
-    toast.add({
-        severity: 'success',
-        summary: 'Saved',
-        detail: 'Profile information has been updated',
-        life: 3000,
-    });
-};
-const updateProfileInformation = () => {
-    form.patch(route('admin.profile.update'), {
-        preserveScroll: true,
-        onSuccess: () => {
-            showSuccessToast();
-        },
-    });
-};
-
-onMounted(() => {
-    nameInput.value.$el.focus();
-});
-</script>
-
-<template>
-    <section>
-        <header>
-            <h2 class="text-lg font-medium mt-0 mb-2">Profile Information</h2>
-            <p class="mb-0 text-sm text-muted-color">
-                Update your account's profile information and email address.
-            </p>
-        </header>
-
-        <form @submit.prevent="updateProfileInformation" class="mt-6 space-y-6">
-            <div>
-                <label for="name" class="block mb-2">Name</label>
-                <InputText
-                    required
-                    ref="name-input"
-                    id="name"
-                    type="text"
-                    v-model="form.name"
-                    class="w-full"
-                    :invalid="Boolean(form.errors.name)"
-                    autocomplete="name"
-                />
-                <InputError class="mt-2" :message="form.errors?.name" />
-            </div>
-            <div>
-                <label for="email" class="block mb-2">Email</label>
-                <InputText
-                    required
-                    id="email"
-                    type="email"
-                    v-model="form.email"
-                    class="w-full"
-                    :invalid="Boolean(form.errors.email)"
-                    autocomplete="username"
-                />
-                <InputError class="mt-2" :message="form.errors?.email" />
-            </div>
-
-            <div v-if="mustVerifyEmail && user.email_verified_at === null">
-                <p class="text-sm mt-2">
-                    Your email address is unverified.
-                    <Link
-                        :href="route('verification.send')"
-                        method="post"
-                        class="underline text-sm text-muted-color underline text-muted-color hover:text-color"
-                    >
-                        Click here to re-send the verification email.
-                    </Link>
-                </p>
-
-                <Message
-                    v-if="status === 'verification-link-sent'"
-                    severity="success"
-                    :closable="false"
-                    class="shadow mt-4"
-                >
-                    A new verification link has been sent to your email address.
-                </Message>
-            </div>
-
-            <div class="flex items-center gap-4">
-                <Button
-                    raised
-                    type="submit"
-                    :loading="form.processing"
-                    label="Save"
-                    severity="contrast"
-                />
-
-                <Transition
-                    enter-active-class="transition ease-in-out"
-                    enter-from-class="opacity-0"
-                    leave-active-class="transition ease-in-out"
-                    leave-to-class="opacity-0"
-                >
-                    <p
-                        v-if="form.recentlySuccessful"
-                        class="text-sm text-muted-color"
-                    >
-                        Saved.
-                    </p>
-                </Transition>
-            </div>
-        </form>
-    </section>
-</template>
-
-
-==== resources\js\Pages\Admin\Users\Index.vue ====
-
-<script setup>
-import { ref, useTemplateRef } from 'vue';
-import { Head } from '@inertiajs/vue3';
-import { useDataTable } from '@/Composables/useDataTable.js';
-import { FilterMatchMode } from '@primevue/core/api';
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
-import Menu from 'primevue/menu';
-import AuthenticatedAdminLayout from '@/Layouts/Admin/AuthenticatedLayout.vue';
-import Container from '@/Components/Container.vue';
-import ResponsiveCard from '@/Components/ResponsiveCard.vue';
-
-const props = defineProps({
-    auth: Object,
-    urlParams: Object,
-    users: [Array, Object],
-});
-
-const pageTitle = 'Users';
-const breadcrumbs = [
-    { label: 'Dashboard', route: route('admin.dashboard') },
-    { label: pageTitle, route: route('admin.users.index') },
-    { label: 'List' },
-];
-
-// User context menu
-const selectedRowData = ref({});
-const userContextMenu = useTemplateRef('user-context-menu');
-const userContextMenuItems = [
-    {
-        label: 'Manage User',
-        icon: 'pi pi-pencil',
-        command: () => {
-            alert('User Data: ' + JSON.stringify(selectedRowData.value));
-        },
-    },
-];
-function toggleUserContextMenu(event, rowData) {
-    selectedRowData.value = rowData;
-    if (userContextMenu.value) {
-        userContextMenu.value.toggle(event);
-    }
-}
-
-// DataTable
-const {
-    filters,
-    sortField,
-    sortOrder,
-    rowsPerPage,
-    firstDatasetIndex,
-    onPage,
-    onSort,
-    onFilter,
-    reset,
-    parseUrlParams,
-} = useDataTable(
-    {
-        name: { value: null, matchMode: FilterMatchMode.CONTAINS },
-        email: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    },
-    ['urlParams', 'users']
-);
-
-// Parse URL params on component mount
-parseUrlParams(props.urlParams);
-</script>
-
-<template>
-    <Head :title="pageTitle" />
-
-    <AuthenticatedAdminLayout
-        :page-title="pageTitle"
-        :breadcrumbs="breadcrumbs"
-    >
-        <template #headerEnd>
-            <Button
-                type="button"
-                icon="pi pi-filter-slash"
-                label="Clear"
-                outlined
-                @click="reset"
-            />
-        </template>
-
-        <Container :spaced-mobile="false">
-            <div>
-                <ResponsiveCard spacingClasses="p-3">
-                    <Menu
-                        ref="user-context-menu"
-                        class="shadow"
-                        :model="userContextMenuItems"
-                        popup
-                    />
-                    <DataTable
-                        ref="dataTable"
-                        lazy
-                        paginator
-                        stripedRows
-                        showGridlines
-                        removableSort
-                        resizableColumns
-                        columnResizeMode="fit"
-                        :value="users.data"
-                        :totalRecords="users.total"
-                        v-model:filters="filters"
-                        filterDisplay="row"
-                        :sortField="sortField"
-                        :sortOrder="sortOrder"
-                        :rows="rowsPerPage"
-                        :rowsPerPageOptions="[10, 20, 50, 100]"
-                        :first="firstDatasetIndex"
-                        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} records"
-                        @sort="onSort"
-                        @page="onPage"
-                        @filter="onFilter"
-                    >
-                        <Column
-                            field="name"
-                            header="Name"
-                            sortable
-                            :showFilterMenu="false"
-                        >
-                            <template #filter="{ filterModel, filterCallback }">
-                                <InputText
-                                    v-model="filterModel.value"
-                                    type="text"
-                                    @input="filterCallback"
-                                    class="w-full"
-                                    placeholder="Search by name"
-                                />
-                            </template>
-                            <template #body="slotProps">
-                                {{ slotProps.data.name }}
-                            </template>
-                        </Column>
-                        <Column
-                            field="email"
-                            header="Email"
-                            sortable
-                            :showFilterMenu="false"
-                        >
-                            <template #filter="{ filterModel, filterCallback }">
-                                <InputText
-                                    v-model="filterModel.value"
-                                    type="text"
-                                    @input="filterCallback"
-                                    class="w-full"
-                                    placeholder="Search by Email"
-                                />
-                            </template>
-                            <template #body="slotProps">
-                                {{ slotProps.data.email }}
-                            </template>
-                        </Column>
-                        <Column header="Action">
-                            <template #body="slotProps">
-                                <Button
-                                    type="button"
-                                    severity="secondary"
-                                    text
-                                    rounded
-                                    icon="pi pi-ellipsis-v"
-                                    @click="
-                                        toggleUserContextMenu(
-                                            $event,
-                                            slotProps.data
-                                        )
-                                    "
-                                    v-tooltip.top="'Show User Actions'"
-                                />
-                            </template>
-                        </Column>
-                    </DataTable>
-                </ResponsiveCard>
-            </div>
-        </Container>
-    </AuthenticatedAdminLayout>
-</template>
-
-
-==== resources\js\Pages\Auth\ForgotPassword.vue ====
-
-<script setup>
-import { useTemplateRef, onMounted } from 'vue';
-import { useForm } from '@inertiajs/vue3';
-import Message from 'primevue/message';
-import GuestLayout from '@/Layouts/GuestLayout.vue';
-import InputError from '@/Components/InputError.vue';
-
-defineProps({
-    status: {
-        type: String,
-    },
-});
-
-const emailInput = useTemplateRef('email-input');
-
-const form = useForm({
-    email: '',
-});
-
-const submit = () => {
-    form.post(route('password.email'));
-};
-
-onMounted(() => {
-    emailInput.value.$el.focus();
-});
-</script>
-
-<template>
-    <GuestLayout>
-        <Head title="Forgot Password" />
-
-        <template #message v-if="status">
-            <Message severity="success" :closable="false" class="shadow">
-                {{ status }}
-            </Message>
-        </template>
-
-        <div class="mb-6 text-sm text-muted-color">
-            Forgot your password? No problem. Just let us know your email
-            address and we will email you a password reset link that will allow
-            you to choose a new one.
-        </div>
-
-        <form @submit.prevent="submit">
-            <div class="mb-6">
-                <label for="email" class="block mb-2">Email</label>
-                <InputText
-                    required
-                    ref="email-input"
-                    id="email"
-                    type="email"
-                    v-model="form.email"
-                    class="w-full"
-                    :invalid="Boolean(form.errors.email)"
-                    autocomplete="username"
-                />
-                <InputError class="mt-2" :message="form.errors.email" />
-            </div>
-
-            <div class="flex justify-end items-center">
-                <Button
-                    raised
-                    type="submit"
-                    :loading="form.processing"
-                    label="Email Password Reset Link"
-                    severity="contrast"
-                />
-            </div>
-        </form>
-    </GuestLayout>
-</template>
-
-
-==== resources\js\Pages\Auth\Login.vue ====
-
-<script setup>
-import { useTemplateRef, onMounted } from 'vue';
-import { useForm } from '@inertiajs/vue3';
-import Checkbox from 'primevue/checkbox';
-import Message from 'primevue/message';
-import GuestLayout from '@/Layouts/GuestLayout.vue';
-import InputError from '@/Components/InputError.vue';
-
-defineProps({
-    canResetPassword: {
-        type: Boolean,
-    },
-    status: {
-        type: String,
-    },
-});
-
-const emailInput = useTemplateRef('email-input');
-
-const form = useForm({
-    email: '',
-    password: '',
-    remember: false,
-});
-
-const submit = () => {
-    form.post(route('login'), {
-        onFinish: () => form.reset('password'),
-    });
-};
-
-onMounted(() => {
-    emailInput.value.$el.focus();
-});
-</script>
-
-<template>
-    <GuestLayout>
-        <Head title="Log in" />
-
-        <template #message v-if="status">
-            <Message severity="success" :closable="false" class="shadow">
-                {{ status }}
-            </Message>
-        </template>
-
-        <form @submit.prevent="submit">
-            <div class="mb-6">
-                <label for="email" class="block mb-2">Email</label>
-                <InputText
-                    required
-                    ref="email-input"
-                    id="email"
-                    type="email"
-                    v-model="form.email"
-                    class="w-full"
-                    :invalid="Boolean(form.errors.email)"
-                    autocomplete="username"
-                />
-                <InputError class="mt-2" :message="form.errors.email" />
-            </div>
-
-            <div class="mb-6">
-                <label for="password" class="block mb-2">Password</label>
-                <InputText
-                    required
-                    id="password"
-                    type="password"
-                    v-model="form.password"
-                    class="w-full"
-                    :invalid="Boolean(form.errors.password)"
-                    autocomplete="current-password"
-                />
-                <InputError class="mt-2 mb-1" :message="form.errors.password" />
-            </div>
-
-            <div class="mb-8">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center">
-                        <Checkbox
-                            id="remember"
-                            :binary="true"
-                            v-model="form.remember"
-                            class="mr-2"
-                        ></Checkbox>
-                        <label for="remember">Remember me</label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="flex justify-end items-center">
-                <Link
-                    v-if="canResetPassword"
-                    :href="route('password.request')"
-                    class="mr-4 underline text-muted-color hover:text-color"
-                >
-                    Forgot your password?
-                </Link>
-                <Button
-                    raised
-                    type="submit"
-                    :loading="form.processing"
-                    label="Log In"
-                    severity="contrast"
-                />
-            </div>
-        </form>
-    </GuestLayout>
-</template>
-
-
-==== resources\js\Pages\Auth\Register.vue ====
-
-<script setup>
-import { useTemplateRef, onMounted } from 'vue';
-import { useForm } from '@inertiajs/vue3';
-import GuestLayout from '@/Layouts/GuestLayout.vue';
-import InputError from '@/Components/InputError.vue';
-
-const form = useForm({
-    name: '',
-    email: '',
-    password: '',
-    password_confirmation: '',
-});
-
-const nameInput = useTemplateRef('name-input');
-
-const submit = () => {
-    form.post(route('register'), {
-        onFinish: () => form.reset('password', 'password_confirmation'),
-    });
-};
-
-onMounted(() => {
-    nameInput.value.$el.focus();
-});
-</script>
-
-<template>
-    <GuestLayout>
-        <Head title="Register" />
-
-        <form @submit.prevent="submit">
-            <div class="mb-6">
-                <label for="name" class="block mb-2">Name</label>
-                <InputText
-                    ref="name-input"
-                    id="name"
-                    type="text"
-                    v-model="form.name"
-                    class="w-full"
-                    :invalid="Boolean(form.errors.name)"
-                    required
-                    autocomplete="name"
-                />
-                <InputError class="mt-2" :message="form.errors.name" />
-            </div>
-
-            <div class="mb-6">
-                <label for="email" class="block mb-2">Email</label>
-                <InputText
-                    id="email"
-                    type="email"
-                    v-model="form.email"
-                    class="w-full"
-                    :invalid="Boolean(form.errors.email)"
-                    required
-                    autocomplete="username"
-                />
-                <InputError class="mt-2" :message="form.errors.email" />
-            </div>
-
-            <div class="mb-6">
-                <label for="password" class="block mb-2">Password</label>
-                <InputText
-                    id="password"
-                    type="password"
-                    v-model="form.password"
-                    class="w-full"
-                    :invalid="Boolean(form.errors.password)"
-                    required
-                    autocomplete="new-password"
-                />
-                <InputError class="mt-2 mb-1" :message="form.errors.password" />
-            </div>
-
-            <div class="mb-6">
-                <label for="password_confirmation" class="block mb-2"
-                    >Confirm Password</label
-                >
-                <InputText
-                    id="password_confirmation"
-                    type="password"
-                    v-model="form.password_confirmation"
-                    class="w-full"
-                    :invalid="Boolean(form.errors.password_confirmation)"
-                    required
-                    autocomplete="new-password"
-                />
-                <InputError
-                    class="mt-2 mb-1"
-                    :message="form.errors.password_confirmation"
-                />
-            </div>
-
-            <div class="flex justify-end items-center">
-                <Link
-                    :href="route('login')"
-                    class="mr-4 text-muted-color underline text-muted-color hover:text-color"
-                >
-                    Already registered?
-                </Link>
-                <Button
-                    raised
-                    type="submit"
-                    :loading="form.processing"
-                    label="Register"
-                    severity="contrast"
-                />
-            </div>
-        </form>
-    </GuestLayout>
-</template>
-
-
-==== resources\js\Pages\Auth\ResetPassword.vue ====
-
-<script setup>
-import { useTemplateRef, onMounted } from 'vue';
-import { useForm } from '@inertiajs/vue3';
-import GuestLayout from '@/Layouts/GuestLayout.vue';
-import InputError from '@/Components/InputError.vue';
-
-const props = defineProps({
-    email: {
-        type: String,
-        required: true,
-    },
-    token: {
-        type: String,
-        required: true,
-    },
-});
-
-const emailInput = useTemplateRef('email-input');
-
-const form = useForm({
-    token: props.token,
-    email: props.email,
-    password: '',
-    password_confirmation: '',
-});
-
-const submit = () => {
-    form.post(route('password.store'), {
-        onFinish: () => form.reset('password', 'password_confirmation'),
-    });
-};
-
-onMounted(() => {
-    emailInput.value.$el.focus();
-});
-</script>
-
-<template>
-    <GuestLayout>
-        <Head title="Reset Password" />
-
-        <form @submit.prevent="submit">
-            <div class="mb-6">
-                <label for="email" class="block mb-2">Email</label>
-                <InputText
-                    ref="email-input"
-                    id="email"
-                    type="email"
-                    v-model="form.email"
-                    class="w-full"
-                    :invalid="Boolean(form.errors.email)"
-                    required
-                    autocomplete="username"
-                />
-                <InputError class="mt-2" :message="form.errors.email" />
-            </div>
-
-            <div class="mb-6">
-                <label for="password" class="block mb-2">Password</label>
-                <InputText
-                    id="password"
-                    type="password"
-                    v-model="form.password"
-                    class="w-full"
-                    :invalid="Boolean(form.errors.password)"
-                    required
-                    autocomplete="new-password"
-                />
-                <InputError class="mt-2 mb-1" :message="form.errors.password" />
-            </div>
-
-            <div class="mb-6">
-                <label for="password_confirmation" class="block mb-2"
-                    >Password</label
-                >
-                <InputText
-                    id="password_confirmation"
-                    type="password"
-                    v-model="form.password_confirmation"
-                    class="w-full"
-                    :invalid="Boolean(form.errors.password_confirmation)"
-                    required
-                    autocomplete="new-password"
-                />
-                <InputError
-                    class="mt-2 mb-1"
-                    :message="form.errors.password_confirmation"
-                />
-            </div>
-
-            <div class="flex justify-end items-center">
-                <Button
-                    raised
-                    type="submit"
-                    :loading="form.processing"
-                    label="Reset Password"
-                    severity="contrast"
-                />
-            </div>
-        </form>
-    </GuestLayout>
-</template>
-
-
-==== resources\js\Pages\Auth\VerifyEmail.vue ====
-
-<script setup>
-import { computed } from 'vue';
-import { useForm } from '@inertiajs/vue3';
-import Message from 'primevue/message';
-import GuestLayout from '@/Layouts/GuestLayout.vue';
-
-const props = defineProps({
-    status: {
-        type: String,
-    },
-});
-
-const form = useForm({});
-
-const submit = () => {
-    form.post(route('verification.send'));
-};
-
-const verificationLinkSent = computed(
-    () => props.status === 'verification-link-sent'
-);
-</script>
-
-<template>
-    <GuestLayout>
-        <Head title="Email Verification" />
-
-        <template #message v-if="verificationLinkSent">
-            <Message severity="success" :closable="false" class="shadow">
-                A new verification link has been sent to the email address you
-                provided during registration.
-            </Message>
-        </template>
-
-        <div class="mb-6 text-sm text-muted-color">
-            Thanks for signing up! Before getting started, could you verify your
-            email address by clicking on the link we just emailed to you? If you
-            didn't receive the email, we will gladly send you another.
-        </div>
-
-        <form @submit.prevent="submit">
-            <div class="mt-6 flex justify-between items-center">
-                <Button
-                    raised
-                    type="submit"
-                    :loading="form.processing"
-                    label="Resend Verification Email"
-                    severity="contrast"
-                />
-                <Link
-                    :href="route('logout')"
-                    method="post"
-                    class="text-muted-color underline text-muted-color hover:text-color"
-                    >Log Out</Link
-                >
-            </div>
-        </form>
-    </GuestLayout>
-</template>
-
-
-==== resources\js\Pages\Dashboard.vue ====
-
-<script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import Container from '@/Components/Container.vue';
-import ResponsiveCard from '@/Components/ResponsiveCard.vue';
-</script>
-
-<template>
-    <Head title="Dashboard" />
-    <AuthenticatedLayout>
-        <template #header>
-            <h2 class="font-bold text-xl leading-tight">Dashboard</h2>
-        </template>
-        <Container :spaced-mobile="false">
-            <div class="py-12">
-                <ResponsiveCard>
-                    <p class="m-0">You are logged in!</p>
-                </ResponsiveCard>
-            </div>
-        </Container>
-    </AuthenticatedLayout>
-</template>
-
-
-==== resources\js\Pages\Profile\Edit.vue ====
-
-<script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import Container from '@/Components/Container.vue';
-import ResponsiveCard from '@/Components/ResponsiveCard.vue';
-import DeleteUserForm from './Partials/DeleteUserForm.vue';
-import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue';
-import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm.vue';
-
-const props = defineProps({
-    auth: Object,
-    mustVerifyEmail: {
-        type: Boolean,
-    },
-    status: {
-        type: String,
-    },
-});
-</script>
-
-<template>
-    <Head title="Profile" />
-
-    <AuthenticatedLayout>
-        <template #header>
-            <h2 class="font-bold text-xl leading-tight">Profile</h2>
-        </template>
-
-        <Container :spaced-mobile="false">
-            <div class="py-12">
-                <div class="space-y-6">
-                    <ResponsiveCard>
-                        <UpdateProfileInformationForm
-                            :must-verify-email="mustVerifyEmail"
-                            :status="status"
-                            class="max-w-xl"
-                        />
-                    </ResponsiveCard>
-
-                    <ResponsiveCard>
-                        <UpdatePasswordForm class="max-w-xl" />
-                    </ResponsiveCard>
-
-                    <ResponsiveCard>
-                        <DeleteUserForm class="max-w-xl" />
-                    </ResponsiveCard>
-                </div>
-            </div>
-        </Container>
-    </AuthenticatedLayout>
-</template>
-
-
-==== resources\js\Pages\Profile\Partials\DeleteUserForm.vue ====
-
-<script setup>
-import { ref, useTemplateRef } from 'vue';
-import { useForm } from '@inertiajs/vue3';
-import Dialog from 'primevue/dialog';
-import InputError from '@/Components/InputError.vue';
-
-const passwordInput = useTemplateRef('password-input');
-const modalOpen = ref(false);
-
-const form = useForm({
-    password: '',
-});
-
-const deleteUser = () => {
-    form.delete(route('profile.destroy'), {
-        preserveScroll: true,
-        onSuccess: () => (modalOpen.value = false),
-        onError: () => passwordInput.value.$el.focus(),
-        onFinish: () => form.reset(),
-    });
-};
-
-function focusPasswordInput() {
-    passwordInput.value.$el.focus();
-}
-</script>
-
-<template>
-    <section class="space-y-6">
-        <Dialog
-            :draggable="false"
-            position="center"
-            v-model:visible="modalOpen"
-            modal
-            header="Are you sure you want to delete your account?"
-            :style="{ width: '40rem' }"
-            @show="focusPasswordInput"
-        >
-            <div class="mb-6">
-                <p class="m-0 text-muted-color">
-                    Once your account is deleted, all of its resources and data
-                    will be permanently deleted. Please enter your password to
-                    confirm you would like to permanently delete your account.
-                </p>
-            </div>
-
-            <div>
-                <InputText
-                    autofocus
-                    required
-                    id="password"
-                    ref="password-input"
-                    type="password"
-                    placeholder="Password"
-                    v-model="form.password"
-                    class="w-full"
-                    :invalid="Boolean(form.errors.password)"
-                    autocomplete="current-password"
-                    @keyup.enter="deleteUser"
-                />
-                <InputError class="mt-2" :message="form.errors.password" />
-            </div>
-
-            <template #footer>
-                <Button
-                    class="mr-2"
-                    label="Cancel"
-                    plain
-                    text
-                    @click="modalOpen = false"
-                />
-                <Button
-                    raised
-                    @click="deleteUser"
-                    :loading="form.processing"
-                    label="Delete Account"
-                    severity="danger"
-                />
-            </template>
-        </Dialog>
-
-        <header>
-            <h2 class="text-lg font-medium mt-0 mb-2">Delete Account</h2>
-            <p class="mb-0 text-sm text-muted-color">
-                Once your account is deleted, all of its resources and data will
-                be permanently deleted. Before deleting your account, please
-                download any data or information that you wish to retain.
-            </p>
-        </header>
-
-        <Button
-            raised
-            @click="modalOpen = true"
-            label="Delete Account"
-            severity="danger"
-        />
-    </section>
-</template>
-
-
-==== resources\js\Pages\Profile\Partials\UpdatePasswordForm.vue ====
-
-<script setup>
-import { useTemplateRef } from 'vue';
-import { useForm } from '@inertiajs/vue3';
-import { useToast } from 'primevue/usetoast';
-import InputError from '@/Components/InputError.vue';
-
-const currentPasswordInput = useTemplateRef('current-password-input');
-const newPasswordInput = useTemplateRef('new-password-input');
-
-const toast = useToast();
-const form = useForm({
-    current_password: '',
-    password: '',
-    password_confirmation: '',
-});
-
-const showSuccessToast = () => {
-    toast.add({
-        severity: 'success',
-        summary: 'Saved',
-        detail: 'Your password has been updated',
-        life: 3000,
-    });
-};
-const updatePassword = () => {
-    form.put(route('password.update'), {
-        preserveScroll: true,
-        onSuccess: () => {
-            form.reset();
-            showSuccessToast();
-        },
-        onError: () => {
-            if (form.errors?.password) {
-                form.reset('password', 'password_confirmation');
-                newPasswordInput.value.$el.focus();
-            }
-            if (form.errors?.current_password) {
-                form.reset('current_password');
-                currentPasswordInput.value.$el.focus();
-            }
-        },
-    });
-};
-</script>
-
-<template>
-    <section>
-        <header>
-            <h2 class="text-lg font-medium mt-0 mb-2">Update Password</h2>
-            <p class="mb-0 text-sm text-muted-color">
-                Ensure your account is using a long, random password to stay
-                secure.
-            </p>
-        </header>
-
-        <form @submit.prevent="updatePassword" class="mt-6 space-y-6">
-            <div>
-                <label for="current_password" class="block mb-2"
-                    >Current Password</label
-                >
-                <InputText
-                    required
-                    id="current_password"
-                    ref="current-password-input"
-                    type="password"
-                    v-model="form.current_password"
-                    class="w-full"
-                    :invalid="Boolean(form.errors.current_password)"
-                    autocomplete="current-password"
-                />
-                <InputError
-                    class="mt-2"
-                    :message="form.errors?.current_password"
-                />
-            </div>
-
-            <div>
-                <label for="password" class="block mb-2">New Password</label>
-                <InputText
-                    required
-                    id="password"
-                    ref="new-password-input"
-                    type="password"
-                    v-model="form.password"
-                    class="w-full"
-                    :invalid="Boolean(form.errors.password)"
-                    autocomplete="new-password"
-                />
-                <InputError class="mt-2" :message="form.errors?.password" />
-            </div>
-
-            <div>
-                <label for="password_confirmation" class="block mb-2"
-                    >Confirm Password</label
-                >
-                <InputText
-                    required
-                    id="password_confirmation"
-                    type="password"
-                    v-model="form.password_confirmation"
-                    class="w-full"
-                    :invalid="Boolean(form.errors.password_confirmation)"
-                    autocomplete="new-password"
-                />
-                <InputError
-                    class="mt-2"
-                    :message="form.errors?.password_confirmation"
-                />
-            </div>
-
-            <div class="flex items-center gap-4">
-                <Button
-                    raised
-                    type="submit"
-                    :loading="form.processing"
-                    label="Save"
-                    severity="contrast"
-                />
-
-                <Transition
-                    enter-active-class="transition ease-in-out"
-                    enter-from-class="opacity-0"
-                    leave-active-class="transition ease-in-out"
-                    leave-to-class="opacity-0"
-                >
-                    <p
-                        v-if="form.recentlySuccessful"
-                        class="text-sm text-muted-color"
-                    >
-                        Saved.
-                    </p>
-                </Transition>
-            </div>
-        </form>
-    </section>
-</template>
-
-
-==== resources\js\Pages\Profile\Partials\UpdateProfileInformationForm.vue ====
-
-<script setup>
-import { useTemplateRef, onMounted } from 'vue';
-import { useForm, usePage } from '@inertiajs/vue3';
-import { useToast } from 'primevue/usetoast';
-import Message from 'primevue/message';
-import InputError from '@/Components/InputError.vue';
-
-defineProps({
-    mustVerifyEmail: {
-        type: Boolean,
-    },
-    status: {
-        type: String,
-    },
-});
-
-const nameInput = useTemplateRef('name-input');
-
-const user = usePage().props.auth.user;
-const toast = useToast();
-const form = useForm({
-    name: user.name,
-    email: user.email,
-});
-
-const showSuccessToast = () => {
-    toast.add({
-        severity: 'success',
-        summary: 'Saved',
-        detail: 'Profile information has been updated',
-        life: 3000,
-    });
-};
-const updateProfileInformation = () => {
-    form.patch(route('profile.update'), {
-        preserveScroll: true,
-        onSuccess: () => {
-            showSuccessToast();
-        },
-    });
-};
-
-onMounted(() => {
-    nameInput.value.$el.focus();
-});
-</script>
-
-<template>
-    <section>
-        <header>
-            <h2 class="text-lg font-medium mt-0 mb-2">Profile Information</h2>
-            <p class="mb-0 text-sm text-muted-color">
-                Update your account's profile information and email address.
-            </p>
-        </header>
-
-        <form @submit.prevent="updateProfileInformation" class="mt-6 space-y-6">
-            <div>
-                <label for="name" class="block mb-2">Name</label>
-                <InputText
-                    required
-                    ref="name-input"
-                    id="name"
-                    type="text"
-                    v-model="form.name"
-                    class="w-full"
-                    :invalid="Boolean(form.errors.name)"
-                    autocomplete="name"
-                />
-                <InputError class="mt-2" :message="form.errors?.name" />
-            </div>
-            <div>
-                <label for="email" class="block mb-2">Email</label>
-                <InputText
-                    required
-                    id="email"
-                    type="email"
-                    v-model="form.email"
-                    class="w-full"
-                    :invalid="Boolean(form.errors.email)"
-                    autocomplete="username"
-                />
-                <InputError class="mt-2" :message="form.errors?.email" />
-            </div>
-
-            <div v-if="mustVerifyEmail && user.email_verified_at === null">
-                <p class="text-sm mt-2">
-                    Your email address is unverified.
-                    <Link
-                        :href="route('verification.send')"
-                        method="post"
-                        class="underline text-sm text-muted-color underline text-muted-color hover:text-color"
-                    >
-                        Click here to re-send the verification email.
-                    </Link>
-                </p>
-
-                <Message
-                    v-if="status === 'verification-link-sent'"
-                    severity="success"
-                    :closable="false"
-                    class="shadow mt-4"
-                >
-                    A new verification link has been sent to your email address.
-                </Message>
-            </div>
-
-            <div class="flex items-center gap-4">
-                <Button
-                    raised
-                    type="submit"
-                    :loading="form.processing"
-                    label="Save"
-                    severity="contrast"
-                />
-
-                <Transition
-                    enter-active-class="transition ease-in-out"
-                    enter-from-class="opacity-0"
-                    leave-active-class="transition ease-in-out"
-                    leave-to-class="opacity-0"
-                >
-                    <p
-                        v-if="form.recentlySuccessful"
-                        class="text-sm text-muted-color"
-                    >
-                        Saved.
-                    </p>
-                </Transition>
-            </div>
-        </form>
-    </section>
-</template>
-
-
 ==== resources\js\Pages\PurchaseOrders\CreatePurchaseOrder.vue ====
 
-// CreatePurchaseOrder.vue
 <script setup>
-import { ref, onMounted } from 'vue';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import { ref, computed } from 'vue';
+import { usePurchaseOrderForm } from '@/Composables/usePurchaseOrderForm';
+import AuthenticatedAdminLayout from '@/Layouts/Admin/AuthenticatedLayout.vue';
 import Container from '@/Components/Container.vue';
 import ResponsiveCard from '@/Components/ResponsiveCard.vue';
 import Button from 'primevue/button';
-import { usePurchaseOrderForm } from '@/Composables/usePurchaseOrderForm';
 import SupplierSelectComponent from '@/Components/PurchaseOrders/SupplierSelectComponent.vue';
 import PartsDataTableComponent from '@/Components/PurchaseOrders/PartsDataTableComponent.vue';
 import AddressSelectComponent from '@/Components/PurchaseOrders/AddressSelectComponent.vue';
 
-// Define props and handle the Proxy unwrapping
+const pageTitle = 'Create Purchase Order';
+
 const props = defineProps({
     initialData: {
         type: Object,
@@ -3641,223 +22,131 @@ const props = defineProps({
     }
 });
 
-// Debug log to see the structure
-console.log('Raw initialData:', props.initialData);
-
 const {
     form,
-    loading,
     errors,
     processing,
-    selectedSupplier,
     availableSuppliers,
+    selectedSupplier,
     supplierParts,
     supplierAddresses,
-    subtotal,
-    taxAmount,
-    totalCost,
+    settings,
     addPart,
     removePart,
     updatePartQuantity,
     saveDraft,
     submit,
-    reset,
-} = usePurchaseOrderForm({
-    availableSuppliers: toRaw(props.initialData.availableSuppliers),
-    defaultTaxRate: toRaw(props.initialData.defaultTaxRate)
+    reset
+} = usePurchaseOrderForm(props.initialData);
+
+const selectedParts = computed(() => {
+    const partsObject = {};
+    form.value.parts.forEach(part => {
+        partsObject[part.part_id] = part.quantity_ordered;
+    });
+    return partsObject;
 });
 
-// Debug mounted hook
-onMounted(() => {
-    console.log('Available Suppliers:', availableSuppliers.value);
-    console.log('Form State:', form.value);
-});
-</script>
-
-<template>
-    <AuthenticatedLayout>
-        <Container>
-            <ResponsiveCard>
-                <template #title>Create Purchase Order</template>
-                <template #content>
-                    <!-- Debug output -->
-                    <div class="mb-4 p-4 bg-gray-100 rounded">
-                        <p>Debug Info:</p>
-                        <p>Suppliers Count: {{ availableSuppliers?.length }}</p>
-                        <p>Selected Supplier: {{ selectedSupplier?.name }}</p>
-                    </div>
-
-                    <form @submit.prevent="submit">
-                        <!-- Rest of your template -->
-                        <div class="mb-4">
-                            <SupplierSelectComponent
-                                v-model="form.supplier_id"
-                                :suppliers="availableSuppliers"
-                                :loading="loading"
-                            />
-                        </div>
-
-                        <!-- Only show parts table if supplier is selected -->
-                        <div v-if="form.supplier_id" class="mb-4">
-                            <PartsDataTableComponent
-                                :available-parts="supplierParts"
-                                :selected-parts="form.parts"
-                                @add-part="addPart"
-                                @update-quantity="updatePartQuantity"
-                                @remove-part="removePart"
-                            />
-                        </div>
-
-                        <!-- Only show address selection if supplier is selected -->
-                        <div v-if="form.supplier_id" class="mb-4">
-                            <AddressSelectComponent
-                                v-model="form.addresses"
-                                :available-addresses="supplierAddresses"
-                            />
-                        </div>
-
-                        <!-- Rest of your form -->
-                    </form>
-                </template>
-            </ResponsiveCard>
-        </Container>
-    </AuthenticatedLayout>
-</template>
-
-// usePurchaseOrderForm.js
-import { ref, computed, watch } from 'vue';
-import { router } from '@inertiajs/vue3';
-import { useToast } from 'primevue/usetoast';
-
-export function usePurchaseOrderForm(initialData) {
-    console.log('usePurchaseOrderForm initialData:', initialData);
-
-    const toast = useToast();
-
-    // Form State
-    const form = ref({
-        supplier_id: null,
-        location_id: null,
-        parts: [],
-        addresses: {
-            billTo: null,
-            shipFrom: null,
-            shipTo: null,
-            returnTo: null
-        },
-        special_instructions: '',
-        tax_rate: initialData?.defaultTaxRate || 8.0,
-        additional_costs: 0,
-    });
-
-    // UI State
-    const loading = ref(false);
-    const errors = ref({});
-    const processing = ref(false);
-    const selectedSupplier = ref(null);
-
-    // Available data using passed in initialData
-    const availableSuppliers = computed(() => {
-        console.log('Computing availableSuppliers:', initialData?.availableSuppliers);
-        return initialData?.availableSuppliers || [];
-    });
-
-    // Rest of your composable logic...
-
-    // Add debug logging to computed properties
-    const supplierParts = computed(() => {
-        console.log('Computing supplierParts. Selected supplier ID:', form.value.supplier_id);
-        if (!form.value.supplier_id) return [];
-        const supplier = availableSuppliers.value.find(s => s.id === form.value.supplier_id);
-        console.log('Found supplier:', supplier);
-        return supplier?.parts || [];
-    });
-
-    // Rest of the composable code remains the same...
-
-    return {
-        form,
-        loading,
-        errors,
-        processing,
-        selectedSupplier,
-        availableSuppliers,
-        supplierParts,
-        supplierAddresses,
-        subtotal,
-        taxAmount,
-        totalCost,
-        addPart,
-        removePart,
-        updatePartQuantity,
-        saveDraft,
-        submit,
-        reset,
-    };
+function handleUpdateQuantity(partId, quantity) {
+    updatePartQuantity(partId, quantity);
 }
 
-// SupplierSelectComponent.vue
-<script setup>
-import { computed } from 'vue';
-import Dropdown from 'primevue/dropdown';
-
-const props = defineProps({
-    modelValue: {
-        type: [Number, null],
-        required: true
-    },
-    suppliers: {
-        type: Array,
-        required: true,
-        default: () => []
-    },
-    loading: {
-        type: Boolean,
-        default: false
-    }
-});
-
-const emit = defineEmits(['update:modelValue']);
-
-// Add debug logging
-console.log('SupplierSelectComponent props:', props);
-
-const formattedSuppliers = computed(() => {
-    console.log('Formatting suppliers:', props.suppliers);
-    return props.suppliers.map(supplier => ({
-        label: `${supplier.name} (${supplier.account_number})`,
-        value: supplier.id,
-        ...supplier
-    }));
-});
-
-const selectedValue = computed({
-    get: () => props.modelValue,
-    set: (value) => emit('update:modelValue', value)
-});
+function handleViewPart(part) {
+    // Implement view part functionality
+    console.log('Viewing part:', part);
+}
 </script>
 
 <template>
-    <div>
-        <!-- Debug output -->
-        <div v-if="import.meta.env.DEV" class="mb-2 text-xs text-gray-500">
-            Available suppliers: {{ suppliers.length }}
-        </div>
+    <Head :title="pageTitle" />
+    <AuthenticatedAdminLayout :page-title="pageTitle">
+        <Container :spaced-mobile="false">
+            <ResponsiveCard>
+                <!-- Supplier Selection -->
+                <div class="mb-6">
+                    <h2 class="mb-2 text-lg font-bold">Select Supplier</h2>
+                    <SupplierSelectComponent
+                        v-model="form.supplier_id"
+                        :suppliers="availableSuppliers"
+                        :loading="processing"
+                    />
+                </div>
 
-        <label for="supplier" class="block text-sm font-medium text-gray-700">
-            Select Supplier
-        </label>
-        <Dropdown
-            id="supplier"
-            v-model="selectedValue"
-            :options="formattedSuppliers"
-            optionLabel="label"
-            optionValue="value"
-            placeholder="Select a supplier"
-            class="w-full"
-            :loading="loading"
-        />
-    </div>
+                <!-- Parts Selection -->
+                <div v-if="selectedSupplier" class="mb-6">
+                    <h2 class="mb-2 text-lg font-bold">Select Parts</h2>
+                    <PartsDataTableComponent
+                        :available-parts="supplierParts"
+                        :selected-parts="selectedParts"
+                        :settings="settings"
+                        @update-quantity="handleUpdateQuantity"
+                        @view-part="handleViewPart"
+                    />
+                </div>
+
+                <!-- Address Selection -->
+                <div v-if="selectedSupplier" class="mb-6">
+                    <h2 class="mb-2 text-lg font-bold">Select Addresses</h2>
+                    <AddressSelectComponent
+                        v-model="form.addresses"
+                        :available-addresses="supplierAddresses"
+                        :settings="settings"
+                    />
+                </div>
+
+                <!-- Additional Information -->
+                <div class="mb-6">
+                    <h2 class="mb-2 text-lg font-bold">Additional Information</h2>
+                    <div class="space-y-2">
+                        <div>
+                            <label for="special_instructions" class="block text-sm font-medium text-gray-700">Special Instructions</label>
+                            <textarea
+                                id="special_instructions"
+                                v-model="form.special_instructions"
+                                rows="3"
+                                class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                            ></textarea>
+                        </div>
+                        <div>
+                            <label for="tax_rate" class="block text-sm font-medium text-gray-700">Tax Rate (%)</label>
+                            <input
+                                id="tax_rate"
+                                v-model.number="form.tax_rate"
+                                type="number"
+                                step="0.01"
+                                class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                            >
+                        </div>
+                        <div>
+                            <label for="additional_costs" class="block text-sm font-medium text-gray-700">Additional Costs</label>
+                            <input
+                                id="additional_costs"
+                                v-model.number="form.additional_costs"
+                                type="number"
+                                step="0.01"
+                                class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="flex justify-end space-x-2">
+                    <Button label="Save Draft" @click="saveDraft" :loading="processing" />
+                    <Button label="Submit" severity="success" @click="submit" :loading="processing" />
+                    <Button label="Reset" severity="secondary" @click="reset" :disabled="processing" />
+                </div>
+
+                <!-- Error Display -->
+                <div v-if="Object.keys(errors).length > 0" class="p-4 mt-4 border border-red-200 rounded-lg bg-red-50">
+                    <h2 class="mb-2 text-lg font-semibold text-red-700">Errors</h2>
+                    <ul class="text-red-600 list-disc list-inside">
+                        <li v-for="(error, key) in errors" :key="key">{{ error }}</li>
+                    </ul>
+                </div>
+            </ResponsiveCard>
+        </Container>
+    </AuthenticatedAdminLayout>
 </template>
 
 
@@ -4214,647 +503,802 @@ if (props.urlParams) {
 </template>
 
 
-==== resources\js\Pages\Welcome.vue ====
+==== resources\js\Components\PurchaseOrders\AddressSelectComponent.vue ====
 
 <script setup>
 import { computed } from 'vue';
-import ResponsiveCard from '@/Components/ResponsiveCard.vue';
-import ToggleThemeButton from '@/Components/ToggleThemeButton.vue';
+import Select from 'primevue/select';
 
 const props = defineProps({
-    canLogin: {
-        type: Boolean,
-    },
-    canRegister: {
-        type: Boolean,
-    },
-    isAdmin: {
-        type: Boolean,
-    },
-    laravelVersion: {
-        type: String,
+    modelValue: {
+        type: Object,
         required: true,
+        default: () => ({
+            billTo: null,
+            shipFrom: null,
+            shipTo: null,
+            returnTo: null
+        })
     },
-    phpVersion: {
-        type: String,
+    availableAddresses: {
+        type: Object,
         required: true,
+        default: () => ({
+            billTo: [],
+            shipFrom: [],
+            shipTo: [],
+            returnTo: []
+        })
     },
+    settings: {
+        type: Object,
+        required: false,
+        default: () => ({
+            requireShippingAddress: true
+        })
+    }
 });
 
-const dashboardRoute = computed(() => {
-    return props.isAdmin ? route('admin.dashboard') : route('dashboard');
+const emit = defineEmits(['update:modelValue']);
+
+const formatAddress = (address) => {
+    if (!address) return '';
+    const parts = [
+        address.street1,
+        address.street2,
+        address.city,
+        address.state,
+        address.postal_code,
+        address.country
+    ].filter(Boolean);
+    return parts.join(', ');
+};
+
+const formattedAddresses = computed(() => {
+    const result = {};
+    for (const [type, addresses] of Object.entries(props.availableAddresses)) {
+        result[type] = addresses.map(addr => ({
+            label: formatAddress(addr),
+            value: addr,
+            ...addr
+        }));
+    }
+    return result;
 });
+
+const updateAddress = (type, value) => {
+    emit('update:modelValue', {
+        ...props.modelValue,
+        [type]: value
+    });
+};
 </script>
 
 <template>
-    <Head title="Welcome" />
+    <div class="space-y-4">
+        <div v-for="(addresses, type) in formattedAddresses" :key="type" class="p-4 border rounded-lg">
+            <div class="font-medium text-lg mb-2 capitalize">
+                {{ type.replace(/([A-Z])/g, ' $1').trim() }} Address
+                <span v-if="settings.requireShippingAddress && type === 'shipTo'" class="text-red-500">*</span>
+            </div>
 
-    <div class="min-h-full">
-        <div class="h-screen flex items-center justify-center">
-            <ResponsiveCard spacing-classes="p-4 py-6 sm:p-12">
-                <div class="text-center md:text-left">
-                    <span class="block text-6xl font-bold mb-1"
-                        >Laravel Breeze</span
-                    >
-                    <div class="text-6xl text-primary font-bold mb-4">
-                        & PrimeVue
+            <div v-if="addresses.length === 0" class="text-gray-500 italic">
+                No addresses available
+            </div>
+
+            <Select
+                v-else
+                :id="`address-${type}`"
+                v-model="modelValue[type]"
+                :options="addresses"
+                optionLabel="label"
+                :placeholder="`Select ${type.replace(/([A-Z])/g, ' $1').trim()} Address`"
+                class="w-full"
+                @change="(e) => updateAddress(type, e.value)"
+            >
+                <template #option="{ option }">
+                    <div class="text-sm">
+                        {{ option.label }}
                     </div>
-                    <p class="mt-0 mb-1 text-muted-color leading-normal">
-                        A starter kit using the Vue/Inertia option for
-                        <a
-                            href="https://laravel.com/docs/master/starter-kits#laravel-breeze"
-                            class="underline text-primary hover:text-color"
-                            >Laravel Breeze</a
-                        >,
-                    </p>
-                    <p class="mt-0 mb-6 text-muted-color leading-normal">
-                        utilizing
-                        <a
-                            href="https://primevue.org/"
-                            class="underline text-primary hover:text-color"
-                            >PrimeVue</a
-                        >
-                        components
-                    </p>
-                    <template v-if="$page.props.auth.user">
-                        <Link :href="dashboardRoute">
-                            <Button
-                                raised
-                                label="Dashboard"
-                                icon="pi pi-th-large"
-                                class="mr-4"
-                            />
-                        </Link>
-                        <Link v-if="!isAdmin" :href="route('profile.edit')">
-                            <Button
-                                outlined
-                                label="Profile"
-                                icon="pi pi-user"
-                                class="mr-4"
-                            />
-                        </Link>
-                    </template>
-                    <template v-else>
-                        <Link :href="route('login')">
-                            <Button
-                                raised
-                                label="Login"
-                                icon="pi pi-sign-in"
-                                class="mr-4"
-                            />
-                        </Link>
-                        <Link :href="route('register')">
-                            <Button
-                                outlined
-                                label="Register"
-                                icon="pi pi-user-plus"
-                                class="mr-4"
-                            />
-                        </Link>
-                    </template>
-                    <ToggleThemeButton outlined />
-                    <div class="mt-6">
-                        <p class="m-0 text-sm text-muted-color">
-                            Laravel v{{ laravelVersion }} (PHP v{{
-                                phpVersion
-                            }})
-                        </p>
-                    </div>
-                </div>
-            </ResponsiveCard>
+                </template>
+            </Select>
         </div>
     </div>
 </template>
 
 
-==== resources\js\theme-preset.js ====
+==== resources\js\Components\PurchaseOrders\PartsDataTableComponent.vue ====
 
-import Aura from '@primevue/themes/aura';
-import { definePreset } from '@primevue/themes';
+<script setup>
+import { ref, computed } from 'vue';
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
+import InputNumber from 'primevue/inputnumber';
+import Button from 'primevue/button';
+import Tag from 'primevue/tag';
+import InputText from 'primevue/inputtext';
+import ToggleButton from 'primevue/togglebutton';
+import Tooltip from 'primevue/tooltip';
 
-const customThemePreset = definePreset(Aura, {
-    semantic: {
-        primary: {
-            50: '{indigo.50}',
-            100: '{indigo.100}',
-            200: '{indigo.200}',
-            300: '{indigo.300}',
-            400: '{indigo.400}',
-            500: '{indigo.500}',
-            600: '{indigo.600}',
-            700: '{indigo.700}',
-            800: '{indigo.800}',
-            900: '{indigo.900}',
-            950: '{indigo.950}',
-        },
-        colorScheme: {
-            light: {
-                surface: {
-                    50: '{gray.50}',
-                    100: '{gray.100}',
-                    200: '{gray.200}',
-                    300: '{gray.300}',
-                    400: '{gray.400}',
-                    500: '{gray.500}',
-                    600: '{gray.600}',
-                    700: '{gray.700}',
-                    800: '{gray.800}',
-                    900: '{gray.900}',
-                    950: '{gray.950}',
-                },
-            },
-            dark: {
-                surface: {
-                    50: '{gray.50}',
-                    100: '{gray.100}',
-                    200: '{gray.200}',
-                    300: '{gray.300}',
-                    400: '{gray.400}',
-                    500: '{gray.500}',
-                    600: '{gray.600}',
-                    700: '{gray.700}',
-                    800: '{gray.800}',
-                    900: '{gray.900}',
-                    950: '{gray.950}',
-                },
-            },
-        },
+const props = defineProps({
+    availableParts: {
+        type: Array,
+        required: true,
+        default: () => []
     },
+    selectedParts: {
+        type: Object,
+        required: true,
+        default: () => ({})
+    },
+    settings: {
+        type: Object,
+        required: true,
+        default: () => ({
+            minQuantity: 1,
+            defaultLeadDays: 1
+        })
+    }
 });
 
-export default {
-    preset: customThemePreset,
-    options: {
-        darkModeSelector: '.dark-mode',
-        cssLayer: {
-            name: 'primevue',
-            order: 'tailwind-base, primevue, tailwind-utilities',
-        },
-    },
+const emit = defineEmits(['update-quantity', 'view-part']);
+
+const filters = ref({
+    'part_number': { value: null, matchMode: 'contains' },
+    'description': { value: null, matchMode: 'contains' }
+});
+
+const sortByTotalCost = ref(false);
+
+const formatCurrency = (value) => {
+    return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD'
+    }).format(value || 0);
 };
 
+const getCostPerPart = (part) => {
+    return part.replenishment_data?.purchaseTerms?.[0]?.cost_per_part || 0;
+};
 
-==== resources\js\ziggy.js ====
+const getOrderQuantity = (partId) => {
+    return props.selectedParts[partId] || 0;
+};
 
-const Ziggy = {"url":"http:\/\/localhost","port":null,"defaults":{},"routes":{"sanctum.csrf-cookie":{"uri":"sanctum\/csrf-cookie","methods":["GET","HEAD"]},"welcome":{"uri":"\/","methods":["GET","HEAD"]},"purchase-orders.index":{"uri":"purchase-orders","methods":["GET","HEAD"]},"purchase-orders.create":{"uri":"purchase-orders\/create","methods":["GET","HEAD"]},"purchase-orders.store":{"uri":"purchase-orders","methods":["POST"]},"purchase-orders.show":{"uri":"purchase-orders\/{id}","methods":["GET","HEAD"],"parameters":["id"]},"dashboard":{"uri":"dashboard","methods":["GET","HEAD"]},"profile.edit":{"uri":"profile","methods":["GET","HEAD"]},"profile.update":{"uri":"profile","methods":["PATCH"]},"profile.destroy":{"uri":"profile","methods":["DELETE"]},"register":{"uri":"register","methods":["GET","HEAD"]},"login":{"uri":"login","methods":["GET","HEAD"]},"password.request":{"uri":"forgot-password","methods":["GET","HEAD"]},"password.email":{"uri":"forgot-password","methods":["POST"]},"password.reset":{"uri":"reset-password\/{token}","methods":["GET","HEAD"],"parameters":["token"]},"password.store":{"uri":"reset-password","methods":["POST"]},"verification.notice":{"uri":"verify-email","methods":["GET","HEAD"]},"verification.verify":{"uri":"verify-email\/{id}\/{hash}","methods":["GET","HEAD"],"parameters":["id","hash"]},"verification.send":{"uri":"email\/verification-notification","methods":["POST"]},"password.update":{"uri":"password","methods":["PUT"]},"logout":{"uri":"logout","methods":["POST"]},"admin.dashboard":{"uri":"admin\/dashboard","methods":["GET","HEAD"]},"admin.users.index":{"uri":"admin\/users","methods":["GET","HEAD"]},"admin.profile.edit":{"uri":"admin\/profile","methods":["GET","HEAD"]},"admin.profile.update":{"uri":"admin\/profile","methods":["PATCH"]},"admin.profile.destroy":{"uri":"admin\/profile","methods":["DELETE"]},"admin.purchase-orders.index":{"uri":"admin\/purchase-orders","methods":["GET","HEAD"]},"admin.purchase-orders.create":{"uri":"admin\/purchase-orders\/create","methods":["GET","HEAD"]},"admin.purchase-orders.store":{"uri":"admin\/purchase-orders","methods":["POST"]},"admin.purchase-orders.show":{"uri":"admin\/purchase-orders\/{id}","methods":["GET","HEAD"],"parameters":["id"]},"admin.login":{"uri":"admin\/login","methods":["GET","HEAD"]},"admin.":{"uri":"admin\/login","methods":["POST"]},"admin.password.request":{"uri":"admin\/forgot-password","methods":["GET","HEAD"]},"admin.password.email":{"uri":"admin\/forgot-password","methods":["POST"]},"admin.password.reset":{"uri":"admin\/reset-password\/{token}","methods":["GET","HEAD"],"parameters":["token"]},"admin.password.store":{"uri":"admin\/reset-password","methods":["POST"]},"admin.verification.notice":{"uri":"admin\/verify-email","methods":["GET","HEAD"]},"admin.verification.verify":{"uri":"admin\/verify-email\/{id}\/{hash}","methods":["GET","HEAD"],"parameters":["id","hash"]},"admin.verification.send":{"uri":"admin\/email\/verification-notification","methods":["POST"]},"admin.password.update":{"uri":"admin\/password","methods":["PUT"]},"admin.logout":{"uri":"admin\/logout","methods":["POST"]}}};
-if (typeof window !== 'undefined' && typeof window.Ziggy !== 'undefined') {
-    Object.assign(Ziggy.routes, window.Ziggy.routes);
+const calculateTotalCost = (part) => {
+    const quantity = getOrderQuantity(part.id);
+    return quantity * getCostPerPart(part);
+};
+
+const sortedParts = computed(() => {
+    if (sortByTotalCost.value) {
+        return [...props.availableParts].sort((a, b) => calculateTotalCost(b) - calculateTotalCost(a));
+    }
+    return props.availableParts;
+});
+
+const getPartTooltip = (part) => {
+    const products = part.products?.map(p => p.name).join(', ') || 'No associated products';
+    const identifiers = part.identifiers?.identifiers?.map(i => `${i.type}: ${i.value}`).join(', ') || 'No identifiers';
+    const regulatoryInfo = part.regulatory_information?.identifiers?.map(i => `${i.type}: ${i.value}`).join(', ') || 'No regulatory information';
+
+    return `
+        <strong>Associated Products:</strong> ${products}<br>
+        <strong>Identifiers:</strong> ${identifiers}<br>
+        <strong>Regulatory Information:</strong> ${regulatoryInfo}<br>
+        <strong>Manufacturer:</strong> ${part.manufacturer?.name || 'N/A'}<br>
+        <strong>Supplier:</strong> ${part.supplier?.name || 'N/A'}
+    `;
+};
+</script>
+
+<template>
+    <div class="flex items-center justify-end mb-3">
+        <label for="sortByTotalCost" class="mr-2">Sort by Total Cost</label>
+        <ToggleButton v-model="sortByTotalCost" inputId="sortByTotalCost" onIcon="pi pi-check" offIcon="pi pi-times" />
+    </div>
+
+    <DataTable
+        :value="sortedParts"
+        :filters="filters"
+        filterDisplay="row"
+        dataKey="id"
+        :paginator="true"
+        :rows="10"
+        :rowsPerPageOptions="[10, 25, 50]"
+        responsiveLayout="scroll"
+        class="p-datatable-sm"
+        removableSort
+        :scrollable="true"
+        scrollHeight="400px"
+        :loading="loading"
+    >
+        <template #empty>
+            No parts found.
+        </template>
+
+        <Column field="part_number" header="Part Number" sortable filterField="part_number">
+            <template #filter="{ filterModel, filterCallback }">
+                <InputText
+                    v-model="filterModel.value"
+                    type="text"
+                    class="w-full p-inputtext-sm"
+                    @input="filterCallback"
+                    placeholder="Search part number"
+                />
+            </template>
+        </Column>
+
+        <Column field="description" header="Description" sortable filterField="description">
+            <template #filter="{ filterModel, filterCallback }">
+                <InputText
+                    v-model="filterModel.value"
+                    type="text"
+                    class="w-full p-inputtext-sm"
+                    @input="filterCallback"
+                    placeholder="Search description"
+                />
+            </template>
+        </Column>
+
+        <Column field="unit_cost" header="Unit Cost" sortable>
+            <template #body="{ data }">
+                {{ formatCurrency(getCostPerPart(data)) }}
+            </template>
+        </Column>
+
+        <Column field="lead_days" header="Lead Time">
+            <template #body="{ data }">
+                <Tag :value="`${data.replenishment_data?.lead_days || settings.defaultLeadDays} days`" />
+            </template>
+        </Column>
+
+        <Column header="Order Quantity">
+            <template #body="{ data }">
+                <InputNumber
+                    :modelValue="getOrderQuantity(data.id)"
+                    :min="settings.minQuantity"
+                    :step="1"
+                    :showButtons="true"
+                    buttonLayout="horizontal"
+                    decrementButtonClass="p-button-secondary"
+                    incrementButtonClass="p-button-secondary"
+                    incrementButtonIcon="pi pi-plus"
+                    decrementButtonIcon="pi pi-minus"
+                    @update:modelValue="(value) => $emit('update-quantity', data.id, value)"
+                />
+            </template>
+        </Column>
+
+        <Column header="Total Cost" :sortable="sortByTotalCost">
+            <template #body="{ data }">
+                {{ formatCurrency(calculateTotalCost(data)) }}
+            </template>
+        </Column>
+
+        <Column header="Actions" :exportable="false">
+            <template #body="{ data }">
+                <Button
+                    label="View Part"
+                    icon="pi pi-eye"
+                    class="p-button-sm"
+                    @click="$emit('view-part', data)"
+                />
+            </template>
+        </Column>
+
+        <template #row="{ data }">
+            <tr v-tooltip.top.focus="{ value: getPartTooltip(data), escape: false }">
+                <td>{{ data.part_number }}</td>
+                <td>{{ data.description }}</td>
+                <td>{{ formatCurrency(getCostPerPart(data)) }}</td>
+                <td><Tag :value="`${data.replenishment_data?.lead_days || settings.defaultLeadDays} days`" /></td>
+                <td>
+                    <InputNumber
+                        :modelValue="getOrderQuantity(data.id)"
+                        :min="settings.minQuantity"
+                        :step="1"
+                        :showButtons="true"
+                        buttonLayout="horizontal"
+                        decrementButtonClass="p-button-secondary"
+                        incrementButtonClass="p-button-secondary"
+                        incrementButtonIcon="pi pi-plus"
+                        decrementButtonIcon="pi pi-minus"
+                        @update:modelValue="(value) => $emit('update-quantity', data.id, value)"
+                    />
+                </td>
+                <td>{{ formatCurrency(calculateTotalCost(data)) }}</td>
+                <td>
+                    <Button
+                        label="View Part"
+                        icon="pi pi-eye"
+                        class="p-button-sm"
+                        @click="$emit('view-part', data)"
+                    />
+                </td>
+            </tr>
+        </template>
+    </DataTable>
+</template>
+
+<style scoped>
+/* Add any necessary styles here */
+</style>
+
+
+==== resources\js\Components\PurchaseOrders\SupplierSelectComponent.vue ====
+
+<script setup>
+import { computed } from 'vue';
+import Select from 'primevue/select';
+
+const props = defineProps({
+    modelValue: {
+        type: [Number, null],
+        required: true
+    },
+    suppliers: {
+        type: Array,
+        required: true,
+        default: () => []
+    },
+    loading: {
+        type: Boolean,
+        default: false
+    }
+});
+
+const emit = defineEmits(['update:modelValue']);
+
+const formattedSuppliers = computed(() => {
+    return props.suppliers.map(supplier => ({
+        label: `${supplier.name} (${supplier.account_number})`,
+        value: supplier.id,
+        ...supplier
+    }));
+});
+
+const selectedValue = computed({
+    get: () => props.modelValue,
+    set: (value) => emit('update:modelValue', value)
+});
+</script>
+
+<template>
+    <div>
+
+        <label for="supplier" class="block text-sm font-medium text-gray-700">
+            Select Supplier
+        </label>
+        <Select
+            id="supplier"
+            v-model="selectedValue"
+            :options="formattedSuppliers"
+            optionLabel="label"
+            optionValue="value"
+            :loading="loading"
+            class="w-full"
+            placeholder="Select a supplier"
+        >
+            <template #option="{ option }">
+                <div class="flex flex-col">
+                    <span class="font-medium">{{ option.name }}</span>
+                    <span class="text-sm text-gray-500">{{ option.account_number }}</span>
+                </div>
+            </template>
+        </Select>
+    </div>
+</template>
+
+
+==== resources\js\Composables\useDataTable.js ====
+
+import { ref, computed } from 'vue';
+import { router } from '@inertiajs/vue3';
+
+export function useDataTable(defaultFilters = {}, only = ['urlParams']) {
+    const dataTableDefaults = {
+        filters: defaultFilters,
+        sortField: '',
+        sortOrder: 1,
+        currentPage: 1,
+        rowsPerPage: 20,
+    };
+
+    const filters = ref(dataTableDefaults.filters);
+    const sortField = ref(dataTableDefaults.sortField);
+    const sortOrder = ref(dataTableDefaults.sortOrder);
+    const currentPage = ref(dataTableDefaults.currentPage);
+    const rowsPerPage = ref(dataTableDefaults.rowsPerPage);
+
+    const firstDatasetIndex = computed(() => {
+        return (currentPage.value - 1) * rowsPerPage.value;
+    });
+
+    function fetchData() {
+        return new Promise((resolve, reject) => {
+            router.reload({
+                only,
+                data: {
+                    filters: filters.value,
+                    sortField: sortField.value,
+                    sortOrder: sortOrder.value,
+                    page: currentPage.value,
+                    rows: rowsPerPage.value,
+                },
+                preserveState: true,
+                onSuccess: (page) => {
+                    resolve(page);
+                },
+                onError: (errors) => {
+                    reject(errors);
+                },
+            });
+        });
+    }
+
+    function onPage(event) {
+        currentPage.value = event.page + 1;
+        rowsPerPage.value = event.rows;
+        fetchData().then(() => {
+            scrollToTop();
+        });
+    }
+
+    function onSort(event) {
+        sortField.value = event.sortField;
+        sortOrder.value = event.sortOrder;
+        fetchData();
+    }
+
+    function onFilter(event) {
+        currentPage.value = 1;
+        filters.value = event.filters;
+        fetchData();
+    }
+
+    function scrollToTop() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth',
+        });
+    }
+
+    function reset() {
+        filters.value = dataTableDefaults.filters;
+        sortField.value = dataTableDefaults.sortField;
+        sortOrder.value = dataTableDefaults.sortOrder;
+        currentPage.value = dataTableDefaults.currentPage;
+        rowsPerPage.value = dataTableDefaults.rowsPerPage;
+        fetchData();
+    }
+
+    function parseUrlParams(urlParams) {
+        filters.value = urlParams?.filters || dataTableDefaults.filters;
+        sortField.value = urlParams?.sortField || dataTableDefaults.sortField;
+        sortOrder.value =
+            parseInt(urlParams?.sortOrder) || dataTableDefaults.sortOrder;
+        currentPage.value =
+            parseInt(urlParams?.page) || dataTableDefaults.currentPage;
+        rowsPerPage.value =
+            parseInt(urlParams?.rows) || dataTableDefaults.rowsPerPage;
+    }
+
+    return {
+        filters,
+        sortField,
+        sortOrder,
+        currentPage,
+        rowsPerPage,
+        firstDatasetIndex,
+        onPage,
+        onSort,
+        onFilter,
+        reset,
+        fetchData,
+        parseUrlParams,
+    };
 }
-export { Ziggy };
 
 
-==== app\Models\PurchaseOrder.php ====
+==== resources\js\Composables\usePurchaseOrderForm.js ====
 
-<?php
+import { ref, computed, watch } from 'vue';
+import { router } from '@inertiajs/vue3';
+import { useToast } from 'primevue/usetoast';
 
-namespace App\Models;
+export function usePurchaseOrderForm(initialData = {}) {
+    console.log('Initializing purchase order form with:', initialData);
 
-use App\DTOs\SupplierAddressesDTO;
-use App\Enums\PurchaseOrderStatus;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+    const form = ref({
+        supplier_id: null,
+        location_id: null,
+        parts: [],
+        addresses: {
+            billTo: null,
+            shipFrom: null,
+            shipTo: null,
+            returnTo: null
+        },
+        special_instructions: '',
+        tax_rate: initialData?.defaultTaxRate || 8.0,
+        additional_costs: 0,
+    });
 
-class PurchaseOrder extends Model
-{
-    use HasFactory, SoftDeletes;
+    // UI State
+    const loading = ref(false);
+    const errors = ref({});
+    const processing = ref(false);
+    const selectedSupplier = ref(null);
 
-    protected $fillable = [
-        'number',
-        'supplier_id',
-        'location_id',
-        'status',
-        'total_cost',
-        'user_id',
-        'opened_at',
-        'closed_at',
-        'addresses',
-        'special_instructions',
-        'tax_rate',
-        'additional_costs',
-    ];
+    // Settings from backend
+    const settings = computed(() => ({
+        minQuantity: initialData?.settings?.minQuantity || 1,
+        defaultLeadDays: initialData?.settings?.defaultLeadDays || 1,
+        requireShippingAddress: initialData?.settings?.requireShippingAddress ?? true,
+    }));
 
-    protected $casts = [
-        'status' => PurchaseOrderStatus::class,
-        'total_cost' => 'decimal:2',
-        'opened_at' => 'datetime',
-        'closed_at' => 'datetime',
-        'addresses' => SupplierAddressesDTO::class,
-        'tax_rate' => 'decimal:2',
-        'additional_costs' => 'decimal:2',
-    ];
+    // Computed Properties
+    const availableSuppliers = computed(() => {
+        return initialData?.availableSuppliers || [];
+    });
 
-    protected static function booted()
-    {
-        static::creating(function ($purchaseOrder) {
-            if (!$purchaseOrder->number) {
-                $purchaseOrder->number = static::getPurchaseOrderNumber();
+    const supplierParts = computed(() => {
+        if (!selectedSupplier.value) return [];
+        const supplier = availableSuppliers.value
+            .find(s => s.id === form.value.supplier_id);
+        return supplier?.parts || [];
+    });
+
+    const supplierAddresses = computed(() => {
+        if (!selectedSupplier.value) return {
+            billTo: [],
+            shipFrom: [],
+            shipTo: [],
+            returnTo: []
+        };
+
+        const supplier = availableSuppliers.value
+            .find(s => s.id === form.value.supplier_id);
+
+        return supplier?.addresses || {};
+    });
+
+    // Cost Calculations
+    const subtotal = computed(() => {
+        return form.value.parts.reduce((total, part) => {
+            return total + (part.quantity_ordered * part.unit_cost);
+        }, 0);
+    });
+
+    const taxAmount = computed(() => {
+        return (subtotal.value * form.value.tax_rate) / 100;
+    });
+
+    const totalCost = computed(() => {
+        return subtotal.value + taxAmount.value + Number(form.value.additional_costs);
+    });
+
+    // Watchers
+    watch(() => form.value.supplier_id, (newSupplierId) => {
+        if (newSupplierId) {
+            const supplier = availableSuppliers.value.find(s => s.id === newSupplierId);
+            if (supplier) {
+                selectedSupplier.value = supplier;
+                // Set default addresses if available
+                const addresses = supplier.addresses || {};
+                form.value.addresses = {
+                    billTo: addresses.billTo?.[0] || null,
+                    shipFrom: addresses.shipFrom?.[0] || null,
+                    shipTo: null,
+                    returnTo: null
+                };
+            } else {
+                resetSupplierData();
             }
-        });
-
-        static::saving(function ($purchaseOrder) {
-            $purchaseOrder->calculateTotals();
-        });
-    }
-
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    public function supplier(): BelongsTo
-    {
-        return $this->belongsTo(Supplier::class);
-    }
-
-    public function location(): BelongsTo
-    {
-        return $this->belongsTo(Location::class);
-    }
-
-    public function parts(): HasMany
-    {
-        return $this->hasMany(PurchaseOrderPart::class);
-    }
-
-    public function setStatus(PurchaseOrderStatus $status): self
-    {
-        $this->status = $status;
-        return $this;
-    }
-
-    public function calculateTotals(): void
-    {
-        $subtotal = $this->parts->sum('total_cost');
-        $tax = $subtotal * ($this->tax_rate / 100);
-        $this->total_cost = $subtotal + $tax + $this->additional_costs;
-    }
-
-    public static function getPurchaseOrderNumber(): int
-    {
-        $lastPO = static::orderBy('number', 'desc')->first();
-
-        if ($lastPO) {
-            $newNumber = $lastPO->number + 1;
         } else {
-            $newNumber = 1;
+            resetSupplierData();
+        }
+    });
+
+    // Helper Functions
+    function resetSupplierData() {
+        selectedSupplier.value = null;
+        form.value.parts = [];
+        form.value.addresses = {
+            billTo: null,
+            shipFrom: null,
+            shipTo: null,
+            returnTo: null
+        };
+    }
+
+    function showToast(severity, summary, detail) {
+        toast.add({
+            severity,
+            summary,
+            detail,
+            life: 3000
+        });
+    }
+
+    // Part Management
+    function addPart(part) {
+        if (!part?.id) return;
+
+        // Check if part already exists
+        if (form.value.parts.some(p => p.part_id === part.id)) {
+            showToast('error', 'Error', 'Part already added to order');
+            return;
         }
 
-        return $newNumber;
+        const purchaseTerms = part.replenishment_data?.purchaseTerms?.[0];
+        if (!purchaseTerms) {
+            showToast('error', 'Error', 'No pricing information available');
+            return;
+        }
+
+        form.value.parts.push({
+            part_id: part.id,
+            quantity_ordered: settings.value.minQuantity,
+            unit_cost: purchaseTerms.cost_per_part,
+            total_cost: purchaseTerms.cost_per_part * settings.value.minQuantity,
+            part_number: part.part_number,
+            description: part.description,
+            lead_days: part.replenishment_data.lead_days || settings.value.defaultLeadDays
+        });
     }
 
-    public function isEditable(): bool
-    {
-        return in_array($this->status, [
-            PurchaseOrderStatus::DRAFT,
-            PurchaseOrderStatus::SUBMITTED,
-        ]);
-    }
-}
-
-
-==== app\Models\Supplier.php ====
-
-<?php
-
-namespace App\Models;
-
-use App\DTOs\AddressDTO;
-use App\DTOs\SupplierAddressesDTO;
-use App\DTOs\IdentifierDTO;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
-
-class Supplier extends Model
-{
-    use HasFactory, SoftDeletes;
-
-    protected $fillable = [
-        'name',
-        'account_number',
-        'payment_terms',
-        'lead_time_days',
-        'free_shipping_threshold_usd',
-        'contact',
-        'addresses',
-        'identifiers',
-    ];
-
-    protected $casts = [
-        'lead_time_days' => 'integer',
-        'free_shipping_threshold_usd' => 'decimal:2',
-        'contact' => 'json',
-        'addresses' => SupplierAddressesDTO::class,
-        'identifiers' => IdentifierDTO::class,
-    ];
-
-    protected $appends = ['free_shipping'];
-
-    // Remove the protected $with to prevent automatic eager loading
-    // protected $with = ['parts', 'locations'];
-
-    public function getFreeShippingAttribute(): bool
-    {
-        return $this->free_shipping_threshold_usd !== null &&
-            $this->free_shipping_threshold_usd >= 0;
+    function updatePartQuantity(partId, quantity) {
+        const part = form.value.parts.find(p => p.part_id === partId);
+        if (part) {
+            part.quantity_ordered = Math.max(settings.value.minQuantity, quantity);
+            part.total_cost = part.quantity_ordered * part.unit_cost;
+        }
     }
 
-    public function setFreeShippingThresholdUsdAttribute($value)
-    {
-        $this->attributes['free_shipping_threshold_usd'] =
-            $value !== null ? max(0, $value) : null;
+    function removePart(partId) {
+        form.value.parts = form.value.parts.filter(p => p.part_id !== partId);
     }
 
-    public function parts(): HasMany
-    {
-        // Remove the ->with('replenishment_data') since it's a cast, not a relationship
-        return $this->hasMany(Part::class);
+    // Form Validation
+    function validateForm() {
+        errors.value = {};
+
+        if (!form.value.supplier_id) {
+            errors.value.supplier_id = 'Please select a supplier';
+        }
+
+        if (!form.value.parts.length) {
+            errors.value.parts = 'Please add at least one part';
+        }
+
+        if (!form.value.addresses.billTo) {
+            errors.value.billTo = 'Please select a billing address';
+        }
+
+        if (settings.value.requireShippingAddress && !form.value.addresses.shipTo) {
+            errors.value.shipTo = 'Please select a shipping address';
+        }
+
+        return Object.keys(errors.value).length === 0;
     }
 
+    // Form Submission
+    async function submit() {
+        if (!validateForm()) return;
 
-
-    public function locations(): HasMany
-    {
-        return $this->hasMany(Location::class);
-    }
-
-    public function purchaseOrders(): HasMany
-    {
-        return $this->hasMany(PurchaseOrder::class);
-    }
-
-    /**
-     * Get all addresses of type billTo
-     * @return array
-     */
-    public function getBillToAddresses(): array
-    {
-        return $this->addresses?->billTo?->toArray() ?? [];
-    }
-
-    /**
-     * Get all addresses of type shipFrom
-     * @return array
-     */
-    public function getShipFromAddresses(): array
-    {
-        return $this->addresses?->shipFrom?->toArray() ?? [];
-    }
-
-    /**
-     * Get all addresses of type shipTo
-     * @return array
-     */
-    public function getShipToAddresses(): array
-    {
-        return $this->addresses?->shipTo?->toArray() ?? [];
-    }
-
-    /**
-     * Get all addresses of type returnTo
-     * @return array
-     */
-    public function getReturnToAddresses(): array
-    {
-        return $this->addresses?->returnTo?->toArray() ?? [];
-    }
-
-    /**
-     * Get a specific billTo address by index
-     * @param int $index
-     * @return array|null
-     */
-    public function getBillToAddress(int $index = 0): ?array
-    {
-        $addresses = $this->getBillToAddresses();
-        return $addresses[$index] ?? null;
-    }
-
-    /**
-     * Get a specific shipFrom address by index
-     * @param int $index
-     * @return array|null
-     */
-    public function getShipFromAddress(int $index = 0): ?array
-    {
-        $addresses = $this->getShipFromAddresses();
-        return $addresses[$index] ?? null;
-    }
-
-    /**
-     * Get a specific shipTo address by index
-     * @param int $index
-     * @return array|null
-     */
-    public function getShipToAddress(int $index = 0): ?array
-    {
-        $addresses = $this->getShipToAddresses();
-        return $addresses[$index] ?? null;
-    }
-
-    /**
-     * Get a specific returnTo address by index
-     * @param int $index
-     * @return array|null
-     */
-    public function getReturnToAddress(int $index = 0): ?array
-    {
-        $addresses = $this->getReturnToAddresses();
-        return $addresses[$index] ?? null;
-    }
-
-    /**
-     * Scope a query to only include active suppliers.
-     */
-    public function scopeActive($query)
-    {
-        return $query->whereNull('deleted_at');
-    }
-
-    /**
-     * Scope to load suppliers with their parts
-     */
-    public function scopeWithPartsAndAddresses($query)
-    {
-        return $query->with('parts')  // Just load parts, replenishment_data is already cast
-            ->select(['id', 'name', 'account_number', 'addresses']);
-    }
-}
-
-
-==== app\Models\Part.php ====
-
-<?php
-
-namespace App\Models;
-
-use App\Concerns\HasDimensions;
-use App\DTOs\ReplenishmentDataDTO;
-use App\DTOs\IdentifierDTO;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Spatie\LaravelData\Attributes\DataCollectionOf;
-
-class Part extends Model
-{
-    use HasDimensions, HasFactory;
-
-    protected $fillable = [
-        'part_number',
-        'quantity',
-        'uom',
-        'description',
-        'identifiers',
-        'regulatory_information',
-        'replenishment_data',
-        'manufacturer_id',
-        'supplier_id',
-        'lead_time_days',
-    ];
-
-    protected $casts = [
-        'identifiers' => IdentifierDTO::class,
-        'regulatory_information' => IdentifierDTO::class,
-        'quantity' => 'integer',
-        'replenishment_data' => ReplenishmentDataDTO::class,
-    ];
-
-    public function products(): BelongsToMany
-    {
-        return $this->belongsToMany(Product::class, 'bills_of_material')
-            ->withPivot('quantity_required')
-            ->withTimestamps();
-    }
-
-    public function supplier(): BelongsTo
-    {
-        return $this->belongsTo(Supplier::class);
-    }
-
-    public function manufacturer(): BelongsTo
-    {
-        return $this->belongsTo(Manufacturer::class);
-    }
-
-    public function getUnitCostAttribute()
-    {
-        return $this->replenishment_data->purchaseTerms[0]['cost_per_part'] ?? 0;
-    }
-
-    public function getIdentifierValue(string $type): ?string
-    {
-        return $this->identifiers->identifiers->firstWhere('type', $type)?->value;
-    }
-
-    public function getRegulatoryInformationValue(string $type): ?string
-    {
-        return $this->regulatory_information->identifiers->firstWhere('type', $type)?->value;
-    }
-}
-
-
-==== app\Http\Controllers\PurchaseOrderController.php ====
-
-<?php
-
-namespace App\Http\Controllers;
-
-use App\DataTransferObjects\PurchaseOrderFiltersDto;
-use App\Http\Requests\StorePurchaseOrderRequest;
-use App\Services\PurchaseOrderService;
-use App\DTOs\SupplierAddressesDTO;
-use App\Models\Supplier;
-use Inertia\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Inertia\Inertia;
-use Inertia\Response;
-
-class PurchaseOrderController extends Controller
-{
-    public function __construct(protected PurchaseOrderService $purchaseOrderService) {}
-
-    public function create(): Response
-    {
-        $suppliers = Supplier::query()
-            ->with(['parts' => function ($query) {
-                $query->select('id', 'supplier_id', 'part_number', 'description', 'replenishment_data');
-            }])
-            ->select('id', 'name', 'account_number', 'addresses')
-            ->whereNull('deleted_at')
-            ->get()
-            ->map(function ($supplier) {
-                $addresses = $supplier->addresses;
-                return [
-                    'id' => $supplier->id,
-                    'name' => $supplier->name,
-                    'account_number' => $supplier->account_number,
-                    'addresses' => $addresses,
-                    'parts' => $supplier->parts->map(function ($part) {
-                        return [
-                            'id' => $part->id,
-                            'part_number' => $part->part_number,
-                            'description' => $part->description,
-                            'replenishment_data' => [
-                                'lead_days' => $part->replenishment_data->lead_days ?? 0,
-                                'purchaseTerms' => $part->replenishment_data->purchaseTerms ?? []
-                            ]
-                        ];
-                    })->values()->all()
-                ];
-            })->values()->all();
-
-        return Inertia::render('PurchaseOrders/CreatePurchaseOrder', [
-            'initialData' => [
-                'availableSuppliers' => $suppliers,
-                'defaultTaxRate' => config('purchase_orders.default_tax_rate', 8.0)
-            ]
-        ]);
-    }
-
-    public function index(Request $request): Response
-    {
+        processing.value = true;
         try {
-            $purchaseOrders = $this->purchaseOrderService->getPurchaseOrders(
-                PurchaseOrderFiltersDto::fromDataTableRequest($request)
-            );
-
-            return Inertia::render('PurchaseOrders/Index', [
-                'urlParams' => $request->all(),
-                'purchaseOrders' => $purchaseOrders,
-            ]);
-        } catch (\Exception $e) {
-            return Inertia::render('PurchaseOrders/Index', [
-                'urlParams' => $request->all(),
-                'purchaseOrders' => ['data' => [], 'total' => 0],
-                'error' => 'Failed to load purchase orders'
-            ]);
+            await router.post(route('purchase-orders.store'), {
+                ...form.value,
+                total_cost: totalCost.value
+            }, {
+                onSuccess: () => {
+                    showToast('success', 'Success', 'Purchase order created successfully');
+                    reset();
+                },
+                onError: (errors) => {
+                    showToast('error', 'Error', 'Failed to create purchase order');
+                    errors.value = errors;
+                }
+            });
+        } finally {
+            processing.value = false;
         }
     }
 
-    public function store(StorePurchaseOrderRequest $request)
-    {
-        $validatedData = $request->validated();
-        $validatedData['addresses'] = SupplierAddressesDTO::fromArray($validatedData['addresses']);
+    async function saveDraft() {
+        if (!validateForm()) return;
 
-        $purchaseOrder = $this->purchaseOrderService->createPurchaseOrder($validatedData);
-
-        return redirect()->route('purchase-orders.show', $purchaseOrder->id)
-            ->with('success', 'Purchase order created successfully.');
+        processing.value = true;
+        try {
+            await router.post(route('purchase-orders.draft'), {
+                ...form.value,
+                total_cost: totalCost.value
+            }, {
+                onSuccess: () => {
+                    showToast('success', 'Success', 'Draft saved successfully');
+                    reset();
+                },
+                onError: (errors) => {
+                    showToast('error', 'Error', 'Failed to save draft');
+                    errors.value = errors;
+                }
+            });
+        } finally {
+            processing.value = false;
+        }
     }
 
-    public function show($id): Response
-    {
-        $purchaseOrder = $this->purchaseOrderService->getPurchaseOrder($id);
-
-        return Inertia::render('PurchaseOrders/ShowPurchaseOrder', [
-            'purchaseOrder' => $purchaseOrder,
-        ]);
+    function reset() {
+        form.value = {
+            supplier_id: null,
+            location_id: null,
+            parts: [],
+            addresses: {
+                billTo: null,
+                shipFrom: null,
+                shipTo: null,
+                returnTo: null
+            },
+            special_instructions: '',
+            tax_rate: initialData.defaultTaxRate || 8.0,
+            additional_costs: 0,
+        };
+        selectedSupplier.value = null;
+        errors.value = {};
     }
+
+    return {
+        // State
+        form,
+        loading,
+        errors,
+        processing,
+        selectedSupplier,
+        settings,
+
+        // Computed
+        availableSuppliers,
+        supplierParts,
+        supplierAddresses,
+        subtotal,
+        taxAmount,
+        totalCost,
+
+        // Methods
+        addPart,
+        removePart,
+        updatePartQuantity,
+        saveDraft,
+        submit,
+        reset,
+    };
+}
+
+
+==== resources\js\Composables\useTheme.js ====
+
+import { ref } from 'vue';
+
+const currentTheme = ref(localStorage.getItem('selectedTheme') || 'light');
+
+function initSiteTheme() {
+    setTheme(currentTheme.value);
+}
+
+function setTheme(theme) {
+    const domHtml = document.documentElement;
+    domHtml.classList.toggle('dark-mode', theme === 'dark');
+    saveThemePreference(theme);
+}
+
+function saveThemePreference(theme) {
+    currentTheme.value = theme;
+    localStorage.setItem('selectedTheme', theme);
+}
+
+export function useTheme() {
+    return { initSiteTheme, setTheme, currentTheme };
 }
