@@ -2,20 +2,41 @@
 
 namespace App\Http\Middleware;
 
+use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Auth\Middleware\RedirectIfAuthenticated as DefaultRedirectIfAuthenticated;
+use Illuminate\Support\Facades\Log;
 
-class RedirectIfAuthenticated extends DefaultRedirectIfAuthenticated
+class RedirectIfAuthenticated
 {
     /**
-     * Get the path the user should be redirected to when they are authenticated.
+     * Handle an incoming request.
+     *
+     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    protected function redirectTo(Request $request): ?string
+    public function handle(Request $request, Closure $next, string ...$guards): mixed
     {
-        if (Auth::guard('admin')->check() || $request->is('admin/*')) {
-            return route('admin.dashboard');
+        $guards = empty($guards) ? [null] : $guards;
+
+        foreach ($guards as $guard) {
+            Log::info('RedirectIfAuthenticated middleware called', [
+                'guard' => $guard,
+                'is_authenticated' => Auth::guard($guard)->check(),
+                'is_admin_route' => $request->is('admin/*'),
+            ]);
+
+            if (Auth::guard($guard)->check()) {
+                if ($guard === 'admin' || $request->is('admin/*')) {
+                    Log::info('Authenticated admin, redirecting to admin dashboard');
+                    return redirect()->route('admin.dashboard');
+                }
+
+                Log::info('Authenticated user, redirecting to user dashboard');
+                return redirect()->route('dashboard');
+            }
         }
-        return route('dashboard');
+
+        Log::info('User not authenticated, proceeding with request');
+        return $next($request);
     }
 }

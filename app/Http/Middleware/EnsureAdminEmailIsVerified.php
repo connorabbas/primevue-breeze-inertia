@@ -17,13 +17,11 @@ class EnsureAdminEmailIsVerified
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!is_a($request->user(), Admin::class)) {
-            route('welcome');
+        if (!$request->user() || !is_a($request->user(), Admin::class)) {
+            return redirect()->route('welcome');
         }
-        if (
-            !$request->user() ||
-            ($request->user() instanceof MustVerifyEmail && !$request->user()->hasVerifiedEmail())
-        ) {
+
+        if ($request->user() instanceof MustVerifyEmail && !$request->user()->hasVerifiedEmail()) {
             return $request->expectsJson()
                 ? abort(403, 'Your email address is not verified.')
                 : redirect()->route('admin.verification.notice');

@@ -1,117 +1,200 @@
-import { ref, computed } from 'vue';
-import { router, usePage } from '@inertiajs/vue3';
+import { ref, computed, watch } from 'vue';
+import { router } from '@inertiajs/vue3';
 import { useToast } from 'primevue/usetoast';
 
-export function usePurchaseOrderForm() {
-    const toast = useToast();
-    const page = usePage();
+export function usePurchaseOrderForm(initialData = {}) {
+    console.log('Initializing purchase order form with:', initialData);
 
-    // Form state
     const form = ref({
         supplier_id: null,
         location_id: null,
         parts: [],
-        bill_to_address_index: 0,
-        ship_from_address_index: 0,
-        ship_to_address_index: 0,
+        addresses: {
+            billTo: null,
+            shipFrom: null,
+            shipTo: null,
+            returnTo: null
+        },
+        special_instructions: '',
+        tax_rate: initialData?.defaultTaxRate || 8.0,
+        additional_costs: 0,
     });
 
-    // Selected entities
-    const selectedSupplier = ref(null);
-    const selectedLocation = ref(null);
-
-    // Additional state
+    // UI State
     const loading = ref(false);
     const errors = ref({});
     const processing = ref(false);
+    const selectedSupplier = ref(null);
 
-    // Computed values for totals
+    // Settings from backend
+    const settings = computed(() => ({
+        minQuantity: initialData?.settings?.minQuantity || 1,
+        defaultLeadDays: initialData?.settings?.defaultLeadDays || 1,
+        requireShippingAddress: initialData?.settings?.requireShippingAddress ?? true,
+    }));
+
+    // Computed Properties
+    const availableSuppliers = computed(() => {
+        return initialData?.availableSuppliers || [];
+    });
+
+    const supplierParts = computed(() => {
+        if (!selectedSupplier.value) return [];
+        const supplier = availableSuppliers.value
+            .find(s => s.id === form.value.supplier_id);
+        return supplier?.parts || [];
+    });
+
+    const supplierAddresses = computed(() => {
+        if (!selectedSupplier.value) return {
+            billTo: [],
+            shipFrom: [],
+            shipTo: [],
+            returnTo: []
+        };
+
+        const supplier = availableSuppliers.value
+            .find(s => s.id === form.value.supplier_id);
+
+        return supplier?.addresses || {};
+    });
+
+    // Cost Calculations
     const subtotal = computed(() => {
-        return form.value.parts.reduce((acc, part) => {
-            return acc + (part.quantity_ordered * part.unit_cost);
+        return form.value.parts.reduce((total, part) => {
+            return total + (part.quantity_ordered * part.unit_cost);
         }, 0);
     });
 
-    const total = computed(() => {
-        return subtotal.value;
+    const taxAmount = computed(() => {
+        return (subtotal.value * form.value.tax_rate) / 100;
     });
 
-    // Methods for supplier selection
-    async function loadSupplier(id) {
-        loading.value = true;
-        try {
-            const response = await router.get(route('api.suppliers.show', id), {}, {
-                preserveState: true,
-                preserveScroll: true,
-                onSuccess: (response) => {
-                    selectedSupplier.value = response.data;
-                    form.value.supplier_id = id;
-                }
-            });
-        } catch (e) {
-            showError('Error loading supplier');
-        } finally {
-            loading.value = false;
+    const totalCost = computed(() => {
+        return subtotal.value + taxAmount.value + Number(form.value.additional_costs);
+    });
+
+    // Watchers
+    watch(() => form.value.supplier_id, (newSupplierId) => {
+        if (newSupplierId) {
+            const supplier = availableSuppliers.value.find(s => s.id === newSupplierId);
+            if (supplier) {
+                selectedSupplier.value = supplier;
+                // Set default addresses if available
+                const addresses = supplier.addresses || {};
+                form.value.addresses = {
+                    billTo: addresses.billTo?.[0] || null,
+                    shipFrom: addresses.shipFrom?.[0] || null,
+                    shipTo: null,
+                    returnTo: null
+                };
+            } else {
+                resetSupplierData();
+            }
+        } else {
+            resetSupplierData();
         }
+    });
+
+    // Helper Functions
+    function resetSupplierData() {
+        selectedSupplier.value = null;
+        form.value.parts = [];
+        form.value.addresses = {
+            billTo: null,
+            shipFrom: null,
+            shipTo: null,
+            returnTo: null
+        };
     }
 
-    // Methods for part management
+    function showToast(severity, summary, detail) {
+        toast.add({
+            severity,
+            summary,
+            detail,
+            life: 3000
+        });
+    }
+
+    // Part Management
     function addPart(part) {
-        const exists = form.value.parts.find(p => p.id === part.id);
-        if (exists) {
-            showError('Part already added to order');
+        if (!part?.id) return;
+
+        // Check if part already exists
+        if (form.value.parts.some(p => p.part_id === part.id)) {
+            showToast('error', 'Error', 'Part already added to order');
+            return;
+        }
+
+        const purchaseTerms = part.replenishment_data?.purchaseTerms?.[0];
+        if (!purchaseTerms) {
+            showToast('error', 'Error', 'No pricing information available');
             return;
         }
 
         form.value.parts.push({
             part_id: part.id,
-            quantity_ordered: 1,
-            unit_cost: part.replenishment_data.purchaseTerms[0].cost_per_part,
-            total_cost: part.replenishment_data.purchaseTerms[0].cost_per_part
+            quantity_ordered: settings.value.minQuantity,
+            unit_cost: purchaseTerms.cost_per_part,
+            total_cost: purchaseTerms.cost_per_part * settings.value.minQuantity,
+            part_number: part.part_number,
+            description: part.description,
+            lead_days: part.replenishment_data.lead_days || settings.value.defaultLeadDays
         });
+    }
+
+    function updatePartQuantity(partId, quantity) {
+        const part = form.value.parts.find(p => p.part_id === partId);
+        if (part) {
+            part.quantity_ordered = Math.max(settings.value.minQuantity, quantity);
+            part.total_cost = part.quantity_ordered * part.unit_cost;
+        }
     }
 
     function removePart(partId) {
         form.value.parts = form.value.parts.filter(p => p.part_id !== partId);
     }
 
-    function updatePartQuantity(partId, quantity) {
-        const part = form.value.parts.find(p => p.part_id === partId);
-        if (part) {
-            part.quantity_ordered = quantity;
-            part.total_cost = quantity * part.unit_cost;
+    // Form Validation
+    function validateForm() {
+        errors.value = {};
+
+        if (!form.value.supplier_id) {
+            errors.value.supplier_id = 'Please select a supplier';
         }
+
+        if (!form.value.parts.length) {
+            errors.value.parts = 'Please add at least one part';
+        }
+
+        if (!form.value.addresses.billTo) {
+            errors.value.billTo = 'Please select a billing address';
+        }
+
+        if (settings.value.requireShippingAddress && !form.value.addresses.shipTo) {
+            errors.value.shipTo = 'Please select a shipping address';
+        }
+
+        return Object.keys(errors.value).length === 0;
     }
 
-    // Form submission methods
-    async function saveDraft() {
-        processing.value = true;
-        try {
-            await router.post(route('purchase-orders.draft'), form.value, {
-                onSuccess: () => {
-                    showSuccess('Purchase order draft saved');
-                    reset();
-                },
-                onError: (errors) => {
-                    showError('Error saving draft');
-                    errors.value = errors;
-                }
-            });
-        } finally {
-            processing.value = false;
-        }
-    }
-
+    // Form Submission
     async function submit() {
+        if (!validateForm()) return;
+
         processing.value = true;
         try {
-            await router.post(route('purchase-orders.store'), form.value, {
+            await router.post(route('purchase-orders.store'), {
+                ...form.value,
+                total_cost: totalCost.value
+            }, {
                 onSuccess: () => {
-                    showSuccess('Purchase order created successfully');
+                    showToast('success', 'Success', 'Purchase order created successfully');
                     reset();
                 },
                 onError: (errors) => {
-                    showError('Error creating purchase order');
+                    showToast('error', 'Error', 'Failed to create purchase order');
                     errors.value = errors;
                 }
             });
@@ -120,38 +203,46 @@ export function usePurchaseOrderForm() {
         }
     }
 
-    // Helper methods
+    async function saveDraft() {
+        if (!validateForm()) return;
+
+        processing.value = true;
+        try {
+            await router.post(route('purchase-orders.draft'), {
+                ...form.value,
+                total_cost: totalCost.value
+            }, {
+                onSuccess: () => {
+                    showToast('success', 'Success', 'Draft saved successfully');
+                    reset();
+                },
+                onError: (errors) => {
+                    showToast('error', 'Error', 'Failed to save draft');
+                    errors.value = errors;
+                }
+            });
+        } finally {
+            processing.value = false;
+        }
+    }
+
     function reset() {
         form.value = {
             supplier_id: null,
             location_id: null,
             parts: [],
-            bill_to_address_index: 0,
-            ship_from_address_index: 0,
-            ship_to_address_index: 0
+            addresses: {
+                billTo: null,
+                shipFrom: null,
+                shipTo: null,
+                returnTo: null
+            },
+            special_instructions: '',
+            tax_rate: initialData.defaultTaxRate || 8.0,
+            additional_costs: 0,
         };
         selectedSupplier.value = null;
-        selectedLocation.value = null;
         errors.value = {};
-    }
-
-    // Toast notifications
-    function showSuccess(message) {
-        toast.add({
-            severity: 'success',
-            summary: 'Success',
-            detail: message,
-            life: 3000
-        });
-    }
-
-    function showError(message) {
-        toast.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: message,
-            life: 3000
-        });
     }
 
     return {
@@ -161,14 +252,17 @@ export function usePurchaseOrderForm() {
         errors,
         processing,
         selectedSupplier,
-        selectedLocation,
+        settings,
 
         // Computed
+        availableSuppliers,
+        supplierParts,
+        supplierAddresses,
         subtotal,
-        total,
+        taxAmount,
+        totalCost,
 
         // Methods
-        loadSupplier,
         addPart,
         removePart,
         updatePartQuantity,

@@ -36,10 +36,10 @@ class SupplierAddressesDTO extends Data
     public function toArray(): array
     {
         return [
-            'billTo' => $this->billTo?->toArray(),
-            'shipFrom' => $this->shipFrom?->toArray(),
-            'shipTo' => $this->shipTo?->toArray(),
-            'returnTo' => $this->returnTo?->toArray(),
+            'billTo' => $this->billTo?->toArray() ?? [],
+            'shipFrom' => $this->shipFrom?->toArray() ?? [],
+            'shipTo' => $this->shipTo?->toArray() ?? [],
+            'returnTo' => $this->returnTo?->toArray() ?? [],
         ];
     }
 }

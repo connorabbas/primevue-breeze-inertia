@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\DTOs\AddressDTO;
+use App\DTOs\SupplierAddressesDTO;
 use App\Enums\PurchaseOrderStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -23,9 +23,10 @@ class PurchaseOrder extends Model
         'user_id',
         'opened_at',
         'closed_at',
-        'bill_to_address_index',
-        'ship_from_address_index',
-        'ship_to_address_index',
+        'addresses',
+        'special_instructions',
+        'tax_rate',
+        'additional_costs',
     ];
 
     protected $casts = [
@@ -33,12 +34,10 @@ class PurchaseOrder extends Model
         'total_cost' => 'decimal:2',
         'opened_at' => 'datetime',
         'closed_at' => 'datetime',
-        'bill_to_address_index' => 'integer',
-        'ship_from_address_index' => 'integer',
-        'ship_to_address_index' => 'integer',
+        'addresses' => SupplierAddressesDTO::class,
+        'tax_rate' => 'decimal:2',
+        'additional_costs' => 'decimal:2',
     ];
-
-    protected $appends = ['bill_to_address', 'ship_from_address', 'ship_to_address'];
 
     protected static function booted()
     {
@@ -49,7 +48,7 @@ class PurchaseOrder extends Model
         });
 
         static::saving(function ($purchaseOrder) {
-            $purchaseOrder->updateTotalCost();
+            $purchaseOrder->calculateTotals();
         });
     }
 
@@ -68,24 +67,9 @@ class PurchaseOrder extends Model
         return $this->belongsTo(Location::class);
     }
 
-    public function purchaseOrderParts(): HasMany
+    public function parts(): HasMany
     {
         return $this->hasMany(PurchaseOrderPart::class);
-    }
-
-    public function getBillToAddressAttribute(): ?AddressDTO
-    {
-        return $this->supplier->addresses->billTo[$this->bill_to_address_index] ?? null;
-    }
-
-    public function getShipFromAddressAttribute(): ?AddressDTO
-    {
-        return $this->supplier->addresses->shipFrom[$this->ship_from_address_index] ?? null;
-    }
-
-    public function getShipToAddressAttribute(): ?AddressDTO
-    {
-        return $this->location->addresses->shipTo[$this->ship_to_address_index] ?? null;
     }
 
     public function setStatus(PurchaseOrderStatus $status): self
@@ -94,14 +78,11 @@ class PurchaseOrder extends Model
         return $this;
     }
 
-    public function calculateTotalCost(): float
+    public function calculateTotals(): void
     {
-        return $this->purchaseOrderParts->sum('total_cost');
-    }
-
-    public function updateTotalCost(): void
-    {
-        $this->total_cost = $this->calculateTotalCost();
+        $subtotal = $this->parts->sum('total_cost');
+        $tax = $subtotal * ($this->tax_rate / 100);
+        $this->total_cost = $subtotal + $tax + $this->additional_costs;
     }
 
     public static function getPurchaseOrderNumber(): int

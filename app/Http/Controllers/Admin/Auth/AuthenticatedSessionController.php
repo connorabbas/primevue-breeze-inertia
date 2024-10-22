@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Route;
 use App\Http\Requests\Admin\LoginRequest;
+use Illuminate\Support\Facades\Log;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -18,6 +19,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(): Response
     {
+        Log::info('Admin login view displayed');
         return Inertia::render('Admin/Auth/Login', [
             'canResetPassword' => Route::has('admin.password.request'),
             'status' => session('status'),
@@ -29,11 +31,19 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        Log::info('Admin login attempt', ['email' => $request->email]);
 
-        $request->session()->regenerate();
+        try {
+            $request->authenticate();
+            $request->session()->regenerate();
 
-        return redirect()->intended(route('admin.dashboard'));
+            Log::info('Admin authenticated successfully', ['email' => $request->email]);
+
+            return redirect()->intended(route('admin.dashboard'));
+        } catch (\Exception $e) {
+            Log::error('Admin authentication failed', ['email' => $request->email, 'error' => $e->getMessage()]);
+            return back()->withErrors(['email' => 'The provided credentials do not match our records.']);
+        }
     }
 
     /**
@@ -41,6 +51,8 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        Log::info('Admin logout', ['user' => Auth::guard('admin')->user()->email]);
+
         Auth::guard('admin')->logout();
 
         $request->session()->invalidate();
