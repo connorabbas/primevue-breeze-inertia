@@ -1,8 +1,11 @@
 <script setup>
 import { ref } from 'vue';
-import Toolbar from 'primevue/toolbar';
-import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
+import DatePicker from 'primevue/calendar';
+import Select from 'primevue/select';
+import InputGroup from 'primevue/inputgroup';
+import InputGroupAddon from 'primevue/inputgroupaddon';
+
 const props = defineProps({
     poNumber: {
         type: String,
@@ -35,39 +38,73 @@ const updateDate = (value) => {
     emit('update:date', value);
 };
 
-const updateStatus = (event) => {
-    emit('update:status', event.value);
+const updateStatus = (value) => {
+    emit('update:status', value);
 };
 </script>
 
 <template>
-    <Toolbar class="mb-4">
-        <template #start>
-            <Button icon="pi pi-plus" class="mr-2" severity="secondary" text />
-            <Button icon="pi pi-print" class="mr-2" severity="secondary" text />
-            <Button icon="pi pi-upload" severity="secondary" text />
-        </template>
-
-        <template #center>
+    <div class="order-info">
+        <!-- PO Number -->
+        <div class="p-field">
+            <label>PO Number</label>
             <InputGroup>
-            <InputGroupAddon>#</InputGroupAddon>
-            <InputNumber  :value="poNumber" placeholder="PO Number" @input="updatePoNumber" />
+                <InputGroupAddon>#</InputGroupAddon>
+                <InputText :value="poNumber" placeholder="PO Number" @input="updatePoNumber" />
+            </InputGroup>
+        </div>
 
-        </InputGroup>
-            <Calendar :model-value="date" class="ml-2" @update:model-value="updateDate" />
-            <Select :model-value="status" :options="statusOptions" optionLabel="label" class="ml-2" @change="updateStatus" />
-        </template>
+        <!-- Order Date -->
+        <div class="p-field">
+            <label>Order Date</label>
+            <DatePicker
+                :model-value="date"
+                @update:model-value="updateDate"
+                :showIcon="true"
+                class="w-full"
+            />
+        </div>
 
-        <template #end>
-            <Button label="Save" icon="pi pi-check" class="mr-2" />
-            <Button label="Cancel" icon="pi pi-times" severity="secondary" />
-        </template>
-    </Toolbar>
+        <!-- Status -->
+        <div class="p-field">
+            <label>Status</label>
+            <Select
+                :model-value="status"
+                :options="statusOptions"
+                optionLabel="label"
+                optionValue="value"
+                class="w-full"
+                @change="updateStatus"
+                placeholder="Select Status"
+            />
+        </div>
+    </div>
 </template>
 
 <style scoped>
-.p-toolbar {
-    border-radius: 6px;
-    padding: 1rem;
+.order-info {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+.p-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.p-field label {
+    font-weight: 500;
+    color: #666;
+}
+
+:deep(.p-inputgroup) {
+    flex: 1;
+}
+
+:deep(.p-calendar),
+:deep(.p-dropdown) {
+    width: 100%;
 }
 </style>

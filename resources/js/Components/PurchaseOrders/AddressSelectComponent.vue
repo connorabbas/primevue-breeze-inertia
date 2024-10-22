@@ -68,35 +68,72 @@ const updateAddress = (type, value) => {
 </script>
 
 <template>
-  <div class="grid">
-    <div v-for="(addresses, type) in formattedAddresses" :key="type" class="mb-4 col-12 md:col-6">
-      <div class="h-full p-4 border rounded-lg">
-        <div class="mb-2 text-lg font-medium capitalize">
-          {{ type.replace(/([A-Z])/g, ' $1').trim() }} Address
-          <span v-if="settings.requireShippingAddress && type === 'shipTo'" class="text-red-500">*</span>
-        </div>
+  <div class="addresses-container">
+    <div v-for="(addresses, type) in formattedAddresses" :key="type" class="address-field">
+      <label :for="`address-${type}`" class="field-label">
+        {{ type.replace(/([A-Z])/g, ' $1').trim() }} Address
+        <span v-if="settings.requireShippingAddress && type === 'shipTo'" class="required">*</span>
+      </label>
 
-        <div v-if="addresses.length === 0" class="italic text-gray-500">
-          No addresses available
-        </div>
-
-        <Select
-          v-else
-          :id="`address-${type}`"
-          :modelValue="modelValue[type]"
-          :options="addresses"
-          optionLabel="label"
-          :placeholder="`Select ${type.replace(/([A-Z])/g, ' $1').trim()} Address`"
-          class="w-full"
-          @update:modelValue="(value) => updateAddress(type, value)"
-        >
-          <template #option="{ option }">
-            <div class="text-sm">
-              {{ option.label }}
-            </div>
-          </template>
-        </Select>
+      <div v-if="addresses.length === 0" class="no-addresses">
+        No addresses available
       </div>
+
+      <Select
+        v-else
+        :id="`address-${type}`"
+        :modelValue="modelValue[type]"
+        :options="addresses"
+        optionLabel="label"
+        :placeholder="`Select ${type.replace(/([A-Z])/g, ' $1').trim()} Address`"
+        class="w-full"
+        @update:modelValue="(value) => updateAddress(type, value)"
+      >
+        <template #option="{ option }">
+          <div class="address-option">
+            {{ option.label }}
+          </div>
+        </template>
+      </Select>
     </div>
   </div>
 </template>
+
+<style scoped>
+.addresses-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.address-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.field-label {
+  font-weight: 500;
+  color: #666;
+}
+
+.required {
+  color: #ef4444;
+  margin-left: 0.25rem;
+}
+
+.no-addresses {
+  color: #666;
+  font-style: italic;
+  font-size: 0.875rem;
+}
+
+.address-option {
+  font-size: 0.875rem;
+  padding: 0.25rem 0;
+}
+
+:deep(.p-dropdown) {
+  width: 100%;
+}
+</style>

@@ -6,6 +6,8 @@ import InputNumber from 'primevue/inputnumber';
 import Button from 'primevue/button';
 import Tag from 'primevue/tag';
 import InputText from 'primevue/inputtext';
+import InputGroup from 'primevue/inputgroup';
+import InputGroupAddon from 'primevue/inputgroupaddon';
 
 const props = defineProps({
   availableParts: {
@@ -70,14 +72,22 @@ const filteredParts = computed(() => {
 </script>
 
 <template>
-    <div class="flex justify-end">
-        <InputGroup class="w-1/5 mb-2">
-    <InputGroupAddon>
-        <i class="pi pi-search"></i>
-    </InputGroupAddon>
-    <InputText v-model="filters.global.value" placeholder="Search Part Number" class="w-full" />
-   </InputGroup>
-</div>
+  <div class="table-actions">
+    <h3>Order Items</h3>
+    <span class="p-input-icon-right">
+      <InputGroup>
+        <InputGroupAddon>
+          <i class="pi pi-search"></i>
+        </InputGroupAddon>
+        <InputText
+          v-model="filters.global.value"
+          placeholder="Search Parts"
+          class="search-input"
+        />
+      </InputGroup>
+    </span>
+  </div>
+
   <DataTable
     :value="filteredParts"
     dataKey="id"
@@ -88,7 +98,7 @@ const filteredParts = computed(() => {
     class="p-datatable-sm"
     removableSort
     :scrollable="true"
-    scrollHeight="flex"
+    scrollHeight="400px"
   >
     <Column field="part_number" header="Part Number" sortable>
       <template #body="{ data }">
@@ -114,7 +124,7 @@ const filteredParts = computed(() => {
       </template>
     </Column>
 
-    <Column header="Order Quantity">
+    <Column header="Order Quantity" style="width: 150px">
       <template #body="{ data }">
         <InputNumber
           :modelValue="getOrderQuantity(data.id)"
@@ -126,6 +136,7 @@ const filteredParts = computed(() => {
           incrementButtonClass="p-button-secondary"
           incrementButtonIcon="pi pi-plus"
           decrementButtonIcon="pi pi-minus"
+          class="w-full"
           @update:modelValue="(value) => updateQuantity(data.id, value)"
         />
       </template>
@@ -137,21 +148,59 @@ const filteredParts = computed(() => {
       </template>
     </Column>
 
-    <Column header="Actions" :exportable="false">
+    <Column header="Actions" style="width: 100px">
       <template #body="{ data }">
-        <Button
-          label="View Part"
-          icon="pi pi-eye"
-          class="p-button-sm"
-          @click="$emit('view-part', data)"
-        />
+        <div class="flex gap-1">
+          <Button
+            icon="pi pi-eye"
+            class="p-button-rounded p-button-info p-button-sm"
+            @click="$emit('view-part', data)"
+          />
+          <Button
+            icon="pi pi-trash"
+            class="p-button-rounded p-button-danger p-button-sm"
+            @click="updateQuantity(data.id, 0)"
+          />
+        </div>
       </template>
     </Column>
   </DataTable>
 </template>
 
 <style scoped>
-.p-datatable {
-  height: 100%;
+.table-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.table-actions h3 {
+  font-size: 1.125rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.search-input {
+  width: 250px;
+}
+
+:deep(.p-datatable-wrapper) {
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+}
+
+:deep(.p-datatable-header) {
+  background: #f8f9fa;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+:deep(.p-column-header-content) {
+  font-weight: 600;
+}
+
+:deep(.p-paginator) {
+  background: #f8f9fa;
+  border-top: 1px solid #e2e8f0;
 }
 </style>

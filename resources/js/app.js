@@ -30,6 +30,7 @@ import Toast from 'primevue/toast';
 import Splitter from 'primevue/splitter';
 import SplitterPanel from 'primevue/splitterpanel';
 import Toolbar from 'primevue/toolbar';
+import Accordion from 'primevue/accordion';
 
 import { useTheme } from './Composables/useTheme.js';
 import customThemePreset from './theme-preset.js';
@@ -74,7 +75,7 @@ createInertiaApp({
         app.component('Toolbar', Toolbar);
         app.component('InputGroup', InputGroup);
         app.component('InputGroupAddon', InputGroupAddon);
-
+        app.component('Accordion', Accordion);
         // Register directives
         app.directive('tooltip', Tooltip);
 
