@@ -22,7 +22,7 @@ import Tag from 'primevue/tag';
 import InputText from 'primevue/inputtext';
 import Divider from 'primevue/divider';
 import RadioButton from 'primevue/radiobutton';
-import Calendar from 'primevue/calendar';
+import DatePicker from 'primevue/calendar'; // Changed to DatePicker (which is actually Calendar in PrimeVue)
 import Menu from 'primevue/menu';
 import Toast from 'primevue/toast';
 
@@ -58,7 +58,7 @@ createInertiaApp({
         app.component('DataTable', DataTable);
         app.component('Column', Column);
         app.component('InputNumber', InputNumber);
-        app.component('Calendar', Calendar);
+        app.component('DatePicker', DatePicker); // Register as DatePicker
         app.component('Tag', Tag);
         app.component('Menu', Menu);
         app.component('Toast', Toast);

@@ -1,9 +1,13 @@
+// resources/js/Composables/usePurchaseOrderForm.js
+
 import { ref, computed, watch } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { useToast } from 'primevue/usetoast';
 
 export function usePurchaseOrderForm(initialData = {}) {
     console.log('Initializing purchase order form with:', initialData);
+
+    const toast = useToast(); // Ensure toast is initialized
 
     const form = ref({
         supplier_id: null,
@@ -145,11 +149,32 @@ export function usePurchaseOrderForm(initialData = {}) {
     }
 
     function updatePartQuantity(partId, quantity) {
-        const part = form.value.parts.find(p => p.part_id === partId);
-        if (part) {
+        const partIndex = form.value.parts.findIndex(p => p.part_id === partId);
+        if (partIndex !== -1) {
+            // Part exists in form.parts; update it
+            const part = form.value.parts[partIndex];
             part.quantity_ordered = Math.max(settings.value.minQuantity, quantity);
             part.total_cost = part.quantity_ordered * part.unit_cost;
+        } else if (quantity >= settings.value.minQuantity) {
+            // Part doesn't exist; add it if quantity meets minimum
+            const availablePart = supplierParts.value.find(p => p.id === partId);
+            if (availablePart) {
+                const purchaseTerms = availablePart.replenishment_data?.purchaseTerms?.[0];
+                if (purchaseTerms) {
+                    form.value.parts.push({
+                        part_id: availablePart.id,
+                        quantity_ordered: quantity,
+                        unit_cost: purchaseTerms.cost_per_part,
+                        total_cost: quantity * purchaseTerms.cost_per_part,
+                        part_number: availablePart.part_number,
+                        description: availablePart.description,
+                        lead_days: availablePart.replenishment_data?.lead_days || settings.value.defaultLeadDays
+                    });
+                }
+            }
         }
+        // Trigger reactivity
+        form.value.parts = [...form.value.parts];
     }
 
     function removePart(partId) {
@@ -164,7 +189,7 @@ export function usePurchaseOrderForm(initialData = {}) {
             errors.value.supplier_id = 'Please select a supplier';
         }
 
-        if (!form.value.parts.length) {
+        if (form.value.parts.length === 0) {
             errors.value.parts = 'Please add at least one part';
         }
 
@@ -193,9 +218,9 @@ export function usePurchaseOrderForm(initialData = {}) {
                     showToast('success', 'Success', 'Purchase order created successfully');
                     reset();
                 },
-                onError: (errors) => {
+                onError: (serverErrors) => {
                     showToast('error', 'Error', 'Failed to create purchase order');
-                    errors.value = errors;
+                    errors.value = serverErrors;
                 }
             });
         } finally {
@@ -216,9 +241,9 @@ export function usePurchaseOrderForm(initialData = {}) {
                     showToast('success', 'Success', 'Draft saved successfully');
                     reset();
                 },
-                onError: (errors) => {
+                onError: (serverErrors) => {
                     showToast('error', 'Error', 'Failed to save draft');
-                    errors.value = errors;
+                    errors.value = serverErrors;
                 }
             });
         } finally {
@@ -246,23 +271,18 @@ export function usePurchaseOrderForm(initialData = {}) {
     }
 
     return {
-        // State
         form,
         loading,
         errors,
         processing,
         selectedSupplier,
         settings,
-
-        // Computed
         availableSuppliers,
         supplierParts,
         supplierAddresses,
         subtotal,
         taxAmount,
         totalCost,
-
-        // Methods
         addPart,
         removePart,
         updatePartQuantity,

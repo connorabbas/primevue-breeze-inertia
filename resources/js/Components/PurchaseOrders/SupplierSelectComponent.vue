@@ -36,7 +36,6 @@ const selectedValue = computed({
 
 <template>
     <div>
-
         <label for="supplier" class="block text-sm font-medium text-gray-700">
             Select Supplier
         </label>
