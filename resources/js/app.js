@@ -17,17 +17,22 @@ import MultiSelect from 'primevue/multiselect';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import InputNumber from 'primevue/inputnumber';
+import InputGroup from 'primevue/inputgroup';
+import InputGroupAddon from 'primevue/inputgroupaddon';
 import Button from 'primevue/button';
 import Tag from 'primevue/tag';
 import InputText from 'primevue/inputtext';
 import Divider from 'primevue/divider';
 import RadioButton from 'primevue/radiobutton';
-import DatePicker from 'primevue/calendar'; // Changed to DatePicker (which is actually Calendar in PrimeVue)
+import DatePicker from 'primevue/calendar';
 import Menu from 'primevue/menu';
 import Toast from 'primevue/toast';
+import Splitter from 'primevue/splitter';
+import SplitterPanel from 'primevue/splitterpanel';
+import Toolbar from 'primevue/toolbar';
 
-import { useTheme } from '@/Composables/useTheme.js';
-import customThemePreset from '@/theme-preset.js';
+import { useTheme } from './Composables/useTheme.js';
+import customThemePreset from './theme-preset.js';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -58,12 +63,17 @@ createInertiaApp({
         app.component('DataTable', DataTable);
         app.component('Column', Column);
         app.component('InputNumber', InputNumber);
-        app.component('DatePicker', DatePicker); // Register as DatePicker
+        app.component('DatePicker', DatePicker);
         app.component('Tag', Tag);
         app.component('Menu', Menu);
         app.component('Toast', Toast);
         app.component('RadioButton', RadioButton);
         app.component('Divider', Divider);
+        app.component('Splitter', Splitter);
+        app.component('SplitterPanel', SplitterPanel);
+        app.component('Toolbar', Toolbar);
+        app.component('InputGroup', InputGroup);
+        app.component('InputGroupAddon', InputGroupAddon);
 
         // Register directives
         app.directive('tooltip', Tooltip);

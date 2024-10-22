@@ -1,507 +1,5 @@
 
 
-==== resources\js\Components\PurchaseOrders\AddressSelectComponent.vue ====
-
-<script setup>
-import { computed } from 'vue';
-import Select from 'primevue/select';
-
-const props = defineProps({
-  modelValue: {
-    type: Object,
-    required: true,
-    default: () => ({
-      billTo: null,
-      shipFrom: null,
-      shipTo: null,
-      returnTo: null
-    })
-  },
-  availableAddresses: {
-    type: Object,
-    required: true,
-    default: () => ({
-      billTo: [],
-      shipFrom: [],
-      shipTo: [],
-      returnTo: []
-    })
-  },
-  settings: {
-    type: Object,
-    required: false,
-    default: () => ({
-      requireShippingAddress: true
-    })
-  }
-});
-
-const emit = defineEmits(['update:modelValue']);
-
-const formatAddress = (address) => {
-  if (!address) return '';
-  const parts = [
-    address.street1,
-    address.street2,
-    address.city,
-    address.state,
-    address.postal_code,
-    address.country
-  ].filter(Boolean);
-  return parts.join(', ');
-};
-
-const formattedAddresses = computed(() => {
-  const result = {};
-  for (const [type, addresses] of Object.entries(props.availableAddresses)) {
-    result[type] = addresses.map(addr => ({
-      label: formatAddress(addr),
-      value: addr,
-      ...addr
-    }));
-  }
-  return result;
-});
-
-const updateAddress = (type, value) => {
-  emit('update:modelValue', {
-    ...props.modelValue,
-    [type]: value
-  });
-};
-</script>
-
-<template>
-  <div class="grid">
-    <div v-for="(addresses, type) in formattedAddresses" :key="type" class="mb-4 col-12 md:col-6">
-      <div class="h-full p-4 border rounded-lg">
-        <div class="mb-2 text-lg font-medium capitalize">
-          {{ type.replace(/([A-Z])/g, ' $1').trim() }} Address
-          <span v-if="settings.requireShippingAddress && type === 'shipTo'" class="text-red-500">*</span>
-        </div>
-
-        <div v-if="addresses.length === 0" class="italic text-gray-500">
-          No addresses available
-        </div>
-
-        <Select
-          v-else
-          :id="`address-${type}`"
-          :modelValue="modelValue[type]"
-          :options="addresses"
-          optionLabel="label"
-          :placeholder="`Select ${type.replace(/([A-Z])/g, ' $1').trim()} Address`"
-          class="w-full"
-          @update:modelValue="(value) => updateAddress(type, value)"
-        >
-          <template #option="{ option }">
-            <div class="text-sm">
-              {{ option.label }}
-            </div>
-          </template>
-        </Select>
-      </div>
-    </div>
-  </div>
-</template>
-
-
-==== resources\js\Components\PurchaseOrders\OrderSummary.vue ====
-
-<script setup>
-import { computed } from 'vue';
-import Card from 'primevue/card';
-import InputNumber from 'primevue/inputnumber';
-import Button from 'primevue/button';
-
-const props = defineProps({
-  subtotal: {
-    type: Number,
-    required: true
-  },
-  taxRate: {
-    type: Number,
-    required: true
-  },
-  additionalCosts: {
-    type: Number,
-    required: true
-  }
-});
-
-const emit = defineEmits(['update:taxRate', 'update:additionalCosts', 'saveDraft', 'submit']);
-
-const taxAmount = computed(() => (props.subtotal * props.taxRate) / 100);
-const totalCost = computed(() => props.subtotal + taxAmount.value + props.additionalCosts);
-
-</script>
-
-<template>
-  <Card class="sticky top-4">
-    <template #title>Order Summary</template>
-    <template #content>
-      <div class="mb-3">
-        <label for="subtotal" class="block mb-1 text-sm font-medium">Subtotal</label>
-        <InputNumber
-          id="subtotal"
-          :modelValue="subtotal"
-          :readonly="true"
-          mode="currency"
-          currency="USD"
-          class="w-full"
-        />
-      </div>
-      <div class="mb-3">
-        <label for="taxRate" class="block mb-1 text-sm font-medium">Tax Rate (%)</label>
-        <InputNumber
-          id="taxRate"
-          :modelValue="taxRate"
-          @update:modelValue="$emit('update:taxRate', $event)"
-          mode="decimal"
-          :minFractionDigits="2"
-          :maxFractionDigits="2"
-          class="w-full"
-        />
-      </div>
-      <div class="mb-3">
-        <label for="taxAmount" class="block mb-1 text-sm font-medium">Tax Amount</label>
-        <InputNumber
-          id="taxAmount"
-          :modelValue="taxAmount"
-          :readonly="true"
-          mode="currency"
-          currency="USD"
-          class="w-full"
-        />
-      </div>
-      <div class="mb-3">
-        <label for="additionalCosts" class="block mb-1 text-sm font-medium">Additional Costs</label>
-        <InputNumber
-          id="additionalCosts"
-          :modelValue="additionalCosts"
-          @update:modelValue="$emit('update:additionalCosts', $event)"
-          mode="currency"
-          currency="USD"
-          class="w-full"
-        />
-      </div>
-      <div class="mb-4">
-        <label for="totalCost" class="block mb-1 text-sm font-medium">Total Cost</label>
-        <InputNumber
-          id="totalCost"
-          :modelValue="totalCost"
-          :readonly="true"
-          mode="currency"
-          currency="USD"
-          class="w-full"
-        />
-      </div>
-      <div class="flex justify-between">
-        <Button label="Save Draft" @click="$emit('saveDraft')" class="p-button-secondary" />
-        <Button label="Submit" @click="$emit('submit')" class="p-button-primary" />
-      </div>
-    </template>
-  </Card>
-</template>
-
-
-==== resources\js\Components\PurchaseOrders\PartsDataTableComponent.vue ====
-
-<script setup>
-import { ref, computed } from 'vue';
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
-import InputNumber from 'primevue/inputnumber';
-import Button from 'primevue/button';
-import Tag from 'primevue/tag';
-import InputText from 'primevue/inputtext';
-import ToggleButton from 'primevue/togglebutton';
-
-const props = defineProps({
-  availableParts: {
-    type: Array,
-    required: true,
-    default: () => []
-  },
-  selectedParts: {
-    type: Array,
-    required: true,
-    default: () => []
-  },
-  settings: {
-    type: Object,
-    required: true,
-    default: () => ({
-      minQuantity: 1,
-      defaultLeadDays: 1
-    })
-  }
-});
-
-const emit = defineEmits(['update-quantity', 'view-part']);
-
-const filters = ref({
-  'part_number': { value: null, matchMode: 'contains' },
-  'description': { value: null, matchMode: 'contains' }
-});
-
-const sortByTotalCost = ref(false);
-
-const formatCurrency = (value) => {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD'
-  }).format(value || 0);
-};
-
-const getCostPerPart = (part) => {
-  return part.replenishment_data?.purchaseTerms?.[0]?.cost_per_part || 0;
-};
-
-const getOrderQuantity = (partId) => {
-  const selectedPart = props.selectedParts.find(p => p.part_id === partId);
-  return selectedPart ? selectedPart.quantity_ordered : 0;
-};
-
-const calculateTotalCost = (part) => {
-  const selectedPart = props.selectedParts.find(p => p.part_id === part.id);
-  return selectedPart ? selectedPart.quantity_ordered * getCostPerPart(part) : 0;
-};
-
-const sortedParts = computed(() => {
-  if (sortByTotalCost.value) {
-    return [...props.availableParts].sort((a, b) => calculateTotalCost(b) - calculateTotalCost(a));
-  }
-  return props.availableParts;
-});
-
-const updateQuantity = (partId, newQuantity) => {
-  emit('update-quantity', partId, newQuantity);
-};
-</script>
-
-<template>
-  <div class="flex items-center justify-end mb-3">
-    <label for="sortByTotalCost" class="mr-2">Sort by Total Cost</label>
-    <ToggleButton v-model="sortByTotalCost" inputId="sortByTotalCost" onIcon="pi pi-check" offIcon="pi pi-times" />
-  </div>
-
-  <DataTable
-    :value="sortedParts"
-    :filters="filters"
-    filterDisplay="row"
-    dataKey="id"
-    :paginator="true"
-    :rows="10"
-    :rowsPerPageOptions="[10, 25, 50]"
-    responsiveLayout="scroll"
-    class="p-datatable-sm"
-    removableSort
-    :scrollable="true"
-    scrollHeight="400px"
-  >
-    <Column field="part_number" header="Part Number" sortable filterField="part_number">
-      <template #filter="{ filterModel, filterCallback }">
-        <InputText
-          v-model="filterModel.value"
-          type="text"
-          class="w-full p-inputtext-sm"
-          @input="filterCallback"
-          placeholder="Search part number"
-        />
-      </template>
-    </Column>
-
-    <Column field="description" header="Description" sortable filterField="description">
-      <template #filter="{ filterModel, filterCallback }">
-        <InputText
-          v-model="filterModel.value"
-          type="text"
-          class="w-full p-inputtext-sm"
-          @input="filterCallback"
-          placeholder="Search description"
-        />
-      </template>
-    </Column>
-
-    <Column field="unit_cost" header="Unit Cost" sortable>
-      <template #body="{ data }">
-        {{ formatCurrency(getCostPerPart(data)) }}
-      </template>
-    </Column>
-
-    <Column field="lead_days" header="Lead Time">
-      <template #body="{ data }">
-        <Tag :value="`${data.replenishment_data?.lead_days || settings.defaultLeadDays} days`" />
-      </template>
-    </Column>
-
-    <Column header="Order Quantity">
-      <template #body="{ data }">
-        <InputNumber
-          :modelValue="getOrderQuantity(data.id)"
-          :min="settings.minQuantity"
-          :step="1"
-          :showButtons="true"
-          buttonLayout="horizontal"
-          decrementButtonClass="p-button-secondary"
-          incrementButtonClass="p-button-secondary"
-          incrementButtonIcon="pi pi-plus"
-          decrementButtonIcon="pi pi-minus"
-          @update:modelValue="(value) => updateQuantity(data.id, value)"
-        />
-      </template>
-    </Column>
-
-    <Column header="Total Cost" :sortable="sortByTotalCost">
-      <template #body="{ data }">
-        {{ formatCurrency(calculateTotalCost(data)) }}
-      </template>
-    </Column>
-
-    <Column header="Actions" :exportable="false">
-      <template #body="{ data }">
-        <Button
-          label="View Part"
-          icon="pi pi-eye"
-          class="p-button-sm"
-          @click="$emit('view-part', data)"
-        />
-      </template>
-    </Column>
-  </DataTable>
-</template>
-
-
-==== resources\js\Components\PurchaseOrders\PurchaseOrderHeader.vue ====
-
-<script setup>
-import { computed } from 'vue';
-import InputText from 'primevue/inputtext';
-import DatePicker from 'primevue/datepicker';
-
-const props = defineProps({
-  poNumber: {
-    type: String,
-    required: true
-  },
-  date: {
-    type: Date,
-    required: true
-  },
-  status: {
-    type: String,
-    required: true
-  }
-});
-
-const emit = defineEmits(['update:poNumber', 'update:date', 'update:status']);
-
-const formattedDate = computed({
-  get: () => props.date,
-  set: (value) => emit('update:date', value)
-});
-</script>
-
-<template>
-  <div class="p-4 mb-4 bg-surface-0 shadow-1">
-    <div class="grid">
-      <div class="col-12 md:col-4">
-        <label for="poNumber" class="block mb-1 text-sm font-medium">PO Number</label>
-        <InputText
-          id="poNumber"
-          :modelValue="poNumber"
-          class="w-full"
-          @update:modelValue="$emit('update:poNumber', $event)"
-        />
-      </div>
-      <div class="col-12 md:col-4">
-        <label for="date" class="block mb-1 text-sm font-medium">Date</label>
-        <DatePicker
-          id="date"
-          v-model="formattedDate"
-          dateFormat="dd/mm/yy"
-          class="w-full"
-        />
-      </div>
-      <div class="col-12 md:col-4">
-        <label for="status" class="block mb-1 text-sm font-medium">Status</label>
-        <InputText
-          id="status"
-          :modelValue="status"
-          class="w-full"
-          readonly
-        />
-      </div>
-    </div>
-  </div>
-</template>
-
-
-==== resources\js\Components\PurchaseOrders\SupplierSelectComponent.vue ====
-
-<script setup>
-import { computed } from 'vue';
-import Select from 'primevue/select';
-
-const props = defineProps({
-    modelValue: {
-        type: [Number, null],
-        required: true
-    },
-    suppliers: {
-        type: Array,
-        required: true,
-        default: () => []
-    },
-    loading: {
-        type: Boolean,
-        default: false
-    }
-});
-
-const emit = defineEmits(['update:modelValue']);
-
-const formattedSuppliers = computed(() => {
-    return props.suppliers.map(supplier => ({
-        label: `${supplier.name} (${supplier.account_number})`,
-        value: supplier.id,
-        ...supplier
-    }));
-});
-
-const selectedValue = computed({
-    get: () => props.modelValue,
-    set: (value) => emit('update:modelValue', value)
-});
-</script>
-
-<template>
-    <div>
-        <label for="supplier" class="block text-sm font-medium text-gray-700">
-            Select Supplier
-        </label>
-        <Select
-            id="supplier"
-            v-model="selectedValue"
-            :options="formattedSuppliers"
-            optionLabel="label"
-            optionValue="value"
-            :loading="loading"
-            class="w-full"
-            placeholder="Select a supplier"
-        >
-            <template #option="{ option }">
-                <div class="flex flex-col">
-                    <span class="font-medium">{{ option.name }}</span>
-                    <span class="text-sm text-gray-500">{{ option.account_number }}</span>
-                </div>
-            </template>
-        </Select>
-    </div>
-</template>
-
-
 ==== resources\js\Pages\PurchaseOrders\CreatePurchaseOrder.vue ====
 
 <script setup>
@@ -1105,12 +603,16 @@ export function useDataTable(defaultFilters = {}, only = ['urlParams']) {
 
 ==== resources\js\Composables\usePurchaseOrderForm.js ====
 
+// resources/js/Composables/usePurchaseOrderForm.js
+
 import { ref, computed, watch } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { useToast } from 'primevue/usetoast';
 
 export function usePurchaseOrderForm(initialData = {}) {
     console.log('Initializing purchase order form with:', initialData);
+
+    const toast = useToast(); // Ensure toast is initialized
 
     const form = ref({
         supplier_id: null,
@@ -1254,11 +756,30 @@ export function usePurchaseOrderForm(initialData = {}) {
     function updatePartQuantity(partId, quantity) {
         const partIndex = form.value.parts.findIndex(p => p.part_id === partId);
         if (partIndex !== -1) {
+            // Part exists in form.parts; update it
             const part = form.value.parts[partIndex];
             part.quantity_ordered = Math.max(settings.value.minQuantity, quantity);
             part.total_cost = part.quantity_ordered * part.unit_cost;
-            form.value.parts = [...form.value.parts]; // Trigger reactivity
+        } else if (quantity >= settings.value.minQuantity) {
+            // Part doesn't exist; add it if quantity meets minimum
+            const availablePart = supplierParts.value.find(p => p.id === partId);
+            if (availablePart) {
+                const purchaseTerms = availablePart.replenishment_data?.purchaseTerms?.[0];
+                if (purchaseTerms) {
+                    form.value.parts.push({
+                        part_id: availablePart.id,
+                        quantity_ordered: quantity,
+                        unit_cost: purchaseTerms.cost_per_part,
+                        total_cost: quantity * purchaseTerms.cost_per_part,
+                        part_number: availablePart.part_number,
+                        description: availablePart.description,
+                        lead_days: availablePart.replenishment_data?.lead_days || settings.value.defaultLeadDays
+                    });
+                }
+            }
         }
+        // Trigger reactivity
+        form.value.parts = [...form.value.parts];
     }
 
     function removePart(partId) {
@@ -1302,9 +823,9 @@ export function usePurchaseOrderForm(initialData = {}) {
                     showToast('success', 'Success', 'Purchase order created successfully');
                     reset();
                 },
-                onError: (errors) => {
+                onError: (serverErrors) => {
                     showToast('error', 'Error', 'Failed to create purchase order');
-                    errors.value = errors;
+                    errors.value = serverErrors;
                 }
             });
         } finally {
@@ -1325,9 +846,9 @@ export function usePurchaseOrderForm(initialData = {}) {
                     showToast('success', 'Success', 'Draft saved successfully');
                     reset();
                 },
-                onError: (errors) => {
+                onError: (serverErrors) => {
                     showToast('error', 'Error', 'Failed to save draft');
-                    errors.value = errors;
+                    errors.value = serverErrors;
                 }
             });
         } finally {
@@ -1401,3 +922,505 @@ function saveThemePreference(theme) {
 export function useTheme() {
     return { initSiteTheme, setTheme, currentTheme };
 }
+
+
+==== resources\js\Components\PurchaseOrders\AddressSelectComponent.vue ====
+
+<script setup>
+import { computed } from 'vue';
+import Select from 'primevue/select';
+
+const props = defineProps({
+  modelValue: {
+    type: Object,
+    required: true,
+    default: () => ({
+      billTo: null,
+      shipFrom: null,
+      shipTo: null,
+      returnTo: null
+    })
+  },
+  availableAddresses: {
+    type: Object,
+    required: true,
+    default: () => ({
+      billTo: [],
+      shipFrom: [],
+      shipTo: [],
+      returnTo: []
+    })
+  },
+  settings: {
+    type: Object,
+    required: false,
+    default: () => ({
+      requireShippingAddress: true
+    })
+  }
+});
+
+const emit = defineEmits(['update:modelValue']);
+
+const formatAddress = (address) => {
+  if (!address) return '';
+  const parts = [
+    address.street1,
+    address.street2,
+    address.city,
+    address.state,
+    address.postal_code,
+    address.country
+  ].filter(Boolean);
+  return parts.join(', ');
+};
+
+const formattedAddresses = computed(() => {
+  const result = {};
+  for (const [type, addresses] of Object.entries(props.availableAddresses)) {
+    result[type] = addresses.map(addr => ({
+      label: formatAddress(addr),
+      value: addr,
+      ...addr
+    }));
+  }
+  return result;
+});
+
+const updateAddress = (type, value) => {
+  emit('update:modelValue', {
+    ...props.modelValue,
+    [type]: value
+  });
+};
+</script>
+
+<template>
+  <div class="grid">
+    <div v-for="(addresses, type) in formattedAddresses" :key="type" class="mb-4 col-12 md:col-6">
+      <div class="h-full p-4 border rounded-lg">
+        <div class="mb-2 text-lg font-medium capitalize">
+          {{ type.replace(/([A-Z])/g, ' $1').trim() }} Address
+          <span v-if="settings.requireShippingAddress && type === 'shipTo'" class="text-red-500">*</span>
+        </div>
+
+        <div v-if="addresses.length === 0" class="italic text-gray-500">
+          No addresses available
+        </div>
+
+        <Select
+          v-else
+          :id="`address-${type}`"
+          :modelValue="modelValue[type]"
+          :options="addresses"
+          optionLabel="label"
+          :placeholder="`Select ${type.replace(/([A-Z])/g, ' $1').trim()} Address`"
+          class="w-full"
+          @update:modelValue="(value) => updateAddress(type, value)"
+        >
+          <template #option="{ option }">
+            <div class="text-sm">
+              {{ option.label }}
+            </div>
+          </template>
+        </Select>
+      </div>
+    </div>
+  </div>
+</template>
+
+
+==== resources\js\Components\PurchaseOrders\OrderSummary.vue ====
+
+<script setup>
+import { computed } from 'vue';
+import Card from 'primevue/card';
+import InputNumber from 'primevue/inputnumber';
+import Button from 'primevue/button';
+
+const props = defineProps({
+  subtotal: {
+    type: Number,
+    required: true
+  },
+  taxRate: {
+    type: Number,
+    required: true
+  },
+  additionalCosts: {
+    type: Number,
+    required: true
+  }
+});
+
+const emit = defineEmits(['update:taxRate', 'update:additionalCosts', 'saveDraft', 'submit']);
+
+const taxAmount = computed(() => (props.subtotal * props.taxRate) / 100);
+const totalCost = computed(() => props.subtotal + taxAmount.value + props.additionalCosts);
+
+</script>
+
+<template>
+  <Card class="sticky top-4">
+    <template #title>Order Summary</template>
+    <template #content>
+      <div class="mb-3">
+        <label for="subtotal" class="block mb-1 text-sm font-medium">Subtotal</label>
+        <InputNumber
+          id="subtotal"
+          :modelValue="subtotal"
+          :readonly="true"
+          mode="currency"
+          currency="USD"
+          class="w-full"
+        />
+      </div>
+      <div class="mb-3">
+        <label for="taxRate" class="block mb-1 text-sm font-medium">Tax Rate (%)</label>
+        <InputNumber
+          id="taxRate"
+          :modelValue="taxRate"
+          @update:modelValue="$emit('update:taxRate', $event)"
+          mode="decimal"
+          :minFractionDigits="2"
+          :maxFractionDigits="2"
+          class="w-full"
+        />
+      </div>
+      <div class="mb-3">
+        <label for="taxAmount" class="block mb-1 text-sm font-medium">Tax Amount</label>
+        <InputNumber
+          id="taxAmount"
+          :modelValue="taxAmount"
+          :readonly="true"
+          mode="currency"
+          currency="USD"
+          class="w-full"
+        />
+      </div>
+      <div class="mb-3">
+        <label for="additionalCosts" class="block mb-1 text-sm font-medium">Additional Costs</label>
+        <InputNumber
+          id="additionalCosts"
+          :modelValue="additionalCosts"
+          @update:modelValue="$emit('update:additionalCosts', $event)"
+          mode="currency"
+          currency="USD"
+          class="w-full"
+        />
+      </div>
+      <div class="mb-4">
+        <label for="totalCost" class="block mb-1 text-sm font-medium">Total Cost</label>
+        <InputNumber
+          id="totalCost"
+          :modelValue="totalCost"
+          :readonly="true"
+          mode="currency"
+          currency="USD"
+          class="w-full"
+        />
+      </div>
+      <div class="flex justify-between">
+        <Button label="Save Draft" @click="$emit('saveDraft')" class="p-button-secondary" />
+        <Button label="Submit" @click="$emit('submit')" class="p-button-primary" />
+      </div>
+    </template>
+  </Card>
+</template>
+
+
+==== resources\js\Components\PurchaseOrders\PartsDataTableComponent.vue ====
+
+<script setup>
+import { ref, computed } from 'vue';
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
+import InputNumber from 'primevue/inputnumber';
+import Button from 'primevue/button';
+import Tag from 'primevue/tag';
+import InputText from 'primevue/inputtext';
+import ToggleButton from 'primevue/togglebutton';
+
+const props = defineProps({
+  availableParts: {
+    type: Array,
+    required: true,
+    default: () => []
+  },
+  selectedParts: {
+    type: Array,
+    required: true,
+    default: () => []
+  },
+  settings: {
+    type: Object,
+    required: true,
+    default: () => ({
+      minQuantity: 1,
+      defaultLeadDays: 1
+    })
+  }
+});
+
+const emit = defineEmits(['update-quantity', 'view-part']);
+
+const filters = ref({
+  'part_number': { value: null, matchMode: 'contains' },
+  'description': { value: null, matchMode: 'contains' }
+});
+
+const sortByTotalCost = ref(false);
+
+const formatCurrency = (value) => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD'
+  }).format(value || 0);
+};
+
+const getCostPerPart = (part) => {
+  return part.replenishment_data?.purchaseTerms?.[0]?.cost_per_part || 0;
+};
+
+const getOrderQuantity = (partId) => {
+  const selectedPart = props.selectedParts.find(p => p.part_id === partId);
+  return selectedPart ? selectedPart.quantity_ordered : 0;
+};
+
+const calculateTotalCost = (part) => {
+  const selectedPart = props.selectedParts.find(p => p.part_id === part.id);
+  return selectedPart ? selectedPart.quantity_ordered * getCostPerPart(part) : 0;
+};
+
+const sortedParts = computed(() => {
+  if (sortByTotalCost.value) {
+    return [...props.availableParts].sort((a, b) => calculateTotalCost(b) - calculateTotalCost(a));
+  }
+  return props.availableParts;
+});
+
+const updateQuantity = (partId, newQuantity) => {
+  emit('update-quantity', partId, newQuantity);
+};
+</script>
+
+<template>
+  <div class="flex items-center justify-end mb-3">
+    <label for="sortByTotalCost" class="mr-2">Sort by Total Cost</label>
+    <ToggleButton v-model="sortByTotalCost" inputId="sortByTotalCost" onIcon="pi pi-check" offIcon="pi pi-times" />
+  </div>
+
+  <DataTable
+    :value="sortedParts"
+    :filters="filters"
+    filterDisplay="row"
+    dataKey="id"
+    :paginator="true"
+    :rows="10"
+    :rowsPerPageOptions="[10, 25, 50]"
+    responsiveLayout="scroll"
+    class="p-datatable-sm"
+    removableSort
+    :scrollable="true"
+    scrollHeight="400px"
+  >
+    <Column field="part_number" header="Part Number" sortable filterField="part_number">
+      <template #filter="{ filterModel, filterCallback }">
+        <InputText
+          v-model="filterModel.value"
+          type="text"
+          class="w-full p-inputtext-sm"
+          @input="filterCallback"
+          placeholder="Search part number"
+        />
+      </template>
+    </Column>
+
+    <Column field="description" header="Description" sortable filterField="description">
+      <template #filter="{ filterModel, filterCallback }">
+        <InputText
+          v-model="filterModel.value"
+          type="text"
+          class="w-full p-inputtext-sm"
+          @input="filterCallback"
+          placeholder="Search description"
+        />
+      </template>
+    </Column>
+
+    <Column field="unit_cost" header="Unit Cost" sortable>
+      <template #body="{ data }">
+        {{ formatCurrency(getCostPerPart(data)) }}
+      </template>
+    </Column>
+
+    <Column field="lead_days" header="Lead Time">
+      <template #body="{ data }">
+        <Tag :value="`${data.replenishment_data?.lead_days || settings.defaultLeadDays} days`" />
+      </template>
+    </Column>
+
+    <Column header="Order Quantity">
+      <template #body="{ data }">
+        <InputNumber
+          :modelValue="getOrderQuantity(data.id)"
+          :min="settings.minQuantity"
+          :step="1"
+          :showButtons="true"
+          buttonLayout="horizontal"
+          decrementButtonClass="p-button-secondary"
+          incrementButtonClass="p-button-secondary"
+          incrementButtonIcon="pi pi-plus"
+          decrementButtonIcon="pi pi-minus"
+          @update:modelValue="(value) => updateQuantity(data.id, value)"
+        />
+      </template>
+    </Column>
+
+    <Column header="Total Cost" :sortable="sortByTotalCost">
+      <template #body="{ data }">
+        {{ formatCurrency(calculateTotalCost(data)) }}
+      </template>
+    </Column>
+
+    <Column header="Actions" :exportable="false">
+      <template #body="{ data }">
+        <Button
+          label="View Part"
+          icon="pi pi-eye"
+          class="p-button-sm"
+          @click="$emit('view-part', data)"
+        />
+      </template>
+    </Column>
+  </DataTable>
+</template>
+
+
+==== resources\js\Components\PurchaseOrders\PurchaseOrderHeader.vue ====
+
+<script setup>
+import { computed } from 'vue';
+import InputText from 'primevue/inputtext';
+import DatePicker from 'primevue/datepicker';
+
+const props = defineProps({
+  poNumber: {
+    type: String,
+    required: true
+  },
+  date: {
+    type: Date,
+    required: true
+  },
+  status: {
+    type: String,
+    required: true
+  }
+});
+
+const emit = defineEmits(['update:poNumber', 'update:date', 'update:status']);
+
+const formattedDate = computed({
+  get: () => props.date,
+  set: (value) => emit('update:date', value)
+});
+</script>
+
+<template>
+  <div class="p-4 mb-4 bg-surface-0 shadow-1">
+    <div class="grid">
+      <div class="col-12 md:col-4">
+        <label for="poNumber" class="block mb-1 text-sm font-medium">PO Number</label>
+        <InputText
+          id="poNumber"
+          :modelValue="poNumber"
+          class="w-full"
+          @update:modelValue="$emit('update:poNumber', $event)"
+        />
+      </div>
+      <div class="col-12 md:col-4">
+        <label for="date" class="block mb-1 text-sm font-medium">Date</label>
+        <DatePicker
+          id="date"
+          v-model="formattedDate"
+          dateFormat="dd/mm/yy"
+          class="w-full"
+        />
+      </div>
+      <div class="col-12 md:col-4">
+        <label for="status" class="block mb-1 text-sm font-medium">Status</label>
+        <InputText
+          id="status"
+          :modelValue="status"
+          class="w-full"
+          readonly
+        />
+      </div>
+    </div>
+  </div>
+</template>
+
+
+==== resources\js\Components\PurchaseOrders\SupplierSelectComponent.vue ====
+
+<script setup>
+import { computed } from 'vue';
+import Select from 'primevue/select';
+
+const props = defineProps({
+    modelValue: {
+        type: [Number, null],
+        required: true
+    },
+    suppliers: {
+        type: Array,
+        required: true,
+        default: () => []
+    },
+    loading: {
+        type: Boolean,
+        default: false
+    }
+});
+
+const emit = defineEmits(['update:modelValue']);
+
+const formattedSuppliers = computed(() => {
+    return props.suppliers.map(supplier => ({
+        label: `${supplier.name} (${supplier.account_number})`,
+        value: supplier.id,
+        ...supplier
+    }));
+});
+
+const selectedValue = computed({
+    get: () => props.modelValue,
+    set: (value) => emit('update:modelValue', value)
+});
+</script>
+
+<template>
+    <div>
+        <label for="supplier" class="block text-sm font-medium text-gray-700">
+            Select Supplier
+        </label>
+        <Select
+            id="supplier"
+            v-model="selectedValue"
+            :options="formattedSuppliers"
+            optionLabel="label"
+            optionValue="value"
+            :loading="loading"
+            class="w-full"
+            placeholder="Select a supplier"
+        >
+            <template #option="{ option }">
+                <div class="flex flex-col">
+                    <span class="font-medium">{{ option.name }}</span>
+                    <span class="text-sm text-gray-500">{{ option.account_number }}</span>
+                </div>
+            </template>
+        </Select>
+    </div>
+</template>

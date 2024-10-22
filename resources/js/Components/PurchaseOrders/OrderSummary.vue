@@ -1,6 +1,5 @@
 <script setup>
 import { computed } from 'vue';
-import Card from 'primevue/card';
 import InputNumber from 'primevue/inputnumber';
 import Button from 'primevue/button';
 
@@ -23,15 +22,14 @@ const emit = defineEmits(['update:taxRate', 'update:additionalCosts', 'saveDraft
 
 const taxAmount = computed(() => (props.subtotal * props.taxRate) / 100);
 const totalCost = computed(() => props.subtotal + taxAmount.value + props.additionalCosts);
-
 </script>
 
 <template>
-  <Card class="sticky top-4">
-    <template #title>Order Summary</template>
-    <template #content>
-      <div class="mb-3">
-        <label for="subtotal" class="block mb-1 text-sm font-medium">Subtotal</label>
+  <div class="p-3 order-summary">
+    <h3 class="mb-3 text-lg font-bold">Order Summary</h3>
+    <div class="grid grid-cols-2 gap-2">
+      <div class="col-span-2">
+        <label for="subtotal" class="block text-sm font-medium">Subtotal</label>
         <InputNumber
           id="subtotal"
           :modelValue="subtotal"
@@ -39,10 +37,11 @@ const totalCost = computed(() => props.subtotal + taxAmount.value + props.additi
           mode="currency"
           currency="USD"
           class="w-full"
+          :inputStyle="{ height: '2rem' }"
         />
       </div>
-      <div class="mb-3">
-        <label for="taxRate" class="block mb-1 text-sm font-medium">Tax Rate (%)</label>
+      <div>
+        <label for="taxRate" class="block text-sm font-medium">Tax Rate (%)</label>
         <InputNumber
           id="taxRate"
           :modelValue="taxRate"
@@ -51,10 +50,11 @@ const totalCost = computed(() => props.subtotal + taxAmount.value + props.additi
           :minFractionDigits="2"
           :maxFractionDigits="2"
           class="w-full"
+          :inputStyle="{ height: '2rem' }"
         />
       </div>
-      <div class="mb-3">
-        <label for="taxAmount" class="block mb-1 text-sm font-medium">Tax Amount</label>
+      <div>
+        <label for="taxAmount" class="block text-sm font-medium">Tax Amount</label>
         <InputNumber
           id="taxAmount"
           :modelValue="taxAmount"
@@ -62,10 +62,11 @@ const totalCost = computed(() => props.subtotal + taxAmount.value + props.additi
           mode="currency"
           currency="USD"
           class="w-full"
+          :inputStyle="{ height: '2rem' }"
         />
       </div>
-      <div class="mb-3">
-        <label for="additionalCosts" class="block mb-1 text-sm font-medium">Additional Costs</label>
+      <div class="col-span-2">
+        <label for="additionalCosts" class="block text-sm font-medium">Additional Costs</label>
         <InputNumber
           id="additionalCosts"
           :modelValue="additionalCosts"
@@ -73,10 +74,11 @@ const totalCost = computed(() => props.subtotal + taxAmount.value + props.additi
           mode="currency"
           currency="USD"
           class="w-full"
+          :inputStyle="{ height: '2rem' }"
         />
       </div>
-      <div class="mb-4">
-        <label for="totalCost" class="block mb-1 text-sm font-medium">Total Cost</label>
+      <div class="col-span-2">
+        <label for="totalCost" class="block text-sm font-medium">Total Cost</label>
         <InputNumber
           id="totalCost"
           :modelValue="totalCost"
@@ -84,12 +86,25 @@ const totalCost = computed(() => props.subtotal + taxAmount.value + props.additi
           mode="currency"
           currency="USD"
           class="w-full"
+          :inputStyle="{ height: '2rem' }"
         />
       </div>
-      <div class="flex justify-between">
-        <Button label="Save Draft" @click="$emit('saveDraft')" class="p-button-secondary" />
-        <Button label="Submit" @click="$emit('submit')" class="p-button-primary" />
-      </div>
-    </template>
-  </Card>
+    </div>
+    <div class="flex justify-between mt-4">
+      <Button label="Save Draft" @click="$emit('saveDraft')" class="p-button-secondary p-button-sm" />
+      <Button label="Submit" @click="$emit('submit')" class="p-button-primary p-button-sm" />
+    </div>
+  </div>
 </template>
+
+<style scoped>
+.order-summary {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.grid {
+  flex-grow: 1;
+}
+</style>

@@ -2,12 +2,14 @@
 import { ref, computed } from 'vue';
 import { usePurchaseOrderForm } from '@/Composables/usePurchaseOrderForm';
 import AuthenticatedAdminLayout from '@/Layouts/Admin/AuthenticatedLayout.vue';
-import PurchaseOrderHeader from '@/Components/PurchaseOrders/PurchaseOrderHeader.vue';
 import SupplierSelectComponent from '@/Components/PurchaseOrders/SupplierSelectComponent.vue';
 import PartsDataTableComponent from '@/Components/PurchaseOrders/PartsDataTableComponent.vue';
 import OrderSummary from '@/Components/PurchaseOrders/OrderSummary.vue';
 import AddressSelectComponent from '@/Components/PurchaseOrders/AddressSelectComponent.vue';
+import PurchaseOrderToolbar from '@/Components/PurchaseOrders/PurchaseOrderToolbar.vue';
 import InputText from 'primevue/inputtext';
+import Splitter from 'primevue/splitter';
+import SplitterPanel from 'primevue/splitterpanel';
 
 const pageTitle = 'Create Purchase Order';
 
@@ -53,7 +55,7 @@ function handleViewPart(part) {
 <template>
     <AuthenticatedAdminLayout :page-title="pageTitle">
         <div class="p-4">
-            <PurchaseOrderHeader
+            <PurchaseOrderToolbar
                 :poNumber="poNumber"
                 :date="poDate"
                 :status="poStatus"
@@ -62,65 +64,77 @@ function handleViewPart(part) {
                 @update:status="poStatus = $event"
             />
 
-            <div class="grid">
-                <div class="col-12 md:col-8">
-                    <!-- Supplier Selection -->
-                    <div class="mb-4">
-                        <h2 class="mb-2 text-lg font-bold">Select Supplier</h2>
-                        <SupplierSelectComponent
-                            v-model="form.supplier_id"
-                            :suppliers="availableSuppliers"
-                            :loading="processing"
-                        />
-                    </div>
-
-                    <!-- Parts DataTable -->
-                    <div v-if="selectedSupplier" class="mb-4">
-                        <h2 class="mb-2 text-lg font-bold">Select Parts</h2>
-                        <PartsDataTableComponent
-                            :available-parts="supplierParts"
-                            :selected-parts="form.parts"
-                            :settings="settings"
-                            @update-quantity="handleUpdateQuantity"
-                            @view-part="handleViewPart"
-                        />
-                    </div>
-
-                    <!-- Special Instructions -->
-                    <div class="mb-4">
-                        <h2 class="mb-2 text-lg font-bold">Special Instructions</h2>
-                        <InputText
-                            v-model="form.special_instructions"
-                            type="textarea"
-                            rows="4"
-                            class="w-full"
-                        />
-                    </div>
-                </div>
-
-                <div class="col-12 md:col-4">
-                    <!-- Order Summary -->
-                    <OrderSummary
-                        :subtotal="subtotal"
-                        :taxRate="form.tax_rate"
-                        :additionalCosts="form.additional_costs"
-                        @update:taxRate="form.tax_rate = $event"
-                        @update:additionalCosts="form.additional_costs = $event"
-                        @saveDraft="saveDraft"
-                        @submit="submit"
-                    />
-                </div>
-            </div>
-
-            <!-- Address Selection -->
-            <div class="mt-4">
-                <h2 class="mb-2 text-lg font-bold">Addresses</h2>
-                <AddressSelectComponent
-                    v-model="form.addresses"
-                    :available-addresses="supplierAddresses"
-                    :settings="settings"
-                />
-            </div>
+            <Splitter style="height: calc(100vh - 200px)">
+                <SplitterPanel :size="20" :minSize="10">
+                    <Splitter layout="vertical">
+                        <SplitterPanel :size="50">
+                            <div class="p-2">
+                                <h2 class="mb-2 text-lg font-bold">Select Supplier</h2>
+                                <SupplierSelectComponent
+                                    v-model="form.supplier_id"
+                                    :suppliers="availableSuppliers"
+                                    :loading="processing"
+                                />
+                            </div>
+                        </SplitterPanel>
+                        <SplitterPanel :size="50">
+                            <div class="p-2">
+                                <OrderSummary
+                                    :subtotal="subtotal"
+                                    :taxRate="form.tax_rate"
+                                    :additionalCosts="form.additional_costs"
+                                    @update:taxRate="form.tax_rate = $event"
+                                    @update:additionalCosts="form.additional_costs = $event"
+                                    @saveDraft="saveDraft"
+                                    @submit="submit"
+                                />
+                            </div>
+                        </SplitterPanel>
+                    </Splitter>
+                </SplitterPanel>
+                <SplitterPanel :size="80">
+                    <Splitter layout="vertical">
+                        <SplitterPanel :size="70">
+                            <div class="p-2">
+                                <h2 class="mb-2 text-lg font-bold">Select Parts</h2>
+                                <PartsDataTableComponent
+                                    v-if="selectedSupplier"
+                                    :available-parts="supplierParts"
+                                    :selected-parts="form.parts"
+                                    :settings="settings"
+                                    @update-quantity="handleUpdateQuantity"
+                                    @view-part="handleViewPart"
+                                />
+                            </div>
+                        </SplitterPanel>
+                        <SplitterPanel :size="30">
+                            <Splitter>
+                                <SplitterPanel :size="50">
+                                    <div class="p-2">
+                                        <h2 class="mb-2 text-lg font-bold">Special Instructions</h2>
+                                        <InputText
+                                            v-model="form.special_instructions"
+                                            type="textarea"
+                                            rows="4"
+                                            class="w-full"
+                                        />
+                                    </div>
+                                </SplitterPanel>
+                                <SplitterPanel :size="50">
+                                    <div class="p-2">
+                                        <h2 class="mb-2 text-lg font-bold">Addresses</h2>
+                                        <AddressSelectComponent
+                                            v-model="form.addresses"
+                                            :available-addresses="supplierAddresses"
+                                            :settings="settings"
+                                        />
+                                    </div>
+                                </SplitterPanel>
+                            </Splitter>
+                        </SplitterPanel>
+                    </Splitter>
+                </SplitterPanel>
+            </Splitter>
 
             <!-- Error Display -->
             <div v-if="Object.keys(errors).length > 0" class="p-4 mt-4 border border-red-200 rounded-lg bg-red-50">

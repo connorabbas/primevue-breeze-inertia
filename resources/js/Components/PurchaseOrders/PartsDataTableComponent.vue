@@ -6,7 +6,6 @@ import InputNumber from 'primevue/inputnumber';
 import Button from 'primevue/button';
 import Tag from 'primevue/tag';
 import InputText from 'primevue/inputtext';
-import ToggleButton from 'primevue/togglebutton';
 
 const props = defineProps({
   availableParts: {
@@ -32,11 +31,8 @@ const props = defineProps({
 const emit = defineEmits(['update-quantity', 'view-part']);
 
 const filters = ref({
-  'part_number': { value: null, matchMode: 'contains' },
-  'description': { value: null, matchMode: 'contains' }
+  global: { value: null, matchMode: 'contains' }
 });
-
-const sortByTotalCost = ref(false);
 
 const formatCurrency = (value) => {
   return new Intl.NumberFormat('en-US', {
@@ -59,59 +55,50 @@ const calculateTotalCost = (part) => {
   return selectedPart ? selectedPart.quantity_ordered * getCostPerPart(part) : 0;
 };
 
-const sortedParts = computed(() => {
-  if (sortByTotalCost.value) {
-    return [...props.availableParts].sort((a, b) => calculateTotalCost(b) - calculateTotalCost(a));
-  }
-  return props.availableParts;
-});
-
 const updateQuantity = (partId, newQuantity) => {
   emit('update-quantity', partId, newQuantity);
 };
+
+const filteredParts = computed(() => {
+  if (!filters.value.global.value) {
+    return props.availableParts;
+  }
+  return props.availableParts.filter(part =>
+    part.part_number.toLowerCase().includes(filters.value.global.value.toLowerCase())
+  );
+});
 </script>
 
 <template>
-  <div class="flex items-center justify-end mb-3">
-    <label for="sortByTotalCost" class="mr-2">Sort by Total Cost</label>
-    <ToggleButton v-model="sortByTotalCost" inputId="sortByTotalCost" onIcon="pi pi-check" offIcon="pi pi-times" />
-  </div>
-
+    <div class="flex justify-end">
+        <InputGroup class="w-1/5 mb-2">
+    <InputGroupAddon>
+        <i class="pi pi-search"></i>
+    </InputGroupAddon>
+    <InputText v-model="filters.global.value" placeholder="Search Part Number" class="w-full" />
+   </InputGroup>
+</div>
   <DataTable
-    :value="sortedParts"
-    :filters="filters"
-    filterDisplay="row"
+    :value="filteredParts"
     dataKey="id"
     :paginator="true"
-    :rows="10"
-    :rowsPerPageOptions="[10, 25, 50]"
+    :rows="20"
+    :rowsPerPageOptions="[20, 50, 100]"
     responsiveLayout="scroll"
     class="p-datatable-sm"
     removableSort
     :scrollable="true"
-    scrollHeight="400px"
+    scrollHeight="flex"
   >
-    <Column field="part_number" header="Part Number" sortable filterField="part_number">
-      <template #filter="{ filterModel, filterCallback }">
-        <InputText
-          v-model="filterModel.value"
-          type="text"
-          class="w-full p-inputtext-sm"
-          @input="filterCallback"
-          placeholder="Search part number"
-        />
+    <Column field="part_number" header="Part Number" sortable>
+      <template #body="{ data }">
+        {{ data.part_number }}
       </template>
     </Column>
 
-    <Column field="description" header="Description" sortable filterField="description">
-      <template #filter="{ filterModel, filterCallback }">
-        <InputText
-          v-model="filterModel.value"
-          type="text"
-          class="w-full p-inputtext-sm"
-          @input="filterCallback"
-          placeholder="Search description"
-        />
+    <Column field="description" header="Description">
+      <template #body="{ data }">
+        {{ data.description }}
       </template>
     </Column>
 
@@ -144,7 +131,7 @@ const updateQuantity = (partId, newQuantity) => {
       </template>
     </Column>
 
-    <Column header="Total Cost" :sortable="sortByTotalCost">
+    <Column header="Total Cost" sortable>
       <template #body="{ data }">
         {{ formatCurrency(calculateTotalCost(data)) }}
       </template>
@@ -162,3 +149,9 @@ const updateQuantity = (partId, newQuantity) => {
     </Column>
   </DataTable>
 </template>
+
+<style scoped>
+.p-datatable {
+  height: 100%;
+}
+</style>
