@@ -83,6 +83,7 @@ class PurchaseOrderController extends Controller
 
     public function store(StorePurchaseOrderRequest $request)
     {
+        Log::info('Request: ' . $request->toArray());
         try {
             $validatedData = $request->validated();
             $validatedData['addresses'] = SupplierAddressesDTO::fromArray($validatedData['addresses']);

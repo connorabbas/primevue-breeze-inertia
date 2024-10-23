@@ -14,23 +14,9 @@ import Tooltip from 'primevue/tooltip';
 // Import PrimeVue components
 import Select from 'primevue/select';
 import MultiSelect from 'primevue/multiselect';
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
-import InputNumber from 'primevue/inputnumber';
-import InputGroup from 'primevue/inputgroup';
-import InputGroupAddon from 'primevue/inputgroupaddon';
 import Button from 'primevue/button';
-import Tag from 'primevue/tag';
-import InputText from 'primevue/inputtext';
-import Divider from 'primevue/divider';
-import RadioButton from 'primevue/radiobutton';
-import DatePicker from 'primevue/calendar';
 import Menu from 'primevue/menu';
 import Toast from 'primevue/toast';
-import Splitter from 'primevue/splitter';
-import SplitterPanel from 'primevue/splitterpanel';
-import Toolbar from 'primevue/toolbar';
-import Accordion from 'primevue/accordion';
 
 import { useTheme } from './Composables/useTheme.js';
 import customThemePreset from './theme-preset.js';
@@ -59,26 +45,9 @@ createInertiaApp({
         app.component('Link', Link);
         app.component('Select', Select);
         app.component('MultiSelect', MultiSelect);
-        app.component('InputText', InputText);
         app.component('Button', Button);
-        app.component('DataTable', DataTable);
-        app.component('Column', Column);
-        app.component('InputNumber', InputNumber);
-        app.component('DatePicker', DatePicker);
-        app.component('Tag', Tag);
         app.component('Menu', Menu);
         app.component('Toast', Toast);
-        app.component('RadioButton', RadioButton);
-        app.component('Divider', Divider);
-        app.component('Splitter', Splitter);
-        app.component('SplitterPanel', SplitterPanel);
-        app.component('Toolbar', Toolbar);
-        app.component('InputGroup', InputGroup);
-        app.component('InputGroupAddon', InputGroupAddon);
-        app.component('Accordion', Accordion);
-        // Register directives
-        app.directive('tooltip', Tooltip);
-
         // Initialize theme
         const { initSiteTheme } = useTheme();
         initSiteTheme();

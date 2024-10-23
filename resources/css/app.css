@@ -6,4 +6,15 @@
 @layer tailwind-utilities {
     @tailwind components;
     @tailwind utilities;
+.panel {
+    @apply bg-gray-200 border border-slate-200 !p-9
 }
+h2{
+    @apply !mb-5 !font-normal
+}
+button {
+    @apply !bg-white border border-slate-200 text-black
+}
+
+}
+

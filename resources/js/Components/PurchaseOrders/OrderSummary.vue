@@ -21,104 +21,120 @@ const emit = defineEmits(['update:taxRate', 'update:additionalCosts']);
 
 const taxAmount = computed(() => (props.subtotal * props.taxRate) / 100);
 const totalCost = computed(() => props.subtotal + taxAmount.value + props.additionalCosts);
+
+const formatCurrency = (value) => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(value);
+};
 </script>
 
 <template>
-  <div class="summary-content">
-    <h3 class="text-lg font-bold mb-4">Order Summary</h3>
+  <div class="order-summary">
+    <h2>Order Summary</h2>
 
-    <div class="field-row">
+    <div class="row">
       <span>Subtotal</span>
-      <InputNumber
-        :modelValue="subtotal"
-        :readonly="true"
-        mode="currency"
-        currency="USD"
-        class="w-32"
-        :inputStyle="{ height: '2rem' }"
-      />
+      <span class="amount">{{ formatCurrency(subtotal) }}</span>
     </div>
 
-    <div class="field-row">
+    <div class="row">
       <span>Tax Rate (%)</span>
       <InputNumber
         :modelValue="taxRate"
         @update:modelValue="$emit('update:taxRate', $event)"
-        mode="decimal"
         :minFractionDigits="2"
         :maxFractionDigits="2"
-        class="w-32"
-        :inputStyle="{ height: '2rem' }"
+        :useGrouping="false"
+        class="amount-input"
       />
     </div>
 
-    <div class="field-row">
+    <div class="row">
       <span>Tax Amount</span>
-      <InputNumber
-        :modelValue="taxAmount"
-        :readonly="true"
-        mode="currency"
-        currency="USD"
-        class="w-32"
-        :inputStyle="{ height: '2rem' }"
-      />
+      <span class="amount">{{ formatCurrency(taxAmount) }}</span>
     </div>
 
-    <div class="field-row">
+    <div class="row">
       <span>Additional Costs</span>
       <InputNumber
         :modelValue="additionalCosts"
         @update:modelValue="$emit('update:additionalCosts', $event)"
         mode="currency"
         currency="USD"
-        class="w-32"
-        :inputStyle="{ height: '2rem' }"
+        class="amount-input"
       />
     </div>
 
-    <hr class="my-4">
-
-    <div class="field-row total">
-      <h3>Total</h3>
-      <InputNumber
-        :modelValue="totalCost"
-        :readonly="true"
-        mode="currency"
-        currency="USD"
-        class="w-32"
-        :inputStyle="{ height: '2rem', fontWeight: 'bold' }"
-      />
+    <div class="row total">
+      <span>Total</span>
+      <span class="amount">{{ formatCurrency(totalCost) }}</span>
     </div>
   </div>
 </template>
 
 <style scoped>
-.summary-content {
-  padding: 0.5rem;
+.order-summary {
+  background: white;
+  border-radius: 6px;
+  padding: 1.5rem;
+  width: 400px;
 }
 
-.field-row {
+.order-summary h2 {
+  font-size: 1.25rem;
+  margin-bottom: 1.5rem;
+  color: var(--text-color);
+}
+
+.row {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
+  position: relative;
 }
 
-.field-row span {
-  color: #666;
+.row > span:first-child {
+  color: var(--text-color-secondary);
+}
+
+.amount {
+  font-family: var(--font-family);
+  text-align: right;
+  min-width: 100px;
+}
+
+.amount-input {
+  width: 100px;
+}
+
+:deep(.p-inputnumber) {
+  width: 100px;
+}
+
+:deep(.p-inputnumber-input) {
+  text-align: right;
+  border: none;
+  background: transparent;
+  padding: 0;
+  font-family: var(--font-family);
+  color: var(--text-color);
+}
+
+:deep(.p-inputtext:enabled:focus) {
+  box-shadow: none;
+  border: none;
+  outline: none;
 }
 
 .total {
-  margin-bottom: 0;
-}
-
-.total h3 {
-  font-size: 1.125rem;
-  font-weight: bold;
-}
-
-hr {
-  border: none;
-  border-top: 1px solid #e2e8f0;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--surface-200);
+  font-weight: 600;
 }
 </style>

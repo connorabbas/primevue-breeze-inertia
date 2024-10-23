@@ -1,7 +1,8 @@
 <script setup>
 import { computed } from 'vue';
 import Select from 'primevue/select';
-
+import TabPanel from 'primevue/tabpanel';
+import Tab from 'primevue/tab';
 const props = defineProps({
   modelValue: {
     type: Object,
@@ -65,40 +66,32 @@ const updateAddress = (type, value) => {
     [type]: value
   });
 };
-</script>
-
-<template>
-  <div class="addresses-container">
-    <div v-for="(addresses, type) in formattedAddresses" :key="type" class="address-field">
-      <label :for="`address-${type}`" class="field-label">
+</script><template>
+  <div class="flex flex-row gap-4">
+    <div v-for="(addresses, type) in formattedAddresses"
+         :key="type"
+         class="border border-slate-200 rounded-lg bg-white shadow-md p-3 flex-1 min-w-[100px]">
+      <span class="text-xs text-gray-600 block mb-1">
         {{ type.replace(/([A-Z])/g, ' $1').trim() }} Address
-        <span v-if="settings.requireShippingAddress && type === 'shipTo'" class="required">*</span>
-      </label>
-
-      <div v-if="addresses.length === 0" class="no-addresses">
-        No addresses available
-      </div>
+        <span v-if="settings.requireShippingAddress && type === 'shipTo'" class="text-red-500">*</span>
+      </span>
 
       <Select
-        v-else
+        v-if="addresses.length > 0"
         :id="`address-${type}`"
         :modelValue="modelValue[type]"
         :options="addresses"
         optionLabel="label"
-        :placeholder="`Select ${type.replace(/([A-Z])/g, ' $1').trim()} Address`"
+        :placeholder="'Select'"
         class="w-full"
         @update:modelValue="(value) => updateAddress(type, value)"
-      >
-        <template #option="{ option }">
-          <div class="address-option">
-            {{ option.label }}
-          </div>
-        </template>
-      </Select>
+      />
+      <div v-else class="text-xs text-gray-500 italic">
+        No addresses available
+      </div>
     </div>
   </div>
 </template>
-
 <style scoped>
 .addresses-container {
   display: flex;

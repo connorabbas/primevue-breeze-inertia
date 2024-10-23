@@ -7,3 +7,70 @@ body {
     margin: 0 !important;
     padding: 0 !important;
 }
+/* resources/css/theme.css */
+:root {
+    --surface-2: #acb0be;
+    --surface-1: #bcc0cc;
+    --surface-0: #ccd0da;
+    --subtext-1: #5c5f77;
+    --subtext-0: #6c6f85;
+    --red: #d20f39;
+    --text: #4c4f69;
+    --bg-color: #F8F9FA;
+    --p-datatable-row-striped-background: #EEE;
+}
+body {
+    background-color: var(--bg-color);
+    color: var(--text);
+}
+h2,h3 {
+    color: var(--text-primary);
+}
+h2 {
+    font-size:1.8rem;
+
+}
+.po-toolbar
+{
+    margin-bottom:20px;
+}
+
+.p-inputtext {
+    font-family:'Reddit+mono', monospace;
+}
+.p-inputnumber-input {
+    max-width:30%;
+}
+.p-datatable .p-datatable-header {
+    background: var(--surface-50);
+    border: 1px solid var(--border);
+    border-width: 1px 0 1px 0;
+}
+
+.p-datatable .p-datatable-thead > tr > th {
+    background: var(--surface-50);
+    color: var(--text-primary);
+    border-color: var(--border);
+}
+
+
+.p-button:enabled:hover {
+    background: var(--surface-800);
+    border-color: var(--surface-800);
+}
+
+
+.p-paginator {
+    background: var(--surface-50);
+    border: 1px solid var(--border);
+}
+
+.p-dropdown {
+    border-color: var(--border);
+}
+
+
+.p-card {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+}

@@ -1,3 +1,4 @@
+<!-- CreatePurchaseOrder.vue -->
 <script setup>
 import { ref, computed } from 'vue';
 import { usePurchaseOrderForm } from '@/Composables/usePurchaseOrderForm';
@@ -10,7 +11,7 @@ import PurchaseOrderToolbar from '@/Components/PurchaseOrders/PurchaseOrderToolb
 import InputText from 'primevue/inputtext';
 import Textarea from 'primevue/textarea';
 
-const pageTitle = 'Create Purchase Order';
+const pageTitle = '';
 
 const props = defineProps({
     initialData: {
@@ -49,160 +50,135 @@ function handleViewPart(part) {
     console.log('Viewing part:', part);
 }
 </script>
-
 <template>
     <AuthenticatedAdminLayout :page-title="pageTitle">
-        <div class="po-layout">
-            <!-- Header Section -->
-            <div class="header-section">
-                <div class="panel">
-                    <div class="order-info">
-                        <PurchaseOrderToolbar
-                            :poNumber="poNumber"
-                            :date="poDate"
-                            :status="poStatus"
-                            @update:poNumber="poNumber = $event"
-                            @update:date="poDate = $event"
-                            @update:status="poStatus = $event"
-                        />
-                    </div>
-                </div>
-                <div class="panel">
-                    <div class="action-buttons">
-                        <button class="p-button p-button-secondary" @click="saveDraft">
-                            <i class="pi pi-save"></i>
-                            <span>Save Draft</span>
-                        </button>
-                        <button class="p-button p-button-success" @click="submit">
-                            <i class="pi pi-check"></i>
-                            <span>Submit PO</span>
-                        </button>
-                        <button class="p-button p-button-danger" @click="reset">
-                            <i class="pi pi-times"></i>
-                            <span>Cancel</span>
-                        </button>
-                    </div>
-                </div>
+        <div class="layout-container">
+            <!-- Header/Toolbar -->
+            <div class="toolbar-section">
+                <PurchaseOrderToolbar
+                    :poNumber="poNumber"
+                    :date="poDate"
+                    :status="poStatus"
+                    @update:poNumber="poNumber = $event"
+                    @update:date="poDate = $event"
+                    @update:status="poStatus = $event"
+                />
             </div>
 
-            <!-- Main Content Grid -->
-            <div class="content-grid">
-                <!-- Main Content Area -->
-                <div class="main-content">
-                    <!-- Supplier Selection -->
-                    <div class="mb-4 panel">
-                        <h2 class="mb-2 text-lg font-bold">Select Supplier</h2>
-                        <SupplierSelectComponent
-                            v-model="form.supplier_id"
-                            :suppliers="availableSuppliers"
-                            :loading="processing"
-                        />
-                    </div>
+            <!-- Main Content -->
+            <div class="content-wrapper">
+                <!-- Left Column -->
+                <div class="main-section">
+                    <div class="card-stack">
+                        <!-- Address Selection -->
+                        <div class="content-card">
+                            <AddressSelectComponent v-model="form.addresses"
+                                                  :available-addresses="supplierAddresses"
+                                                  :settings="settings" />
+                        </div>
 
-                    <!-- Parts Table -->
-                    <div class="panel">
-                        <h2 class="mb-2 text-lg font-bold">Select Parts</h2>
-                        <PartsDataTableComponent
-                            v-if="selectedSupplier"
-                            :available-parts="supplierParts"
-                            :selected-parts="form.parts"
-                            :settings="settings"
-                            @update-quantity="handleUpdateQuantity"
-                            @view-part="handleViewPart"
-                        />
-                    </div>
-                </div>
+                        <!-- Supplier Selection -->
+                        <div class="content-card">
+                            <SupplierSelectComponent v-model="form.supplier_id"
+                                                   :suppliers="availableSuppliers"
+                                                   :loading="processing" />
+                        </div>
 
-                <!-- Right Side Panel -->
-                <div class="side-panel">
-                    <!-- Order Summary -->
-                    <div class="mb-4 panel">
-                        <OrderSummary
-                            :subtotal="subtotal"
-                            :taxRate="form.tax_rate"
-                            :additionalCosts="form.additional_costs"
-                            @update:taxRate="form.tax_rate = $event"
-                            @update:additionalCosts="form.additional_costs = $event"
-                        />
-                    </div>
-
-                    <!-- Addresses -->
-                    <div class="mb-4 panel">
-                        <h2 class="mb-2 text-lg font-bold">Addresses</h2>
-                        <AddressSelectComponent
-                            v-model="form.addresses"
-                            :available-addresses="supplierAddresses"
-                            :settings="settings"
-                        />
-                    </div>
-
-                    <!-- Special Instructions -->
-                    <div class="panel">
-                        <h2 class="mb-2 text-lg font-bold">Special Instructions</h2>
-                        <Textarea
-                            v-model="form.special_instructions"
-                            rows="4"
-                            class="w-full"
-                            placeholder="Enter any special instructions..."
-                        />
+                        <!-- Parts Table -->
+                        <div class="content-card table-container">
+                            <PartsDataTableComponent
+                                v-if="selectedSupplier"
+                                :available-parts="supplierParts"
+                                :selected-parts="form.parts"
+                                :settings="settings"
+                                @update-quantity="handleUpdateQuantity"
+                                @view-part="handleViewPart"
+                            />
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Error Display -->
-            <div v-if="Object.keys(errors).length > 0" class="p-4 mt-4 border border-red-200 rounded-lg bg-red-50">
-                <h2 class="mb-2 text-lg font-semibold text-red-700">Errors</h2>
-                <ul class="text-red-600 list-disc list-inside">
-                    <li v-for="(error, key) in errors" :key="key">{{ error }}</li>
-                </ul>
+                <!-- Right Column -->
+                <div class="summary-section">
+                    <div class="summary-sticky">
+                        <div class="content-card">
+                            <OrderSummary :subtotal="subtotal"
+                                        :taxRate="form.tax_rate"
+                                        :additionalCosts="form.additional_costs"
+                                        @update:taxRate="form.tax_rate = $event"
+                                        @update:additionalCosts="form.additional_costs = $event" />
+                        </div>
+
+                        <div class="content-card">
+                            <h2 class="text-lg font-semibold mb-4">Special Instructions</h2>
+                            <Textarea v-model="form.special_instructions"
+                                    rows="4"
+                                    class="w-full" />
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </AuthenticatedAdminLayout>
 </template>
 
 <style scoped>
-.po-layout {
-    padding: 1rem;
-    display: grid;
-    gap: 1rem;
-    background: #f8f9fa;
+.layout-container {
+    @apply max-w-[90vw] mx-auto px-10;
 }
 
-/* Header Section */
-.header-section {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 1rem;
-    margin-bottom: 1rem;
+.content-wrapper {
+    @apply grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-4 mt-10 mx-10 px-10;
 }
 
-/* Main Content Grid */
-.content-grid {
-    display: grid;
-    grid-template-columns: 1fr 400px;
-    gap: 1rem;
+.card-stack {
+    @apply space-y-6;
 }
 
-.panel {
-    background: white;
-    border-radius: 6px;
-    padding: 1rem;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+.content-card {
+    @apply bg-white rounded-lg shadow-sm border border-indigo-100 p-6;
 }
 
-.action-buttons {
-    display: flex;
-    gap: 0.5rem;
+.table-container {
+    @apply overflow-hidden;
+    max-width: calc(100vw - 460px); /* Account for sidebar and padding */
 }
 
-/* Responsive Design */
+.summary-section {
+    @apply w-full lg:w-[400px];
+}
+
+.summary-sticky {
+    @apply sticky top-[140px] space-y-6;
+    height: fit-content;
+}
+
+/* Responsive adjustments */
 @media (max-width: 1024px) {
-    .content-grid {
-        grid-template-columns: 1fr;
+    .content-wrapper {
+        @apply grid-cols-1;
     }
 
-    .header-section {
-        grid-template-columns: 1fr;
+    .table-container {
+        max-width: 100%;
     }
+
+    .summary-sticky {
+        @apply relative top-0;
+    }
+}
+
+/* DataTable specific styling */
+:deep(.p-datatable-wrapper) {
+    @apply overflow-x-auto;
+}
+
+:deep(.p-datatable) {
+    min-width: 800px; /* Minimum width before horizontal scroll */
+}
+
+:deep(.p-paginator) {
+    @apply sticky left-0 right-0 bottom-0;
+    background: white;
 }
 </style>

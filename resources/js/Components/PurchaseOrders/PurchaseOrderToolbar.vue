@@ -1,11 +1,13 @@
 <script setup>
 import { ref } from 'vue';
 import InputText from 'primevue/inputtext';
-import DatePicker from 'primevue/calendar';
+import DatePicker from 'primevue/datepicker';
 import Select from 'primevue/select';
 import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
-
+import Button from 'primevue/button';
+import Menubar from 'primevue/menubar';
+import IftaLabel from 'primevue/iftalabel';
 const props = defineProps({
     poNumber: {
         type: String,
@@ -41,70 +43,146 @@ const updateDate = (value) => {
 const updateStatus = (value) => {
     emit('update:status', value);
 };
+
+const items = ref([
+    {
+        label: 'Dashboard',
+        icon: 'pi pi-chart-line'
+    },
+    {
+        label: 'Purchase Orders',
+        icon: 'pi pi-shopping-cart'
+    },
+    {
+        label: 'Suppliers',
+        icon: 'pi pi-users'
+    }
+]);
 </script>
 
 <template>
-    <div class="order-info">
-        <!-- PO Number -->
-        <div class="p-field">
-            <label>PO Number</label>
-            <InputGroup>
-                <InputGroupAddon>#</InputGroupAddon>
-                <InputText :value="poNumber" placeholder="PO Number" @input="updatePoNumber" />
-            </InputGroup>
-        </div>
 
-        <!-- Order Date -->
-        <div class="p-field">
-            <label>Order Date</label>
+ <nav class="po-toolbar block w-11/12 mx-auto px-4 py-2 text-black border border-indigo-100 shadow-md rounded-md lg:px-10 lg:py-3">
+        <div class="container flex flex-wrap items-center justify-between mx-auto text-gray-500">
+        <ul class="flex flex-row gap-2">
+    <li class="flex items-center p-1 text-sm w-full">
+        <IftaLabel class="w-full">
+            <InputText
+                class="w-full"
+                :value="poNumber"
+                @input="updatePoNumber"
+                inputId="purchaseOrderNumber"
+            />
+            <label for="purchaseOrderNumber">PO#</label>
+        </IftaLabel>
+    </li>
+
+    <li class="flex items-center p-1 text-sm w-full">
+        <IftaLabel class="w-full">
             <DatePicker
+                class="w-full"
                 :model-value="date"
                 @update:model-value="updateDate"
-                :showIcon="true"
-                class="w-full"
+                inputId="date"
+                showIcon
+                iconDisplay="input"
+                variant="filled"
             />
-        </div>
+            <label for="date">Date</label>
+        </IftaLabel>
+    </li>
+</ul>
+    <div class=" lg:block">
 
-        <!-- Status -->
-        <div class="p-field">
-            <label>Status</label>
-            <Select
-                :model-value="status"
-                :options="statusOptions"
-                optionLabel="label"
-                optionValue="value"
-                class="w-full"
-                @change="updateStatus"
-                placeholder="Select Status"
-            />
-        </div>
+      <ul class="flex flex-col justify-end gap-2 mt-2 mb-4 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
+        <li class="flex items-center p-1 text-sm gap-x-2">
+            <Button
+                        icon="pi pi-save"
+                        label="Save Draft"
+                        severity="secondary"
+                        @click="$emit('save-draft')"
+                    />  <Button
+                        icon="pi pi-chevron-right"
+                        label="Submit"
+                        severity="success"
+                        @click="$emit('submit')"
+                    />
+                    <Button
+                        icon="pi pi-times"
+                        label="Cancel"
+                        severity="danger"
+                        @click="$emit('reset')"
+                    />
+            <!--<Select
+                    :model-value="status"
+                    :options="statusOptions"
+                    optionLabel="label"
+                    optionValue="value"
+                    placeholder="Select Status"
+                    class="w-full md:w-14rem"
+                    @change="updateStatus"
+                />-->
+        </li>
+      </ul>
     </div>
+  </div>
+</nav>
 </template>
 
 <style scoped>
-.order-info {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
+.toolbar-wrapper {
+    border-bottom: 1px solid var(--surface-border);
 }
 
-.p-field {
+.logo-container {
+    width: 40px;
+    height: 40px;
+    background: var(--primary-color);
+    border-radius: 8px;
     display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
 }
 
-.p-field label {
-    font-weight: 500;
-    color: #666;
+.logo-container span {
+    color: white;
+}
+
+:deep(.p-menubar) {
+    background: transparent;
+    padding: 0.5rem 1rem;
+}
+
+:deep(.p-menubar-root-list) {
+    margin-left: 2rem;
+}
+
+:deep(.p-menuitem-link) {
+    padding: 0.75rem 1.25rem;
+}
+
+:deep(.p-menuitem-icon) {
+    margin-right: 0.5rem;
 }
 
 :deep(.p-inputgroup) {
-    flex: 1;
+    width: 200px;
 }
 
-:deep(.p-calendar),
-:deep(.p-dropdown) {
-    width: 100%;
+:deep(.p-datepicker) {
+    width: 200px;
+}
+
+.toolbar-content {
+    border-top: 1px solid var(--surface-border);
+    background: var(--surface-ground);
+}
+
+:deep(.p-button.p-button-text) {
+    color: var(--surface-600);
+}
+
+:deep(.p-button.p-button-text:hover) {
+    background: var(--surface-100);
 }
 </style>

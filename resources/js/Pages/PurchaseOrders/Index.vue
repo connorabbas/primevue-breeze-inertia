@@ -5,7 +5,7 @@ import { useDataTable } from '@/Composables/useDataTable.js';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Menu from 'primevue/menu';
-import Calendar from 'primevue/calendar';
+import DatePicker from 'primevue/datepicker';
 import Dropdown from 'primevue/dropdown';
 import Tag from 'primevue/tag';
 import Button from 'primevue/button';
@@ -299,7 +299,7 @@ if (props.urlParams) {
                         :showFilterMenu="false"
                     >
                         <template #filter="{ filterModel, filterCallback }">
-                            <Calendar
+                            <DatePicker
                                 v-model="filterModel.value"
                                 dateFormat="yy-mm-dd"
                                 placeholder="Search date"
