@@ -1,4 +1,3 @@
-<!-- CreatePurchaseOrder.vue -->
 <script setup>
 import { ref, computed } from 'vue';
 import { usePurchaseOrderForm } from '@/Composables/usePurchaseOrderForm';
@@ -20,11 +19,11 @@ const props = defineProps({
     }
 });
 
+// Destructure all required properties and methods from the composable
 const {
     form,
     errors,
     processing,
-    availableSuppliers,
     selectedSupplier,
     supplierParts,
     supplierAddresses,
@@ -32,10 +31,12 @@ const {
     subtotal,
     taxAmount,
     totalCost,
+    isValid,
     updatePartQuantity,
     saveDraft,
     submit,
-    reset
+    reset,
+    availableSuppliers // Make sure to destructure this
 } = usePurchaseOrderForm(props.initialData);
 
 const poNumber = ref('PO-' + Date.now());
@@ -49,136 +50,169 @@ function handleUpdateQuantity(partId, quantity) {
 function handleViewPart(part) {
     console.log('Viewing part:', part);
 }
+
+function handleSubmit() {
+    form.value.number = poNumber.value;
+    form.value.date = poDate.value;
+    form.value.status = poStatus.value;
+    submit();
+}
+
+function handleSaveDraft() {
+    form.value.number = poNumber.value;
+    form.value.date = poDate.value;
+    form.value.status = poStatus.value;
+    saveDraft();
+}
+
+function handleReset() {
+    poNumber.value = 'PO-' + Date.now();
+    poDate.value = new Date();
+    poStatus.value = 'Draft';
+    reset();
+}
 </script>
+
 <template>
-    <AuthenticatedAdminLayout :page-title="pageTitle">
-        <div class="layout-container">
-            <!-- Header/Toolbar -->
-            <div class="toolbar-section">
-                <PurchaseOrderToolbar
-                    :poNumber="poNumber"
-                    :date="poDate"
-                    :status="poStatus"
-                    @update:poNumber="poNumber = $event"
-                    @update:date="poDate = $event"
-                    @update:status="poStatus = $event"
+  <AuthenticatedAdminLayout :page-title="pageTitle">
+    <div class="layout-container">
+      <!-- Fixed-height header toolbar -->
+      <div class="toolbar-section">
+        <PurchaseOrderToolbar
+          :poNumber="poNumber"
+          :date="poDate"
+          :status="poStatus"
+          :isValid="isValid"
+          :processing="processing"
+          @update:poNumber="poNumber = $event"
+          @update:date="poDate = $event"
+          @update:status="poStatus = $event"
+          @submit="handleSubmit"
+          @save-draft="handleSaveDraft"
+          @reset="handleReset"
+        />
+      </div>
+
+      <!-- Main content with fixed height containers -->
+      <div class="content-layout">
+        <!-- Left column - fixed width and scrollable -->
+        <div class="main-content">
+          <div class="card-stack space-y-4">
+            <!-- Address section -->
+            <div class="content-card">
+              <AddressSelectComponent
+                v-model="form.addresses"
+                :available-addresses="supplierAddresses"
+                :settings="settings"
+              />
+            </div>
+
+            <!-- Supplier section -->
+            <div class="content-card">
+              <SupplierSelectComponent
+                v-model="form.supplier_id"
+                :suppliers="availableSuppliers"
+                :loading="processing"
+              />
+            </div>
+
+            <!-- Parts table -->
+            <div class="content-card">
+              <div class="h-full flex flex-col">
+                <PartsDataTableComponent
+                  v-if="selectedSupplier"
+                  :available-parts="supplierParts"
+                  :selected-parts="form.parts"
+                  :settings="settings"
+                  @update-quantity="handleUpdateQuantity"
+                  @view-part="handleViewPart"
                 />
-            </div>
-
-            <!-- Main Content -->
-            <div class="content-wrapper">
-                <!-- Left Column -->
-                <div class="main-section">
-                    <div class="card-stack">
-                        <!-- Address Selection -->
-                        <div class="content-card">
-                            <AddressSelectComponent v-model="form.addresses"
-                                                  :available-addresses="supplierAddresses"
-                                                  :settings="settings" />
-                        </div>
-
-                        <!-- Supplier Selection -->
-                        <div class="content-card">
-                            <SupplierSelectComponent v-model="form.supplier_id"
-                                                   :suppliers="availableSuppliers"
-                                                   :loading="processing" />
-                        </div>
-
-                        <!-- Parts Table -->
-                        <div class="content-card table-container">
-                            <PartsDataTableComponent
-                                v-if="selectedSupplier"
-                                :available-parts="supplierParts"
-                                :selected-parts="form.parts"
-                                :settings="settings"
-                                @update-quantity="handleUpdateQuantity"
-                                @view-part="handleViewPart"
-                            />
-                        </div>
-                    </div>
+                <!-- Placeholder when no supplier selected -->
+                <div v-else class="flex-grow flex items-center justify-center text-gray-500">
+                  Select a supplier to view available parts
                 </div>
-
-                <!-- Right Column -->
-                <div class="summary-section">
-                    <div class="summary-sticky">
-                        <div class="content-card">
-                            <OrderSummary :subtotal="subtotal"
-                                        :taxRate="form.tax_rate"
-                                        :additionalCosts="form.additional_costs"
-                                        @update:taxRate="form.tax_rate = $event"
-                                        @update:additionalCosts="form.additional_costs = $event" />
-                        </div>
-
-                        <div class="content-card">
-                            <h2 class="text-lg font-semibold mb-4">Special Instructions</h2>
-                            <Textarea v-model="form.special_instructions"
-                                    rows="4"
-                                    class="w-full" />
-                        </div>
-                    </div>
-                </div>
+              </div>
             </div>
+          </div>
         </div>
-    </AuthenticatedAdminLayout>
+
+        <!-- Right column - sticky sidebar -->
+        <div class="summary-section">
+          <div class="summary-sticky">
+            <!-- Order summary card -->
+            <div class="content-card">
+              <OrderSummary
+                :subtotal="subtotal"
+                :taxRate="form.tax_rate"
+                :additionalCosts="form.additional_costs"
+                @update:taxRate="form.tax_rate = $event"
+                @update:additionalCosts="form.additional_costs = $event"
+              />
+            </div>
+
+            <!-- Special instructions card -->
+            <div class="content-card mt-4">
+              <h2 class="text-lg font-semibold mb-4">Special Instructions</h2>
+              <Textarea
+                v-model="form.special_instructions"
+                rows="4"
+                class="w-full"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </AuthenticatedAdminLayout>
 </template>
 
 <style scoped>
 .layout-container {
-    @apply max-w-[90vw] mx-auto px-10;
+  @apply max-w-[1800px] mx-auto px-4;
 }
 
-.content-wrapper {
-    @apply grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-4 mt-10 mx-10 px-10;
+.content-layout {
+  @apply grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-4 mt-6;
 }
 
-.card-stack {
-    @apply space-y-6;
-}
-
-.content-card {
-    @apply bg-white rounded-lg shadow-sm border border-indigo-100 p-6;
-}
-
-.table-container {
-    @apply overflow-hidden;
-    max-width: calc(100vw - 460px); /* Account for sidebar and padding */
+.main-content {
+  @apply min-w-0; /* prevents flex child overflow */
 }
 
 .summary-section {
-    @apply w-full lg:w-[400px];
+  @apply w-full lg:w-[400px];
 }
 
 .summary-sticky {
-    @apply sticky top-[140px] space-y-6;
-    height: fit-content;
+  @apply sticky top-[140px]; /* Adjust this value based on your header + toolbar height */
+  height: fit-content;
 }
 
-/* Responsive adjustments */
-@media (max-width: 1024px) {
-    .content-wrapper {
-        @apply grid-cols-1;
-    }
-
-    .table-container {
-        max-width: 100%;
-    }
-
-    .summary-sticky {
-        @apply relative top-0;
-    }
+.content-card {
+  @apply bg-white rounded-lg shadow-sm border border-indigo-100 p-6;
 }
 
-/* DataTable specific styling */
+/* DataTable styles */
 :deep(.p-datatable-wrapper) {
-    @apply overflow-x-auto;
+  @apply overflow-x-auto;
 }
 
 :deep(.p-datatable) {
-    min-width: 800px; /* Minimum width before horizontal scroll */
+  min-width: 800px;
 }
 
-:deep(.p-paginator) {
-    @apply sticky left-0 right-0 bottom-0;
-    background: white;
+/* Mobile responsiveness */
+@media (max-width: 1024px) {
+  .content-layout {
+    @apply grid-cols-1;
+  }
+
+  .summary-sticky {
+    @apply relative top-0;
+  }
+
+  .summary-section {
+    @apply w-full;
+  }
 }
 </style>

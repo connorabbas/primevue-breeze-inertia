@@ -16,11 +16,13 @@ Route::get('/', function () {
     ]);
 })->name('welcome');
 
-Route::get('/purchase-orders', [PurchaseOrderController::class, 'index'])->name('purchase-orders.index');
-Route::get('/purchase-orders/create', [PurchaseOrderController::class, 'create'])->name('purchase-orders.create');
-Route::post('/purchase-orders', [PurchaseOrderController::class, 'store'])->name('purchase-orders.store');
-Route::get('/purchase-orders/{id}', [PurchaseOrderController::class, 'show'])->name('purchase-orders.show');
-
+Route::prefix('purchase-orders')->name('purchase-orders.')->group(function () {
+    Route::get('/', [PurchaseOrderController::class, 'index'])->name('index');
+    Route::get('/create', [PurchaseOrderController::class, 'create'])->name('create');
+    Route::post('/', [PurchaseOrderController::class, 'store'])->name('store');
+    Route::post('/draft', [PurchaseOrderController::class, 'draft'])->name('draft');
+    Route::get('/{id}', [PurchaseOrderController::class, 'show'])->name('show');
+});
 
 require __DIR__ . '/user/web.php';
 require __DIR__ . '/admin/web.php';

@@ -1,5 +1,874 @@
 
 
+==== resources\js\Components\PurchaseOrders\AddressSelectComponent.vue ====
+
+<script setup>
+import { computed } from 'vue';
+import Select from 'primevue/select';
+import TabPanel from 'primevue/tabpanel';
+import Tab from 'primevue/tab';
+const props = defineProps({
+  modelValue: {
+    type: Object,
+    required: true,
+    default: () => ({
+      billTo: null,
+      shipFrom: null,
+      shipTo: null,
+      returnTo: null
+    })
+  },
+  availableAddresses: {
+    type: Object,
+    required: true,
+    default: () => ({
+      billTo: [],
+      shipFrom: [],
+      shipTo: [],
+      returnTo: []
+    })
+  },
+  settings: {
+    type: Object,
+    required: false,
+    default: () => ({
+      requireShippingAddress: true
+    })
+  }
+});
+
+const emit = defineEmits(['update:modelValue']);
+
+const formatAddress = (address) => {
+  if (!address) return '';
+  const parts = [
+    address.street1,
+    address.street2,
+    address.city,
+    address.state,
+    address.postal_code,
+    address.country
+  ].filter(Boolean);
+  return parts.join(', ');
+};
+
+const formattedAddresses = computed(() => {
+  const result = {};
+  for (const [type, addresses] of Object.entries(props.availableAddresses)) {
+    result[type] = addresses.map(addr => ({
+      label: formatAddress(addr),
+      value: addr,
+      ...addr
+    }));
+  }
+  return result;
+});
+
+const updateAddress = (type, value) => {
+  emit('update:modelValue', {
+    ...props.modelValue,
+    [type]: value
+  });
+};
+</script><template>
+  <div class="flex flex-row gap-4">
+    <div v-for="(addresses, type) in formattedAddresses"
+         :key="type"
+         class="border border-slate-200 rounded-lg bg-white shadow-md p-3 flex-1 min-w-[100px]">
+      <span class="text-xs text-gray-600 block mb-1">
+        {{ type.replace(/([A-Z])/g, ' $1').trim() }} Address
+        <span v-if="settings.requireShippingAddress && type === 'shipTo'" class="text-red-500">*</span>
+      </span>
+
+      <Select
+        v-if="addresses.length > 0"
+        :id="`address-${type}`"
+        :modelValue="modelValue[type]"
+        :options="addresses"
+        optionLabel="label"
+        :placeholder="'Select'"
+        class="w-full"
+        @update:modelValue="(value) => updateAddress(type, value)"
+      />
+      <div v-else class="text-xs text-gray-500 italic">
+        No addresses available
+      </div>
+    </div>
+  </div>
+</template>
+<style scoped>
+.addresses-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.address-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.field-label {
+  font-weight: 500;
+  color: #666;
+}
+
+.required {
+  color: #ef4444;
+  margin-left: 0.25rem;
+}
+
+.no-addresses {
+  color: #666;
+  font-style: italic;
+  font-size: 0.875rem;
+}
+
+.address-option {
+  font-size: 0.875rem;
+  padding: 0.25rem 0;
+}
+
+:deep(.p-dropdown) {
+  width: 100%;
+}
+</style>
+
+
+==== resources\js\Components\PurchaseOrders\OrderSummary.vue ====
+
+<script setup>
+import { computed } from 'vue';
+import InputNumber from 'primevue/inputnumber';
+
+const props = defineProps({
+  subtotal: {
+    type: Number,
+    required: true
+  },
+  taxRate: {
+    type: Number,
+    required: true
+  },
+  additionalCosts: {
+    type: Number,
+    required: true
+  }
+});
+
+const emit = defineEmits(['update:taxRate', 'update:additionalCosts']);
+
+const taxAmount = computed(() => (props.subtotal * props.taxRate) / 100);
+const totalCost = computed(() => props.subtotal + taxAmount.value + props.additionalCosts);
+
+const formatCurrency = (value) => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(value);
+};
+</script>
+
+<template>
+  <div class="bg-white rounded-lg p-6">
+    <h2 class="text-xl mb-6 text-gray-800">Order Summary</h2>
+
+    <div class="grid grid-cols-3 gap-4">
+      <!-- Labels Column -->
+      <div class="flex flex-col gap-4">
+        <span class="text-gray-600">Subtotal</span>
+        <span class="text-gray-600">Tax Rate (%)</span>
+        <span class="text-gray-600">Tax Amount</span>
+        <span class="text-gray-600">Additional Costs</span>
+        <span class="font-semibold pt-4 border-t border-gray-200">Total</span>
+      </div>
+
+      <!-- Values Column (spanning 2 columns) -->
+      <div class="col-span-2 flex flex-col gap-4">
+        <span class="text-right">{{ formatCurrency(subtotal) }}</span>
+        <InputNumber
+          :model-value="taxRate"
+          @update:model-value="$emit('update:taxRate', $event)"
+          :min-fraction-digits="2"
+          :max-fraction-digits="2"
+          :use-grouping="false"
+          class="w-full"
+        />
+        <span class="text-right">{{ formatCurrency(taxAmount) }}</span>
+        <InputNumber
+          :model-value="additionalCosts"
+          @update:model-value="$emit('update:additionalCosts', $event)"
+          mode="currency"
+          currency="USD"
+          class="w-full"
+        />
+        <span class="text-right font-semibold pt-4 border-t border-gray-200">
+          {{ formatCurrency(totalCost) }}
+        </span>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.p-inputnumber {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.p-inputnumber-input {
+  width: 8rem !important;
+  text-align: right;
+}
+
+.p-inputtext:enabled:focus {
+  box-shadow: none;
+  border-color: #818cf8;
+  outline: none;
+}
+</style>
+
+
+==== resources\js\Components\PurchaseOrders\PartsDataTableComponent.vue ====
+
+<script setup>
+import { ref, computed, watch } from 'vue';
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
+import Button from 'primevue/button';
+import Tag from 'primevue/tag';
+import InputText from 'primevue/inputtext';
+import InputGroup from 'primevue/inputgroup';
+import InputGroupAddon from 'primevue/inputgroupaddon';
+import InputNumber from 'primevue/inputnumber';
+import SupplierSelectComponent from './SupplierSelectComponent.vue';
+
+const props = defineProps({
+    availableParts: {
+        type: Array,
+        required: true,
+        default: () => []
+    },
+    selectedParts: {
+        type: Array,
+        required: true,
+        default: () => []
+    },
+    settings: {
+        type: Object,
+        required: true,
+        default: () => ({
+            minQuantity: 0,
+            defaultLeadDays: 0
+        })
+    }
+});
+
+const loading = ref(true); // Start with loading state
+
+// Watch for changes in availableParts
+watch(() => props.availableParts, (newParts) => {
+    loading.value = true;
+    // Simulate loading delay - remove this in production
+    setTimeout(() => {
+        loading.value = false;
+    }, 500);
+}, { immediate: true });
+
+const emit = defineEmits(['update-quantity', 'view-part']);
+
+const filters = ref({
+    global: { value: null, matchMode: 'contains' }
+});
+
+const formatCurrency = (value) => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD'
+  }).format(value || 0);
+};
+
+const getCostPerPart = (part) => {
+  return part.replenishment_data?.purchaseTerms?.[0]?.cost_per_part || 0;
+};
+
+const getOrderQuantity = (partId) => {
+  const selectedPart = props.selectedParts.find(p => p.part_id === partId);
+  return selectedPart ? selectedPart.quantity_ordered : 0;
+};
+
+const calculateTotalCost = (part) => {
+  const selectedPart = props.selectedParts.find(p => p.part_id === part.id);
+  return selectedPart ? selectedPart.quantity_ordered * getCostPerPart(part) : 0;
+};
+
+const updateQuantity = (partId, newQuantity) => {
+  emit('update-quantity', partId, newQuantity);
+};
+
+const filteredParts = computed(() => {
+  if (!filters.value.global.value) {
+    return props.availableParts;
+  }
+  return props.availableParts.filter(part =>
+    part.part_number.toLowerCase().includes(filters.value.global.value.toLowerCase())
+  );
+});
+</script>
+<template>
+  <div class="parts-container">
+    <h2 class="mb-2 text-lg font-bold">Select Parts</h2>
+    <div class="table-actions">
+      <span class="p-input-icon-right">
+        <InputGroup>
+          <InputGroupAddon>
+            <i class="pi pi-search"></i>
+          </InputGroupAddon>
+          <InputText
+            v-model="filters.global.value"
+            placeholder="Search Parts"
+            class="search-input"
+            :disabled="loading"
+          />
+        </InputGroup>
+      </span>
+    </div>
+
+    <!-- Table with Loading and Empty States -->
+    <div class="datatable-wrapper">
+      <DataTable
+        :value="filteredParts"
+        dataKey="id"
+        :paginator="true"
+        :rows="20"
+        :rowsPerPageOptions="[20, 50, 100]"
+        responsiveLayout="scroll"
+        class="p-datatable-sm"
+        removableSort
+        :scrollable="true"
+        :stripedRows="true"
+        scrollHeight="400px"
+        :loading="loading"
+        v-model:filters="filters"
+      >
+        <!-- Loading Template -->
+        <template #loading>
+          <div class="flex justify-center items-center p-4">
+            <div class="flex flex-col items-center gap-2">
+              <i class="pi pi-spin pi-spinner text-2xl"></i>
+              <span>Loading parts...</span>
+            </div>
+          </div>
+        </template>
+
+        <!-- Empty Template -->
+        <template #empty>
+          <div class="flex flex-col items-center justify-center p-6 text-gray-500">
+            <i class="pi pi-inbox text-4xl mb-2"></i>
+            <span class="text-lg font-medium">No Parts Available</span>
+            <p class="text-sm" v-if="filters.global.value">
+              No results found for "{{ filters.global.value }}"
+            </p>
+            <p class="text-sm" v-else>
+              Select a supplier to view available parts
+            </p>
+          </div>
+        </template>
+
+        <!-- Skeleton Loading for Rows -->
+        <template #loadingbody>
+          <tr class="p-datatable-loading-row">
+            <td v-for="col in 7" :key="col" class="p-3">
+              <div class="animate-pulse bg-slate-200 h-4 rounded"></div>
+            </td>
+          </tr>
+        </template>
+
+        <!-- Regular Columns -->
+        <Column field="part_number" header="Part Number" sortable>
+          <template #body="{ data }">
+            {{ data.part_number }}
+          </template>
+        </Column>
+
+        <Column field="description" header="Description" class="w-full">
+          <template #body="{ data }">
+            {{ data.description }}
+          </template>
+        </Column>
+
+        <Column field="unit_cost" header="Unit Cost" class="w-full" sortable>
+          <template #body="{ data }">
+            {{ formatCurrency(getCostPerPart(data)) }}
+          </template>
+        </Column>
+
+        <Column field="lead_days" header="Lead Time" class="w-full">
+          <template #body="{ data }">
+            <span class="bg-gray-900 text-white text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-gray-800 dark:text-gray-100 text-center block min-w-[60px]">
+              {{`${data.replenishment_data?.lead_days || settings.defaultLeadDays} days`}}
+            </span>
+          </template>
+        </Column>
+
+        <Column header="Order Quantity">
+          <template #body="{ data }">
+            <InputNumber
+              :modelValue="getOrderQuantity(data.id)"
+              :min="settings.minQuantity"
+              :step="1"
+              :showButtons="true"
+              buttonLayout="horizontal"
+              decrementButtonClass="p-button-secondary"
+              incrementButtonClass="p-button-secondary"
+              incrementButtonIcon="pi pi-plus"
+              decrementButtonIcon="pi pi-minus"
+              :disabled="loading"
+              @update:modelValue="(value) => updateQuantity(data.id, value)"
+            />
+          </template>
+        </Column>
+
+        <Column header="Total Cost" sortable>
+          <template #body="{ data }">
+            {{ formatCurrency(calculateTotalCost(data)) }}
+          </template>
+        </Column>
+
+        <Column header="Actions" style="width: 100px">
+          <template #body="{ data }">
+            <div class="flex gap-1">
+              <Button
+                icon="pi pi-eye"
+                class="p-button-rounded p-button-info p-button-sm"
+                :disabled="loading"
+                @click="$emit('view-part', data)"
+              />
+              <Button
+                icon="pi pi-trash"
+                class="p-button-rounded p-button-danger p-button-sm"
+                :disabled="loading"
+                @click="updateQuantity(data.id, 0)"
+              />
+            </div>
+          </template>
+        </Column>
+      </DataTable>
+    </div>
+  </div>
+</template>
+<style scoped>
+.parts-container {
+  width: 100%;
+  overflow-x: hidden; /* Prevent horizontal overflow */
+}
+
+.datatable-wrapper {
+  width: 100%;
+  overflow-x: auto; /* Allow table to scroll horizontally if needed */
+}
+
+.table-actions {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+/* Ensure the table stays within bounds */
+:deep(.p-datatable) {
+  max-width: 100%;
+}
+
+/* Add loading state styles */
+:deep(.p-datatable-loading-overlay) {
+    background: rgba(255, 255, 255, 0.8);
+}
+
+:deep(.p-datatable-loading) {
+    background: white;
+}
+
+.p-datatable-loading-row td {
+    padding: 1rem;
+}
+
+/* Ensure proper height for empty state */
+:deep(.p-datatable-emptymessage) {
+    min-height: 300px;
+}
+
+/* Animation for skeleton loading */
+@keyframes pulse {
+    50% {
+        opacity: .5;
+    }
+}
+
+.animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+:deep(.p-datatable-wrapper) {
+  border: 1px solid #e2e8f0;
+  max-width: 100%;
+}
+
+/* Make columns more compact */
+:deep(.p-datatable-thead > tr > th) {
+  padding: 0.5rem;
+}
+
+:deep(.p-datatable-tbody > tr > td) {
+  padding: 0.5rem;
+}
+
+/* Make the quantity column more compact */
+:deep(.p-inputnumber) {
+  width: 130px;
+}
+
+.search-input {
+  width: 150px;
+}
+</style>
+
+
+==== resources\js\Components\PurchaseOrders\PurchaseOrderHeader.vue ====
+
+<script setup>
+import { computed } from 'vue';
+import InputText from 'primevue/inputtext';
+import DatePicker from 'primevue/datepicker';
+
+const props = defineProps({
+  poNumber: {
+    type: String,
+    required: true
+  },
+  date: {
+    type: Date,
+    required: true
+  },
+  status: {
+    type: String,
+    required: true
+  }
+});
+
+const emit = defineEmits(['update:poNumber', 'update:date', 'update:status']);
+
+const formattedDate = computed({
+  get: () => props.date,
+  set: (value) => emit('update:date', value)
+});
+</script>
+
+<template>
+  <div class="p-4 mb-4 bg-surface-0 shadow-1">
+    <div class="grid">
+      <div class="col-12 md:col-4">
+        <label for="poNumber" class="block mb-1 text-sm font-medium">PO Number</label>
+        <InputText
+          id="poNumber"
+          :modelValue="poNumber"
+          class="w-full"
+          @update:modelValue="$emit('update:poNumber', $event)"
+        />
+      </div>
+      <div class="col-12 md:col-4">
+        <label for="date" class="block mb-1 text-sm font-medium">Date</label>
+        <DatePicker
+          id="date"
+          v-model="formattedDate"
+          dateFormat="dd/mm/yy"
+          class="w-full"
+        />
+      </div>
+      <div class="col-12 md:col-4">
+        <label for="status" class="block mb-1 text-sm font-medium">Status</label>
+        <InputText
+          id="status"
+          :modelValue="status"
+          class="w-full"
+          readonly
+        />
+      </div>
+    </div>
+  </div>
+</template>
+
+
+==== resources\js\Components\PurchaseOrders\PurchaseOrderToolbar.vue ====
+
+<script setup>
+import { ref } from 'vue';
+import InputText from 'primevue/inputtext';
+import DatePicker from 'primevue/datepicker';
+import Select from 'primevue/select';
+import InputGroup from 'primevue/inputgroup';
+import InputGroupAddon from 'primevue/inputgroupaddon';
+import Button from 'primevue/button';
+import Menubar from 'primevue/menubar';
+import IftaLabel from 'primevue/iftalabel';
+
+const props = defineProps({
+    poNumber: {
+        type: String,
+        required: true
+    },
+    date: {
+        type: Date,
+        required: true
+    },
+    status: {
+        type: String,
+        required: true
+    },
+    isValid: {
+        type: Boolean,
+        default: false
+    },
+    processing: {
+        type: Boolean,
+        default: false
+    }
+});
+
+const emit = defineEmits([
+    'update:poNumber',
+    'update:date',
+    'update:status',
+    'save-draft',
+    'submit',
+    'reset'
+]);
+
+const statusOptions = ref([
+    { label: 'Draft', value: 'Draft' },
+    { label: 'Pending', value: 'Pending' },
+    { label: 'Approved', value: 'Approved' },
+    { label: 'Completed', value: 'Completed' }
+]);
+
+const updatePoNumber = (event) => {
+    emit('update:poNumber', event.target.value);
+};
+
+const updateDate = (value) => {
+    emit('update:date', value);
+};
+
+const updateStatus = (value) => {
+    emit('update:status', value);
+};
+</script>
+
+<template>
+ <nav class="po-toolbar block w-11/12 mx-auto px-4 py-2 text-black border border-indigo-100 shadow-md rounded-md lg:px-10 lg:py-3">
+    <div class="container flex flex-wrap items-center justify-between mx-auto text-gray-500">
+        <ul class="flex flex-row gap-2">
+            <li class="flex items-center p-1 text-sm w-full">
+                <IftaLabel class="w-full">
+                    <InputText
+                        class="w-full"
+                        :value="poNumber"
+                        @input="updatePoNumber"
+                        inputId="purchaseOrderNumber"
+                    />
+                    <label for="purchaseOrderNumber">PO#</label>
+                </IftaLabel>
+            </li>
+
+            <li class="flex items-center p-1 text-sm w-full">
+                <IftaLabel class="w-full">
+                    <DatePicker
+                        class="w-full"
+                        :model-value="date"
+                        @update:model-value="updateDate"
+                        inputId="date"
+                        showIcon
+                        iconDisplay="input"
+                        variant="filled"
+                    />
+                    <label for="date">Date</label>
+                </IftaLabel>
+            </li>
+        </ul>
+        <div class="lg:block">
+            <ul class="flex flex-col justify-end gap-2 mt-2 mb-4 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
+                <li class="flex items-center p-1 text-sm gap-x-2">
+                    <Button
+                        icon="pi pi-save"
+                        label="Save Draft"
+                        severity="secondary"
+                        :disabled="!isValid || processing"
+                        :loading="processing"
+                        @click="$emit('save-draft')"
+                    />
+                    <Button
+                        icon="pi pi-chevron-right"
+                        label="Submit"
+                        severity="success"
+                        :disabled="!isValid || processing"
+                        :loading="processing"
+                        @click="$emit('submit')"
+                    />
+                    <Button
+                        icon="pi pi-times"
+                        label="Cancel"
+                        severity="danger"
+                        :disabled="processing"
+                        @click="$emit('reset')"
+                    />
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+</template>
+
+<style scoped>
+.toolbar-wrapper {
+    border-bottom: 1px solid var(--surface-border);
+}
+
+.logo-container {
+    width: 40px;
+    height: 40px;
+    background: var(--primary-color);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-container span {
+    color: white;
+}
+
+:deep(.p-menubar) {
+    background: transparent;
+    padding: 0.5rem 1rem;
+}
+
+:deep(.p-menubar-root-list) {
+    margin-left: 2rem;
+}
+
+:deep(.p-menuitem-link) {
+    padding: 0.75rem 1.25rem;
+}
+
+:deep(.p-menuitem-icon) {
+    margin-right: 0.5rem;
+}
+
+:deep(.p-inputgroup) {
+    width: 200px;
+}
+
+:deep(.p-datepicker) {
+    width: 200px;
+}
+
+.toolbar-content {
+    border-top: 1px solid var(--surface-border);
+    background: var(--surface-ground);
+}
+
+:deep(.p-button.p-button-text) {
+    color: var(--surface-600);
+}
+
+:deep(.p-button.p-button-text:hover) {
+    background: var(--surface-100);
+}
+</style>
+
+
+==== resources\js\Components\PurchaseOrders\SupplierSelectComponent.vue ====
+
+
+<script setup>
+import { computed,ref } from 'vue';
+import Select from 'primevue/select';
+
+const getSupplierTooltip = (supplier) => {
+    return {
+        content: `Name: ${supplier.name}\nAccount: ${supplier.account_number}\nAddress: ${supplier.address}\nContact: ${supplier.contact}`,
+        class: 'supplier-tooltip'
+    };
+};
+
+const props = defineProps({
+    modelValue: {
+        type: [Number, null],
+        required: true
+    },
+    suppliers: {
+        type: Array,
+        required: true,
+        default: () => []
+    },
+    loading: {
+        type: Boolean,
+        default: false
+    }
+});
+
+const emit = defineEmits(['update:modelValue']);
+
+// Debug mode computed
+const isDebug = ref(process.env.NODE_ENV === 'development');
+
+const formattedSuppliers = computed(() => {
+    console.log('Formatting suppliers:', props.suppliers);
+    return props.suppliers.map(supplier => ({
+        label: `${supplier.name} (${supplier.account_number})`,
+        value: supplier.id,
+        ...supplier
+    }));
+});
+
+const selectedValue = computed({
+    get: () => props.modelValue,
+    set: (value) => emit('update:modelValue', value)
+});
+</script>
+<template>
+    <div>
+        <Select
+            id="supplier"
+            v-model="selectedValue"
+            :options="formattedSuppliers"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Select a supplier"
+            class="w-full"
+            :loading="loading"
+        >
+            <!-- Add tooltip template -->
+            <template #option="{ option }">
+                <div
+                    class="supplier-option"
+                    v-tooltip.right="getSupplierTooltip(option)"
+                >
+                    {{ option.label }}
+                </div>
+            </template>
+        </Select>
+    </div>
+</template>
+<style>.supplier-tooltip.p-tooltip .p-tooltip-text {
+    white-space: pre-line;
+    font-size: 0.875rem;
+    padding: 0.5rem;
+}</style>
+
+
 ==== resources\js\Composables\useDataTable.js ====
 
 import { ref, computed } from 'vue';
@@ -128,9 +997,9 @@ export function usePurchaseOrderForm(initialData = {}) {
         location_id: null,
         parts: [],
         addresses: {
-            billTo: null,
+            billTo: initialData?.defaultAddresses?.billTo?.[0] || null,
             shipFrom: null,
-            shipTo: null,
+            shipTo: initialData?.defaultAddresses?.shipTo?.[0] || null,
             returnTo: null
         },
         special_instructions: '',
@@ -164,17 +1033,33 @@ export function usePurchaseOrderForm(initialData = {}) {
     });
 
     const supplierAddresses = computed(() => {
-        if (!selectedSupplier.value) return {
-            billTo: [],
+        const defaultAddresses = {
+            billTo: initialData?.defaultAddresses?.billTo || [],
+            shipTo: initialData?.defaultAddresses?.shipTo || [],
             shipFrom: [],
-            shipTo: [],
             returnTo: []
         };
+
+        if (!selectedSupplier.value) return defaultAddresses;
 
         const supplier = availableSuppliers.value
             .find(s => s.id === form.value.supplier_id);
 
-        return supplier?.addresses || {};
+        return {
+            ...defaultAddresses,
+            shipFrom: supplier?.addresses?.shipFrom || [],
+        };
+    });
+
+    // Form Validation
+    const isValid = computed(() => {
+        const hasSupplier = !!form.value.supplier_id;
+        const hasBillTo = !!form.value.addresses.billTo;
+        const hasShipFrom = !!form.value.addresses.shipFrom;
+        const hasShipTo = !!form.value.addresses.shipTo;
+        const hasParts = form.value.parts.length > 0 && form.value.parts.every(p => p.quantity_ordered > 0);
+
+        return hasSupplier && hasBillTo && hasShipFrom && hasShipTo && hasParts;
     });
 
     // Cost Calculations
@@ -198,13 +1083,10 @@ export function usePurchaseOrderForm(initialData = {}) {
             const supplier = availableSuppliers.value.find(s => s.id === newSupplierId);
             if (supplier) {
                 selectedSupplier.value = supplier;
-                // Set default addresses if available
-                const addresses = supplier.addresses || {};
+                // Update only shipFrom address, keep default billTo and shipTo
                 form.value.addresses = {
-                    billTo: addresses.billTo?.[0] || null,
-                    shipFrom: addresses.shipFrom?.[0] || null,
-                    shipTo: null,
-                    returnTo: null
+                    ...form.value.addresses,
+                    shipFrom: supplier.addresses?.shipFrom?.[0] || null,
                 };
             } else {
                 resetSupplierData();
@@ -219,9 +1101,9 @@ export function usePurchaseOrderForm(initialData = {}) {
         selectedSupplier.value = null;
         form.value.parts = [];
         form.value.addresses = {
-            billTo: null,
+            billTo: initialData?.defaultAddresses?.billTo?.[0] || null,
             shipFrom: null,
-            shipTo: null,
+            shipTo: initialData?.defaultAddresses?.shipTo?.[0] || null,
             returnTo: null
         };
     }
@@ -301,65 +1183,109 @@ export function usePurchaseOrderForm(initialData = {}) {
 
         if (!form.value.supplier_id) {
             errors.value.supplier_id = 'Please select a supplier';
+            return false;
         }
 
         if (form.value.parts.length === 0) {
             errors.value.parts = 'Please add at least one part';
+            return false;
+        }
+
+        if (!form.value.parts.every(p => p.quantity_ordered > 0)) {
+            errors.value.parts = 'All parts must have quantity greater than 0';
+            return false;
         }
 
         if (!form.value.addresses.billTo) {
             errors.value.billTo = 'Please select a billing address';
+            return false;
+        }
+
+        if (!form.value.addresses.shipFrom) {
+            errors.value.shipFrom = 'Please select a ship from address';
+            return false;
         }
 
         if (settings.value.requireShippingAddress && !form.value.addresses.shipTo) {
             errors.value.shipTo = 'Please select a shipping address';
+            return false;
         }
 
-        return Object.keys(errors.value).length === 0;
+        return true;
     }
 
     // Form Submission
     async function submit() {
-        if (!validateForm()) return;
+        console.log('Submitting form with data:', form.value);
+
+        if (!validateForm()) {
+            console.log('Form validation failed:', errors.value);
+            showToast('error', 'Validation Error', 'Please check the form for errors');
+            return;
+        }
 
         processing.value = true;
         try {
-            await router.post(route('purchase-orders.store'), {
+            const formData = {
                 ...form.value,
-                total_cost: totalCost.value
-            }, {
+                total_cost: totalCost.value,
+                status: 'submitted'
+            };
+
+            console.log('Sending data to server:', formData);
+
+            await router.post(route('purchase-orders.store'), formData, {
                 onSuccess: () => {
                     showToast('success', 'Success', 'Purchase order created successfully');
                     reset();
                 },
                 onError: (serverErrors) => {
+                    console.error('Server validation errors:', serverErrors);
                     showToast('error', 'Error', 'Failed to create purchase order');
                     errors.value = serverErrors;
                 }
             });
+        } catch (e) {
+            console.error('Form submission error:', e);
+            showToast('error', 'Error', 'An unexpected error occurred');
         } finally {
             processing.value = false;
         }
     }
 
     async function saveDraft() {
-        if (!validateForm()) return;
+        console.log('Saving draft with data:', form.value);
+
+        if (!validateForm()) {
+            console.log('Form validation failed:', errors.value);
+            showToast('error', 'Validation Error', 'Please check the form for errors');
+            return;
+        }
 
         processing.value = true;
         try {
-            await router.post(route('purchase-orders.draft'), {
+            const formData = {
                 ...form.value,
-                total_cost: totalCost.value
-            }, {
+                total_cost: totalCost.value,
+                status: 'draft'
+            };
+
+            console.log('Sending draft data to server:', formData);
+
+            await router.post(route('purchase-orders.draft'), formData, {
                 onSuccess: () => {
                     showToast('success', 'Success', 'Draft saved successfully');
                     reset();
                 },
                 onError: (serverErrors) => {
+                    console.error('Server validation errors:', serverErrors);
                     showToast('error', 'Error', 'Failed to save draft');
                     errors.value = serverErrors;
                 }
             });
+        } catch (e) {
+            console.error('Draft save error:', e);
+            showToast('error', 'Error', 'An unexpected error occurred');
         } finally {
             processing.value = false;
         }
@@ -371,9 +1297,9 @@ export function usePurchaseOrderForm(initialData = {}) {
             location_id: null,
             parts: [],
             addresses: {
-                billTo: null,
+                billTo: initialData?.defaultAddresses?.billTo?.[0] || null,
                 shipFrom: null,
-                shipTo: null,
+                shipTo: initialData?.defaultAddresses?.shipTo?.[0] || null,
                 returnTo: null
             },
             special_instructions: '',
@@ -397,6 +1323,7 @@ export function usePurchaseOrderForm(initialData = {}) {
         subtotal,
         taxAmount,
         totalCost,
+        isValid,
         addPart,
         removePart,
         updatePartQuantity,
@@ -431,3 +1358,577 @@ function saveThemePreference(theme) {
 export function useTheme() {
     return { initSiteTheme, setTheme, currentTheme };
 }
+
+
+==== resources\js\Pages\PurchaseOrders\CreatePurchaseOrder.vue ====
+
+<!-- CreatePurchaseOrder.vue -->
+<script setup>
+import { ref, computed } from 'vue';
+import { usePurchaseOrderForm } from '@/Composables/usePurchaseOrderForm';
+import AuthenticatedAdminLayout from '@/Layouts/Admin/AuthenticatedLayout.vue';
+import SupplierSelectComponent from '@/Components/PurchaseOrders/SupplierSelectComponent.vue';
+import PartsDataTableComponent from '@/Components/PurchaseOrders/PartsDataTableComponent.vue';
+import OrderSummary from '@/Components/PurchaseOrders/OrderSummary.vue';
+import AddressSelectComponent from '@/Components/PurchaseOrders/AddressSelectComponent.vue';
+import PurchaseOrderToolbar from '@/Components/PurchaseOrders/PurchaseOrderToolbar.vue';
+import InputText from 'primevue/inputtext';
+import Textarea from 'primevue/textarea';
+
+const pageTitle = '';
+
+const props = defineProps({
+    initialData: {
+        type: Object,
+        required: true
+    }
+});
+
+const {
+    form,
+    errors,
+    processing,
+    selectedSupplier,
+    supplierParts,
+    supplierAddresses,
+    settings,
+    subtotal,
+    taxAmount,
+    totalCost,
+    isValid,
+    updatePartQuantity,
+    saveDraft,
+    submit,
+    reset
+} = usePurchaseOrderForm(props.initialData);
+
+const poNumber = ref('PO-' + Date.now());
+const poDate = ref(new Date());
+const poStatus = ref('Draft');
+
+function handleUpdateQuantity(partId, quantity) {
+    updatePartQuantity(partId, quantity);
+}
+
+function handleViewPart(part) {
+    console.log('Viewing part:', part);
+}
+
+function handleSubmit() {
+    form.value.number = poNumber.value;
+    form.value.date = poDate.value;
+    form.value.status = poStatus.value;
+    submit();
+}
+
+function handleSaveDraft() {
+    form.value.number = poNumber.value;
+    form.value.date = poDate.value;
+    form.value.status = poStatus.value;
+    saveDraft();
+}
+
+function handleReset() {
+    poNumber.value = 'PO-' + Date.now();
+    poDate.value = new Date();
+    poStatus.value = 'Draft';
+    reset();
+}
+</script>
+
+<template>
+  <AuthenticatedAdminLayout :page-title="pageTitle">
+    <div class="layout-container">
+      <!-- Fixed-height header toolbar -->
+      <div class="toolbar-section">
+        <PurchaseOrderToolbar
+          :poNumber="poNumber"
+          :date="poDate"
+          :status="poStatus"
+          :isValid="isValid"
+          :processing="processing"
+          @update:poNumber="poNumber = $event"
+          @update:date="poDate = $event"
+          @update:status="poStatus = $event"
+          @submit="handleSubmit"
+          @save-draft="handleSaveDraft"
+          @reset="handleReset"
+        />
+      </div>
+
+      <!-- Main content with fixed height containers -->
+      <div class="content-layout">
+        <!-- Left column - fixed width and scrollable -->
+        <div class="main-content">
+          <div class="card-stack space-y-4">
+            <!-- Address section -->
+            <div class="content-card">
+              <AddressSelectComponent
+                v-model="form.addresses"
+                :available-addresses="supplierAddresses"
+                :settings="settings"
+              />
+            </div>
+
+            <!-- Supplier section -->
+            <div class="content-card">
+              <SupplierSelectComponent
+                v-model="form.supplier_id"
+                :suppliers="availableSuppliers"
+                :loading="processing"
+              />
+            </div>
+
+            <!-- Parts table -->
+            <div class="content-card">
+              <div class="h-full flex flex-col">
+                <PartsDataTableComponent
+                  v-if="selectedSupplier"
+                  :available-parts="supplierParts"
+                  :selected-parts="form.parts"
+                  :settings="settings"
+                  @update-quantity="handleUpdateQuantity"
+                  @view-part="handleViewPart"
+                />
+                <!-- Placeholder when no supplier selected -->
+                <div v-else class="flex-grow flex items-center justify-center text-gray-500">
+                  Select a supplier to view available parts
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right column - sticky sidebar -->
+        <div class="summary-section">
+          <div class="summary-sticky">
+            <!-- Order summary card -->
+            <div class="content-card">
+              <OrderSummary
+                :subtotal="subtotal"
+                :taxRate="form.tax_rate"
+                :additionalCosts="form.additional_costs"
+                @update:taxRate="form.tax_rate = $event"
+                @update:additionalCosts="form.additional_costs = $event"
+              />
+            </div>
+
+            <!-- Special instructions card -->
+            <div class="content-card mt-4">
+              <h2 class="text-lg font-semibold mb-4">Special Instructions</h2>
+              <Textarea
+                v-model="form.special_instructions"
+                rows="4"
+                class="w-full"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </AuthenticatedAdminLayout>
+</template>
+
+<style scoped>
+.layout-container {
+  @apply max-w-[1800px] mx-auto px-4;
+}
+
+.content-layout {
+  @apply grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-4 mt-6;
+}
+
+.main-content {
+  @apply min-w-0; /* prevents flex child overflow */
+}
+
+.summary-section {
+  @apply w-full lg:w-[400px];
+}
+
+.summary-sticky {
+  @apply sticky top-[140px]; /* Adjust this value based on your header + toolbar height */
+  height: fit-content;
+}
+
+.content-card {
+  @apply bg-white rounded-lg shadow-sm border border-indigo-100 p-6;
+}
+
+/* DataTable styles */
+:deep(.p-datatable-wrapper) {
+  @apply overflow-x-auto;
+}
+
+:deep(.p-datatable) {
+  min-width: 800px;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 1024px) {
+  .content-layout {
+    @apply grid-cols-1;
+  }
+
+  .summary-sticky {
+    @apply relative top-0;
+  }
+
+  .summary-section {
+    @apply w-full;
+  }
+}
+</style>
+
+
+==== resources\js\Pages\PurchaseOrders\Index.vue ====
+
+<script setup>
+import { ref, useTemplateRef } from 'vue';
+import { Head, router } from '@inertiajs/vue3';
+import { useDataTable } from '@/Composables/useDataTable.js';
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
+import Menu from 'primevue/menu';
+import DatePicker from 'primevue/datepicker';
+import Dropdown from 'primevue/dropdown';
+import Tag from 'primevue/tag';
+import Button from 'primevue/button';
+import InputText from 'primevue/inputtext';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import Container from '@/Components/Container.vue';
+import ResponsiveCard from '@/Components/ResponsiveCard.vue';
+
+// Define FilterMatchMode as a frozen constant
+const FilterMatchMode = Object.freeze({
+    STARTS_WITH: 'startsWith',
+    CONTAINS: 'contains',
+    NOT_CONTAINS: 'notContains',
+    ENDS_WITH: 'endsWith',
+    EQUALS: 'equals',
+    DATE_IS: 'dateIs',
+});
+
+const props = defineProps({
+    auth: Object,
+    urlParams: Object,
+    purchaseOrders: {
+        type: Object,
+        required: true,
+        default: () => ({ data: [], total: 0 })
+    }
+});
+
+// Initial filters setup with proper nested object handling
+const initialFilters = {
+    number: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    'supplier.name': { value: null, matchMode: FilterMatchMode.CONTAINS },
+    status: { value: null, matchMode: FilterMatchMode.EQUALS },
+    created_at: { value: null, matchMode: FilterMatchMode.DATE_IS },
+    total_cost: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    'user.name': { value: null, matchMode: FilterMatchMode.CONTAINS },
+};
+
+// DataTable state management
+const {
+    filters,
+    sortField,
+    sortOrder,
+    rowsPerPage,
+    firstDatasetIndex,
+    onPage,
+    onSort,
+    onFilter,
+    reset,
+    parseUrlParams,
+} = useDataTable(initialFilters, ['urlParams', 'purchaseOrders']);
+
+// Status options
+const statusOptions = [
+    { label: 'Draft', value: 'draft' },
+    { label: 'Submitted', value: 'submitted' },
+    { label: 'Approved', value: 'approved' },
+    { label: 'Partially Received', value: 'partially_received' },
+    { label: 'Fully Received', value: 'fully_received' },
+    { label: 'Closed', value: 'closed' },
+    { label: 'Cancelled', value: 'cancelled' }
+];
+
+// Context menu setup
+const selectedRowData = ref(null);
+const contextMenu = useTemplateRef('context-menu');
+const contextMenuItems = [
+    {
+        label: 'View Details',
+        icon: 'pi pi-search',
+        command: () => {
+            if (selectedRowData.value?.id) {
+                router.visit(route('purchase-orders.show', selectedRowData.value.id));
+            }
+        },
+    },
+    {
+        label: 'Edit',
+        icon: 'pi pi-pencil',
+        command: () => {
+            if (selectedRowData.value?.id) {
+                router.visit(route('purchase-orders.edit', selectedRowData.value.id));
+            }
+        },
+    },
+    {
+        label: 'Delete',
+        icon: 'pi pi-trash',
+        command: () => {
+            if (selectedRowData.value?.id) {
+                // Add delete confirmation logic
+                console.log('Delete PO:', selectedRowData.value.id);
+            }
+        },
+    }
+];
+
+// Safe context menu toggle
+function toggleContextMenu(event, rowData) {
+    if (rowData) {
+        selectedRowData.value = rowData;
+        contextMenu.value?.toggle(event);
+    }
+}
+
+// Helper Functions
+const getStatusSeverity = (status) => {
+    const severityMap = {
+        draft: 'info',
+        submitted: 'warning',
+        approved: 'success',
+        partially_received: 'warning',
+        fully_received: 'success',
+        closed: 'info',
+        cancelled: 'danger'
+    };
+    return severityMap[status] || 'info';
+};
+
+const formatCurrency = (value) => {
+    if (value == null) return '';
+    return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD'
+    }).format(value);
+};
+
+const formatDate = (dateString) => {
+    if (!dateString) return '';
+    return new Date(dateString).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    });
+};
+
+// Initialize from URL params
+if (props.urlParams) {
+    parseUrlParams(props.urlParams);
+}
+</script>
+
+<template>
+    <Head :title="'Purchase Orders'" />
+
+    <AuthenticatedLayout
+        :page-title="'Purchase Orders'"
+        :breadcrumbs="[
+            { label: 'Dashboard', route: route('dashboard') },
+            { label: 'Purchase Orders', route: route('purchase-orders.index') },
+            { label: 'List' }
+        ]"
+    >
+        <template #headerEnd>
+            <div class="flex gap-2">
+                <Link :href="route('purchase-orders.create')">
+                    <Button
+                        type="button"
+                        icon="pi pi-plus"
+                        label="New Order"
+                        raised
+                    />
+                </Link>
+                <Button
+                    type="button"
+                    icon="pi pi-filter-slash"
+                    label="Clear"
+                    outlined
+                    @click="reset"
+                />
+            </div>
+        </template>
+
+        <Container :spaced-mobile="false">
+            <ResponsiveCard spacingClasses="p-3">
+                <Menu
+                    ref="contextMenu"
+                    class="shadow"
+                    :model="contextMenuItems"
+                    popup
+                />
+                <DataTable
+                    lazy
+                    paginator
+                    stripedRows
+                    showGridlines
+                    removableSort
+                    resizableColumns
+                    columnResizeMode="fit"
+                    :value="purchaseOrders.data"
+                    :totalRecords="purchaseOrders.total"
+                    :filters="filters"
+                    filterDisplay="row"
+                    :sortField="sortField"
+                    :sortOrder="sortOrder"
+                    :rows="rowsPerPage"
+                    :rowsPerPageOptions="[10, 20, 50, 100]"
+                    :first="firstDatasetIndex"
+                    paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} records"
+                    @sort="onSort"
+                    @page="onPage"
+                    @filter="onFilter"
+                    dataKey="id"
+                >
+                    <!-- Columns definition with safe nested property handling -->
+                    <Column
+                        field="number"
+                        header="PO Number"
+                        sortable
+                        :showFilterMenu="false"
+                    >
+                        <template #filter="{ filterModel }">
+                            <InputText
+                                v-model="filterModel.value"
+                                type="text"
+                                class="w-full p-2"
+                                placeholder="Search by PO#"
+                            />
+                        </template>
+                    </Column>
+
+                    <Column
+                        field="supplier.name"
+                        header="Supplier"
+                        sortable
+                        :showFilterMenu="false"
+                    >
+                        <template #filter="{ filterModel }">
+                            <InputText
+                                v-model="filterModel.value"
+                                type="text"
+                                class="w-full p-2"
+                                placeholder="Search supplier"
+                            />
+                        </template>
+                        <template #body="{ data }">
+                            {{ data.supplier?.name }}
+                        </template>
+                    </Column>
+
+
+                    <Column
+                        field="status"
+                        header="Status"
+                        sortable
+                        :showFilterMenu="false"
+                    >
+                        <template #filter="{ filterModel, filterCallback }">
+                            <Dropdown
+                                v-model="filterModel.value"
+                                :options="statusOptions"
+                                optionLabel="label"
+                                optionValue="value"
+                                placeholder="Select Status"
+                                class="w-full"
+                                @change="filterCallback"
+                            />
+                        </template>
+                        <template #body="{ data }">
+                            <Tag :severity="getStatusSeverity(data.status)">
+                                {{ data.status }}
+                            </Tag>
+                        </template>
+                    </Column>
+
+                    <Column
+                        field="total_cost"
+                        header="Total"
+                        sortable
+                        :showFilterMenu="false"
+                    >
+                        <template #filter="{ filterModel, filterCallback }">
+                            <InputText
+                                v-model="filterModel.value"
+                                type="text"
+                                class="w-full p-2"
+                                placeholder="Search amount"
+                                @input="filterCallback"
+                            />
+                        </template>
+                        <template #body="{ data }">
+                            {{ formatCurrency(data.total_cost) }}
+                        </template>
+                    </Column>
+
+                    <Column
+                        field="created_at"
+                        header="Created"
+                        sortable
+                        :showFilterMenu="false"
+                    >
+                        <template #filter="{ filterModel, filterCallback }">
+                            <DatePicker
+                                v-model="filterModel.value"
+                                dateFormat="yy-mm-dd"
+                                placeholder="Search date"
+                                class="w-full"
+                                @date-select="filterCallback"
+                            />
+                        </template>
+                        <template #body="{ data }">
+                            {{ formatDate(data.created_at) }}
+                        </template>
+                    </Column>
+
+                    <Column
+                        field="user.name"
+                        header="Created By"
+                        sortable
+                        :showFilterMenu="false"
+                    >
+                        <template #filter="{ filterModel, filterCallback }">
+                            <InputText
+                                v-model="filterModel.value"
+                                type="text"
+                                class="w-full p-2"
+                                placeholder="Search user"
+                                @input="filterCallback"
+                            />
+                        </template>
+                    </Column>
+
+                    <Column header="Actions" :exportable="false" style="min-width: 4rem">
+                        <template #body="{ data }">
+                            <Button
+                                type="button"
+                                severity="secondary"
+                                text
+                                rounded
+                                icon="pi pi-ellipsis-v"
+                                @click="toggleContextMenu($event, data)"
+                                v-tooltip.top="'Show Actions'"
+                            />
+                        </template>
+                    </Column>
+                </DataTable>
+            </ResponsiveCard>
+        </Container>
+    </AuthenticatedLayout>
+</template>

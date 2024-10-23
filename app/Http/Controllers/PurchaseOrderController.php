@@ -16,9 +16,13 @@ class PurchaseOrderController extends Controller
 {
     public function __construct(protected PurchaseOrderService $purchaseOrderService) {}
 
-    // PurchaseOrderController.php
     public function create(): Response
     {
+        // Get self supplier (Doner Industries)
+        $selfSupplier = Supplier::where('account_number', 'DI')->firstOrFail();
+        Log::info('Self supplier found: ', ['supplier' => $selfSupplier->toArray()]);
+
+        // Get all suppliers for selection
         $suppliers = Supplier::query()
             ->with(['parts' => function ($query) {
                 $query->select([
@@ -38,17 +42,24 @@ class PurchaseOrderController extends Controller
             ->whereNull('deleted_at')
             ->get();
 
-        // Debug the data before sending to view
-        Log::info('Supplier Data:', [
-            'count' => $suppliers->count(),
-            'first_supplier' => $suppliers->first()?->toArray()
-        ]);
+        // Get available addresses from self supplier
+        $availableAddresses = [
+            'billTo' => $selfSupplier->getBillToAddresses(),
+            'shipTo' => $selfSupplier->getShipToAddresses(),
+        ];
+
+        Log::info('Available addresses:', $availableAddresses);
 
         return Inertia::render('PurchaseOrders/CreatePurchaseOrder', [
             'initialData' => [
                 'availableSuppliers' => $suppliers,
-                'defaultTaxRate' => config('purchase_orders.default_tax_rate', 8.0),
-                'debug' => true // Add this for testing
+                'defaultTaxRate' => config('purchase_orders.default_tax_rate', 8.25),
+                'settings' => [
+                    'minQuantity' => 0,
+                    'defaultLeadDays' => 0,
+                    'requireShippingAddress' => true,
+                ],
+                'defaultAddresses' => $availableAddresses
             ]
         ]);
     }
@@ -81,13 +92,52 @@ class PurchaseOrderController extends Controller
         }
     }
 
+    private function cleanAddressData($addresses)
+    {
+        $cleaned = [];
+        foreach ($addresses as $type => $address) {
+            if ($address) {
+                // If address has a 'value' property (from select component), use that
+                $addressData = isset($address['value']) ? $address['value'] : $address;
+
+                // Clean up the address data to only include valid fields
+                $cleanedAddress = array_intersect_key($addressData, array_flip([
+                    'street1',
+                    'street2',
+                    'city',
+                    'state',
+                    'postal_code',
+                    'country',
+                    'type',
+                    'address1',
+                    'address2',
+                    'state_prov_code',
+                    'zip',
+                    'phone_number',
+                    'email_address'
+                ]));
+
+                // Wrap single address in array for DTO
+                $cleaned[$type] = [$cleanedAddress];
+            } else {
+                $cleaned[$type] = [];
+            }
+        }
+
+        return $cleaned;
+    }
+
     public function store(StorePurchaseOrderRequest $request)
     {
-        Log::info('Request: ' . $request->toArray());
         try {
             $validatedData = $request->validated();
-            $validatedData['addresses'] = SupplierAddressesDTO::fromArray($validatedData['addresses']);
+            Log::info('Validated data:', $validatedData);
 
+            // Clean up address data
+            $validatedData['addresses'] = $this->cleanAddressData($validatedData['addresses']);
+            Log::info('Cleaned addresses:', $validatedData['addresses']);
+
+            $validatedData['addresses'] = SupplierAddressesDTO::fromArray($validatedData['addresses']);
             $purchaseOrder = $this->purchaseOrderService->createPurchaseOrder($validatedData);
 
             return redirect()
@@ -101,6 +151,33 @@ class PurchaseOrderController extends Controller
             ]);
 
             return back()->withErrors(['error' => 'Failed to create purchase order']);
+        }
+    }
+
+    public function draft(StorePurchaseOrderRequest $request)
+    {
+        try {
+            $validatedData = $request->validated();
+            Log::info('Validated draft data:', $validatedData);
+
+            // Clean up address data
+            $validatedData['addresses'] = $this->cleanAddressData($validatedData['addresses']);
+            Log::info('Cleaned addresses:', $validatedData['addresses']);
+
+            $validatedData['addresses'] = SupplierAddressesDTO::fromArray($validatedData['addresses']);
+            $purchaseOrder = $this->purchaseOrderService->saveDraft($validatedData);
+
+            return redirect()
+                ->route('purchase-orders.show', $purchaseOrder->id)
+                ->with('success', 'Purchase order draft saved successfully.');
+        } catch (\Exception $e) {
+            Log::error('Failed to save purchase order draft', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'data' => $validatedData ?? null
+            ]);
+
+            return back()->withErrors(['error' => 'Failed to save draft']);
         }
     }
 

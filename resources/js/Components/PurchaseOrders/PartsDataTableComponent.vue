@@ -2,12 +2,12 @@
 import { ref, computed, watch } from 'vue';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
-import InputNumber from 'primevue/inputnumber';
 import Button from 'primevue/button';
 import Tag from 'primevue/tag';
 import InputText from 'primevue/inputtext';
 import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
+import InputNumber from 'primevue/inputnumber';
 import SupplierSelectComponent from './SupplierSelectComponent.vue';
 
 const props = defineProps({
@@ -113,7 +113,7 @@ const filteredParts = computed(() => {
         class="p-datatable-sm"
         removableSort
         :scrollable="true"
-        stripedRows="true"
+        :stripedRows="true"
         scrollHeight="400px"
         :loading="loading"
         v-model:filters="filters"

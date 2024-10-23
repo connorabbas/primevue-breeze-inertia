@@ -14,9 +14,9 @@ class DatabaseSeeder extends Seeder
         $this->command->info('Starting legacy data import process...');
         try {
             if (DB::connection('legacy')) {
-
                 $this->call([
                     TestUserSeeder::class,
+                    BuildDefaultSupplierSeeder::class, // Add default supplier
                     LegacySupplierSeeder::class,
                     LegacyLocationSeeder::class,
                     LegacyPartSeeder::class,
@@ -29,7 +29,6 @@ class DatabaseSeeder extends Seeder
             }
         } catch (Exception $e) {
             $this->command->error('Exception: ' . $e->getMessage());
-
             Log::warning('Exception occurred: ', [$e]);
         }
     }

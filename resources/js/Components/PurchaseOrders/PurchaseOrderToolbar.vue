@@ -8,6 +8,7 @@ import InputGroupAddon from 'primevue/inputgroupaddon';
 import Button from 'primevue/button';
 import Menubar from 'primevue/menubar';
 import IftaLabel from 'primevue/iftalabel';
+
 const props = defineProps({
     poNumber: {
         type: String,
@@ -20,10 +21,25 @@ const props = defineProps({
     status: {
         type: String,
         required: true
+    },
+    isValid: {
+        type: Boolean,
+        default: false
+    },
+    processing: {
+        type: Boolean,
+        default: false
     }
 });
 
-const emit = defineEmits(['update:poNumber', 'update:date', 'update:status']);
+const emit = defineEmits([
+    'update:poNumber',
+    'update:date',
+    'update:status',
+    'save-draft',
+    'submit',
+    'reset'
+]);
 
 const statusOptions = ref([
     { label: 'Draft', value: 'Draft' },
@@ -43,89 +59,69 @@ const updateDate = (value) => {
 const updateStatus = (value) => {
     emit('update:status', value);
 };
-
-const items = ref([
-    {
-        label: 'Dashboard',
-        icon: 'pi pi-chart-line'
-    },
-    {
-        label: 'Purchase Orders',
-        icon: 'pi pi-shopping-cart'
-    },
-    {
-        label: 'Suppliers',
-        icon: 'pi pi-users'
-    }
-]);
 </script>
 
 <template>
-
  <nav class="po-toolbar block w-11/12 mx-auto px-4 py-2 text-black border border-indigo-100 shadow-md rounded-md lg:px-10 lg:py-3">
-        <div class="container flex flex-wrap items-center justify-between mx-auto text-gray-500">
+    <div class="container flex flex-wrap items-center justify-between mx-auto text-gray-500">
         <ul class="flex flex-row gap-2">
-    <li class="flex items-center p-1 text-sm w-full">
-        <IftaLabel class="w-full">
-            <InputText
-                class="w-full"
-                :value="poNumber"
-                @input="updatePoNumber"
-                inputId="purchaseOrderNumber"
-            />
-            <label for="purchaseOrderNumber">PO#</label>
-        </IftaLabel>
-    </li>
+            <li class="flex items-center p-1 text-sm w-full">
+                <IftaLabel class="w-full">
+                    <InputText
+                        class="w-full"
+                        :value="poNumber"
+                        @input="updatePoNumber"
+                        inputId="purchaseOrderNumber"
+                    />
+                    <label for="purchaseOrderNumber">PO#</label>
+                </IftaLabel>
+            </li>
 
-    <li class="flex items-center p-1 text-sm w-full">
-        <IftaLabel class="w-full">
-            <DatePicker
-                class="w-full"
-                :model-value="date"
-                @update:model-value="updateDate"
-                inputId="date"
-                showIcon
-                iconDisplay="input"
-                variant="filled"
-            />
-            <label for="date">Date</label>
-        </IftaLabel>
-    </li>
-</ul>
-    <div class=" lg:block">
-
-      <ul class="flex flex-col justify-end gap-2 mt-2 mb-4 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
-        <li class="flex items-center p-1 text-sm gap-x-2">
-            <Button
+            <li class="flex items-center p-1 text-sm w-full">
+                <IftaLabel class="w-full">
+                    <DatePicker
+                        class="w-full"
+                        :model-value="date"
+                        @update:model-value="updateDate"
+                        inputId="date"
+                        showIcon
+                        iconDisplay="input"
+                        variant="filled"
+                    />
+                    <label for="date">Date</label>
+                </IftaLabel>
+            </li>
+        </ul>
+        <div class="lg:block">
+            <ul class="flex flex-col justify-end gap-2 mt-2 mb-4 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
+                <li class="flex items-center p-1 text-sm gap-x-2">
+                    <Button
                         icon="pi pi-save"
                         label="Save Draft"
                         severity="secondary"
+                        :disabled="!isValid || processing"
+                        :loading="processing"
                         @click="$emit('save-draft')"
-                    />  <Button
+                    />
+                    <Button
                         icon="pi pi-chevron-right"
                         label="Submit"
                         severity="success"
+                        :disabled="!isValid || processing"
+                        :loading="processing"
                         @click="$emit('submit')"
                     />
                     <Button
                         icon="pi pi-times"
                         label="Cancel"
                         severity="danger"
+                        :disabled="processing"
                         @click="$emit('reset')"
                     />
-            <!--<Select
-                    :model-value="status"
-                    :options="statusOptions"
-                    optionLabel="label"
-                    optionValue="value"
-                    placeholder="Select Status"
-                    class="w-full md:w-14rem"
-                    @change="updateStatus"
-                />-->
-        </li>
-      </ul>
+                </li>
+            </ul>
+        </div>
     </div>
-  </div>
 </nav>
 </template>
 

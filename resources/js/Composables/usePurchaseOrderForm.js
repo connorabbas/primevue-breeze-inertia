@@ -14,9 +14,9 @@ export function usePurchaseOrderForm(initialData = {}) {
         location_id: null,
         parts: [],
         addresses: {
-            billTo: null,
+            billTo: initialData?.defaultAddresses?.billTo?.[0] || null,
             shipFrom: null,
-            shipTo: null,
+            shipTo: initialData?.defaultAddresses?.shipTo?.[0] || null,
             returnTo: null
         },
         special_instructions: '',
@@ -50,17 +50,33 @@ export function usePurchaseOrderForm(initialData = {}) {
     });
 
     const supplierAddresses = computed(() => {
-        if (!selectedSupplier.value) return {
-            billTo: [],
+        const defaultAddresses = {
+            billTo: initialData?.defaultAddresses?.billTo || [],
+            shipTo: initialData?.defaultAddresses?.shipTo || [],
             shipFrom: [],
-            shipTo: [],
             returnTo: []
         };
+
+        if (!selectedSupplier.value) return defaultAddresses;
 
         const supplier = availableSuppliers.value
             .find(s => s.id === form.value.supplier_id);
 
-        return supplier?.addresses || {};
+        return {
+            ...defaultAddresses,
+            shipFrom: supplier?.addresses?.shipFrom || [],
+        };
+    });
+
+    // Form Validation
+    const isValid = computed(() => {
+        const hasSupplier = !!form.value.supplier_id;
+        const hasBillTo = !!form.value.addresses.billTo;
+        const hasShipFrom = !!form.value.addresses.shipFrom;
+        const hasShipTo = !!form.value.addresses.shipTo;
+        const hasParts = form.value.parts.length > 0 && form.value.parts.every(p => p.quantity_ordered > 0);
+
+        return hasSupplier && hasBillTo && hasShipFrom && hasShipTo && hasParts;
     });
 
     // Cost Calculations
@@ -84,13 +100,10 @@ export function usePurchaseOrderForm(initialData = {}) {
             const supplier = availableSuppliers.value.find(s => s.id === newSupplierId);
             if (supplier) {
                 selectedSupplier.value = supplier;
-                // Set default addresses if available
-                const addresses = supplier.addresses || {};
+                // Update only shipFrom address, keep default billTo and shipTo
                 form.value.addresses = {
-                    billTo: addresses.billTo?.[0] || null,
-                    shipFrom: addresses.shipFrom?.[0] || null,
-                    shipTo: null,
-                    returnTo: null
+                    ...form.value.addresses,
+                    shipFrom: supplier.addresses?.shipFrom?.[0] || null,
                 };
             } else {
                 resetSupplierData();
@@ -105,9 +118,9 @@ export function usePurchaseOrderForm(initialData = {}) {
         selectedSupplier.value = null;
         form.value.parts = [];
         form.value.addresses = {
-            billTo: null,
+            billTo: initialData?.defaultAddresses?.billTo?.[0] || null,
             shipFrom: null,
-            shipTo: null,
+            shipTo: initialData?.defaultAddresses?.shipTo?.[0] || null,
             returnTo: null
         };
     }
@@ -187,65 +200,109 @@ export function usePurchaseOrderForm(initialData = {}) {
 
         if (!form.value.supplier_id) {
             errors.value.supplier_id = 'Please select a supplier';
+            return false;
         }
 
         if (form.value.parts.length === 0) {
             errors.value.parts = 'Please add at least one part';
+            return false;
+        }
+
+        if (!form.value.parts.every(p => p.quantity_ordered > 0)) {
+            errors.value.parts = 'All parts must have quantity greater than 0';
+            return false;
         }
 
         if (!form.value.addresses.billTo) {
             errors.value.billTo = 'Please select a billing address';
+            return false;
+        }
+
+        if (!form.value.addresses.shipFrom) {
+            errors.value.shipFrom = 'Please select a ship from address';
+            return false;
         }
 
         if (settings.value.requireShippingAddress && !form.value.addresses.shipTo) {
             errors.value.shipTo = 'Please select a shipping address';
+            return false;
         }
 
-        return Object.keys(errors.value).length === 0;
+        return true;
     }
 
     // Form Submission
     async function submit() {
-        if (!validateForm()) return;
+        console.log('Submitting form with data:', form.value);
+
+        if (!validateForm()) {
+            console.log('Form validation failed:', errors.value);
+            showToast('error', 'Validation Error', 'Please check the form for errors');
+            return;
+        }
 
         processing.value = true;
         try {
-            await router.post(route('purchase-orders.store'), {
+            const formData = {
                 ...form.value,
-                total_cost: totalCost.value
-            }, {
+                total_cost: totalCost.value,
+                status: 'submitted'
+            };
+
+            console.log('Sending data to server:', formData);
+
+            await router.post(route('purchase-orders.store'), formData, {
                 onSuccess: () => {
                     showToast('success', 'Success', 'Purchase order created successfully');
                     reset();
                 },
                 onError: (serverErrors) => {
+                    console.error('Server validation errors:', serverErrors);
                     showToast('error', 'Error', 'Failed to create purchase order');
                     errors.value = serverErrors;
                 }
             });
+        } catch (e) {
+            console.error('Form submission error:', e);
+            showToast('error', 'Error', 'An unexpected error occurred');
         } finally {
             processing.value = false;
         }
     }
 
     async function saveDraft() {
-        if (!validateForm()) return;
+        console.log('Saving draft with data:', form.value);
+
+        if (!validateForm()) {
+            console.log('Form validation failed:', errors.value);
+            showToast('error', 'Validation Error', 'Please check the form for errors');
+            return;
+        }
 
         processing.value = true;
         try {
-            await router.post(route('purchase-orders.draft'), {
+            const formData = {
                 ...form.value,
-                total_cost: totalCost.value
-            }, {
+                total_cost: totalCost.value,
+                status: 'draft'
+            };
+
+            console.log('Sending draft data to server:', formData);
+
+            await router.post(route('purchase-orders.draft'), formData, {
                 onSuccess: () => {
                     showToast('success', 'Success', 'Draft saved successfully');
                     reset();
                 },
                 onError: (serverErrors) => {
+                    console.error('Server validation errors:', serverErrors);
                     showToast('error', 'Error', 'Failed to save draft');
                     errors.value = serverErrors;
                 }
             });
+        } catch (e) {
+            console.error('Draft save error:', e);
+            showToast('error', 'Error', 'An unexpected error occurred');
         } finally {
             processing.value = false;
         }
@@ -257,9 +314,9 @@ export function usePurchaseOrderForm(initialData = {}) {
             location_id: null,
             parts: [],
             addresses: {
-                billTo: null,
+                billTo: initialData?.defaultAddresses?.billTo?.[0] || null,
                 shipFrom: null,
-                shipTo: null,
+                shipTo: initialData?.defaultAddresses?.shipTo?.[0] || null,
                 returnTo: null
             },
             special_instructions: '',
@@ -283,6 +340,7 @@ export function usePurchaseOrderForm(initialData = {}) {
         subtotal,
         taxAmount,
         totalCost,
+        isValid,
         addPart,
         removePart,
         updatePartQuantity,

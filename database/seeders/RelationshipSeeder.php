@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Database\QueryException;
 use App\DTOs\SupplierAddressesDTO;
 use App\DTOs\AddressDTO;
+use Spatie\LaravelData\DataCollection;
 
 class RelationshipSeeder extends Seeder
 {
@@ -76,6 +77,48 @@ class RelationshipSeeder extends Seeder
 
         foreach ($legacySuppliers as $legacySupplier) {
             try {
+                // Get all locations for this supplier
+                $supplierLocations = DB::connection('legacy')
+                    ->table('location')
+                    ->where('supplier_id', $legacySupplier->supplier_id)
+                    ->get();
+
+                // Create address collections
+                $billToAddresses = [];
+                $shipFromAddresses = [];
+                $shipToAddresses = [];
+                $returnToAddresses = [];
+
+                foreach ($supplierLocations as $location) {
+                    $address = new AddressDTO(
+                        address1: $location->address1,
+                        address2: $location->address2,
+                        city: $location->city,
+                        state_prov_code: $location->state_prov_code,
+                        zip: $location->zip,
+                        country: 'USA',
+                        phone_number: $location->phone_nbr,
+                        email_address: $location->email_address
+                    );
+
+                    if ($location->bill_to_ind) {
+                        $billToAddresses[] = $address;
+                    }
+                    if ($location->supplier_id) {
+                        $shipFromAddresses[] = $address;
+                    }
+                    if ($location->ship_to_ind) {
+                        $shipToAddresses[] = $address;
+                    }
+                }
+
+                $addresses = new SupplierAddressesDTO(
+                    billTo: new DataCollection(AddressDTO::class, $billToAddresses),
+                    shipFrom: new DataCollection(AddressDTO::class, $shipFromAddresses),
+                    shipTo: new DataCollection(AddressDTO::class, $shipToAddresses),
+                    returnTo: new DataCollection(AddressDTO::class, $returnToAddresses)
+                );
+
                 Supplier::updateOrCreate(
                     ['id' => $legacySupplier->supplier_id],
                     [
@@ -88,14 +131,13 @@ class RelationshipSeeder extends Seeder
                             'phone' => $legacySupplier->phone,
                             'fax' => $legacySupplier->fax,
                         ]),
+                        'addresses' => $addresses,
                     ]
                 );
                 $successCount++;
             } catch (QueryException $e) {
                 $failureCount++;
                 Log::error("Database error setting supplier relationships for supplier ID {$legacySupplier->supplier_id}: " . $e->getMessage());
-                Log::error("SQL: " . $e->getSql());
-                Log::error("Bindings: " . implode(', ', $e->getBindings()));
             } catch (\Exception $e) {
                 $failureCount++;
                 Log::error("Error setting supplier relationships for supplier ID {$legacySupplier->supplier_id}: " . $e->getMessage());
@@ -117,37 +159,41 @@ class RelationshipSeeder extends Seeder
         foreach ($legacyLocations as $legacyLocation) {
             try {
                 $locationType = $this->getLocationType($legacyLocation);
-                $locationData = [
-                    'name' => $legacyLocation->location_name,
-                    'type' => $locationType['type'],
-                    'virtual_type' => $locationType['virtual_type'] ?? null,
-                    'supplier_id' => $legacyLocation->supplier_id ?: null,
-                    'addresses' => json_encode([
-                        'billTo' => [
-                            [
-                                'street1' => $legacyLocation->address1,
-                                'street2' => $legacyLocation->address2,
-                                'city' => $legacyLocation->city,
-                                'state' => $legacyLocation->state_prov_code,
-                                'postal_code' => $legacyLocation->zip,
-                                'country' => 'US', // Assuming US as default
-                                'phone_number' => $legacyLocation->phone_nbr,
-                                'email_address' => $legacyLocation->email_address,
-                            ]
-                        ]
-                    ]),
-                ];
+
+                // Create address DTO
+                $address = new AddressDTO(
+                    address1: $legacyLocation->address1,
+                    address2: $legacyLocation->address2,
+                    city: $legacyLocation->city,
+                    state_prov_code: $legacyLocation->state_prov_code,
+                    zip: $legacyLocation->zip,
+                    country: 'USA',
+                    phone_number: $legacyLocation->phone_nbr,
+                    email_address: $legacyLocation->email_address
+                );
+
+                // Create addresses based on location type
+                $addresses = new SupplierAddressesDTO(
+                    billTo: $legacyLocation->bill_to_ind ? new DataCollection(AddressDTO::class, [$address]) : null,
+                    shipFrom: $legacyLocation->supplier_id ? new DataCollection(AddressDTO::class, [$address]) : null,
+                    shipTo: $legacyLocation->ship_to_ind ? new DataCollection(AddressDTO::class, [$address]) : null,
+                    returnTo: null
+                );
 
                 Location::updateOrCreate(
                     ['id' => $legacyLocation->location_id],
-                    $locationData
+                    [
+                        'name' => $legacyLocation->location_name,
+                        'type' => $locationType['type'],
+                        'virtual_type' => $locationType['virtual_type'] ?? null,
+                        'supplier_id' => $legacyLocation->supplier_id ?: null,
+                        'addresses' => $addresses,
+                    ]
                 );
                 $successCount++;
             } catch (QueryException $e) {
                 $failureCount++;
                 Log::error("Database error setting location relationships for location ID {$legacyLocation->location_id}: " . $e->getMessage());
-                Log::error("SQL: " . $e->getSql());
-                Log::error("Bindings: " . implode(', ', $e->getBindings()));
             } catch (\Exception $e) {
                 $failureCount++;
                 Log::error("Error setting location relationships for location ID {$legacyLocation->location_id}: " . $e->getMessage());

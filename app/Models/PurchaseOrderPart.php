@@ -37,7 +37,8 @@ class PurchaseOrderPart extends Model
         });
 
         static::saved(function ($purchaseOrderPart) {
-            $purchaseOrderPart->purchaseOrder->updateTotalCost();
+            $purchaseOrderPart->purchaseOrder->calculateTotals();
+            $purchaseOrderPart->purchaseOrder->save();
         });
     }
 
@@ -90,10 +91,5 @@ class PurchaseOrderPart extends Model
     public function scopePartiallyReceived($query)
     {
         return $query->whereRaw('quantity_received > 0 AND quantity_received < quantity_ordered');
-    }
-
-    protected static function newFactory()
-    {
-        return \Database\Factories\PurchaseOrderPartFactory::new();
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\DTOs;
 
+use Illuminate\Support\Facades\Log;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Attributes\DataCollectionOf;
 use Spatie\LaravelData\DataCollection;
@@ -25,6 +26,13 @@ class SupplierAddressesDTO extends Data
 
     public static function fromArray(array $data): self
     {
+        // Ensure each address type is an array
+        foreach (['billTo', 'shipFrom', 'shipTo', 'returnTo'] as $type) {
+            if (isset($data[$type]) && !is_array($data[$type])) {
+                $data[$type] = [$data[$type]];
+            }
+        }
+
         return new self(
             billTo: isset($data['billTo']) ? AddressDTO::collection($data['billTo']) : null,
             shipFrom: isset($data['shipFrom']) ? AddressDTO::collection($data['shipFrom']) : null,

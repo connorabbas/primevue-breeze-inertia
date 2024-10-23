@@ -188,7 +188,7 @@ const drawerOpen = ref(false);
                 class="flex justify-center bg-surface-0 dark:bg-surface-900 py-6"
             >
                 <p class="text-muted-color">
-                    Your Company - {{ new Date().getFullYear() }}
+                   doner-inertia - {{ new Date().getFullYear() }}
                 </p>
             </div>
         </footer>

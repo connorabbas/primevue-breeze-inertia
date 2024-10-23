@@ -19,14 +19,12 @@ return new class extends Migration
             $table->foreignId('location_id')->constrained();
             $table->enum('status', PurchaseOrderStatus::getValues())->default(PurchaseOrderStatus::DRAFT->value);
             $table->decimal('total_cost', 10, 2)->nullable();
+            $table->decimal('tax_rate', 5, 2)->default(8.25)->comment('Tax rate percentage');
+            $table->decimal('additional_costs', 10, 2)->default(0.00)->comment('Additional costs like shipping, handling, etc.');
             $table->foreignId('user_id')->constrained();
-            $table->timestamp('opened_at')->nullable();
             $table->timestamp('closed_at')->nullable();
-
-            // New columns to store the index of the selected address for each type
-            $table->unsignedInteger('bill_to_address_index')->nullable();
-            $table->unsignedInteger('ship_from_address_index')->nullable();
-            $table->unsignedInteger('ship_to_address_index')->nullable();
+            $table->json('addresses')->nullable();
+            $table->text('special_instructions')->nullable();
 
             $table->softDeletes();
             $table->timestamps();

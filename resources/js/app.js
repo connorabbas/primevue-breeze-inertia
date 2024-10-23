@@ -17,6 +17,7 @@ import MultiSelect from 'primevue/multiselect';
 import Button from 'primevue/button';
 import Menu from 'primevue/menu';
 import Toast from 'primevue/toast';
+import InputText from 'primevue/inputtext';
 
 import { useTheme } from './Composables/useTheme.js';
 import customThemePreset from './theme-preset.js';
@@ -48,6 +49,7 @@ createInertiaApp({
         app.component('Button', Button);
         app.component('Menu', Menu);
         app.component('Toast', Toast);
+        app.component('InputText', InputText);
         // Initialize theme
         const { initSiteTheme } = useTheme();
         initSiteTheme();
