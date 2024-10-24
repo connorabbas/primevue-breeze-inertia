@@ -17,13 +17,10 @@ class UserController extends Controller
 
     public function index(Request $request): Response
     {
-        $users = $this->userService->getUsers(
-            UserFiltersDto::fromDataTableRequest($request)
-        );
-
         return Inertia::render('Admin/Users/Index', [
-            'urlParams' => $request->all(),
-            'users' => $users,
+            'users' => $this->userService->getUsers(
+                UserFiltersDto::fromDataTableRequest($request)
+            ),
         ]);
     }
 }

@@ -75,8 +75,7 @@ const drawerOpen = ref(false);
                             <!-- Logo -->
                             <div class="shrink-0 flex items-center">
                                 <Button
-                                    text
-                                    rounded
+                                    outlined
                                     severity="secondary"
                                     icon="pi pi-bars"
                                     @click="drawerOpen = true"
