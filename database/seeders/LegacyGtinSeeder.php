@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use App\Models\Gtin;
+use App\Models\Product;
 use Illuminate\Support\Facades\Log;
 
 class LegacyGtinSeeder extends Seeder
@@ -20,19 +21,33 @@ class LegacyGtinSeeder extends Seeder
 
         foreach ($legacyGtins as $legacyGtin) {
             try {
-                Gtin::create([
-                    'gtin' => $legacyGtin->gtin_nbr,
-                    'status' => $this->mapStatus($legacyGtin->status_id),
-                    'lease_end_date' => $legacyGtin->last_change_ts !== '0000-00-00 00:00:00' ? $legacyGtin->last_change_ts : null,
-                    'product_id' => $legacyGtin->seller_id, // We're using seller_id as product_id for now
-                ]);
+                // Find product with this GTIN
+                $product = Product::whereHas('gtin', function ($query) use ($legacyGtin) {
+                    $query->where('gtin', $legacyGtin->gtin_nbr);
+                })->first();
 
-                $successCount++;
+                if ($product) {
+                    Gtin::updateOrCreate(
+                        ['gtin' => $legacyGtin->gtin_nbr],
+                        [
+                            'product_id' => $product->id,
+                            'status' => $this->mapStatus($legacyGtin->status_id),
+                            'lease_end_date' => $legacyGtin->last_change_ts !== '0000-00-00 00:00:00'
+                                ? $legacyGtin->last_change_ts
+                                : null
+                        ]
+                    );
+                    $successCount++;
+                } else {
+                    Log::warning("No product found for GTIN {$legacyGtin->gtin_nbr}");
+                    $failureCount++;
+                }
             } catch (\Exception $e) {
                 $failureCount++;
                 $errorMessage = "Error seeding GTIN {$legacyGtin->gtin_nbr}: " . $e->getMessage();
                 $this->command->error($errorMessage);
                 Log::error($errorMessage);
+                Log::error("GTIN data: " . json_encode($legacyGtin));
             }
         }
 
@@ -42,16 +57,12 @@ class LegacyGtinSeeder extends Seeder
         $this->command->error("Failed to seed: {$failureCount}");
     }
 
-    private function mapStatus($legacyStatus)
+    private function mapStatus(int $statusId): string
     {
-        // Map legacy status to new status
-        // Adjust this mapping according to your new status structure
-        $statusMap = [
+        return match ($statusId) {
             1 => 'active',
             2 => 'inactive',
-            // Add more mappings as needed
-        ];
-
-        return $statusMap[$legacyStatus] ?? 'unknown';
+            default => 'unknown'
+        };
     }
 }

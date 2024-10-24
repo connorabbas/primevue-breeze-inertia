@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\DTOs\SupplierAddressesDTO;
+use App\Data\AddressData;
 use App\Enums\PurchaseOrderStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,7 +12,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class PurchaseOrder extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
+    use SoftDeletes;
 
     protected $fillable = [
         'number',
@@ -34,7 +35,7 @@ class PurchaseOrder extends Model
         'total_cost' => 'decimal:2',
         'opened_at' => 'datetime',
         'closed_at' => 'datetime',
-        'addresses' => SupplierAddressesDTO::class,
+        'addresses' => 'array', // Store as plain JSON since we need to snapshot the addresses
         'tax_rate' => 'decimal:2',
         'additional_costs' => 'decimal:2',
     ];

@@ -8,10 +8,12 @@ use Illuminate\Queue\SerializesModels;
 
 class InventoryBatchFailed
 {
-    use Dispatchable, SerializesModels;
+    use Dispatchable;
+    use SerializesModels;
 
     public function __construct(
         public InventoryTransactionBatch $batch,
         public string $error
-    ) {}
+    ) {
+    }
 }

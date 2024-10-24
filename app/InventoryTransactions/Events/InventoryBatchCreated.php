@@ -8,9 +8,11 @@ use Illuminate\Queue\SerializesModels;
 
 class InventoryBatchCreated
 {
-    use Dispatchable, SerializesModels;
+    use Dispatchable;
+    use SerializesModels;
 
     public function __construct(
         public InventoryTransactionBatch $batch
-    ) {}
+    ) {
+    }
 }

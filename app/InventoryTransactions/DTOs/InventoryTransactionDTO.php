@@ -26,12 +26,13 @@ class InventoryTransactionDTO extends Data
         public ?string $referenceType = null,
         #[MapInputName('reference_id')]
         public ?int $referenceId = null
-    ) {}
+    ) {
+    }
 
     public static function rules(): array
     {
         return [
-            'transaction_type' => ['required', 'enum:'.TransactionType::class],
+            'transaction_type' => ['required', 'enum:' . TransactionType::class],
             'quantity' => ['required', 'integer', 'min:1'],
             'inventoryableType' => ['required', 'string'],
             'inventoryableId' => ['required', 'integer'],

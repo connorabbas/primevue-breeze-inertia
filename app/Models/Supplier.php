@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
-use App\DTOs\AddressDTO;
-use App\DTOs\SupplierAddressesDTO;
 use App\DTOs\IdentifierDTO;
+use App\Enums\AddressType;
+use App\Enums\PaymentTerm;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Supplier extends Model
@@ -21,22 +22,18 @@ class Supplier extends Model
         'lead_time_days',
         'free_shipping_threshold_usd',
         'contact',
-        'addresses',
         'identifiers',
     ];
 
     protected $casts = [
+        'payment_terms' => PaymentTerm::class,
         'lead_time_days' => 'integer',
         'free_shipping_threshold_usd' => 'decimal:2',
         'contact' => 'json',
-        'addresses' => SupplierAddressesDTO::class,
         'identifiers' => IdentifierDTO::class,
     ];
 
     protected $appends = ['free_shipping'];
-
-    // Remove the protected $with to prevent automatic eager loading
-    // protected $with = ['parts', 'locations'];
 
     public function getFreeShippingAttribute(): bool
     {
@@ -52,15 +49,22 @@ class Supplier extends Model
 
     public function parts(): HasMany
     {
-        // Remove the ->with('replenishment_data') since it's a cast, not a relationship
         return $this->hasMany(Part::class);
     }
-
-
 
     public function locations(): HasMany
     {
         return $this->hasMany(Location::class);
+    }
+
+    public function addresses(): BelongsToMany
+    {
+        return $this->belongsToMany(Address::class, 'supplier_address')
+            ->withPivot('address_type')
+            ->withTimestamps()
+            ->withCasts([
+                'address_type' => AddressType::class
+            ]);
     }
 
     public function purchaseOrders(): HasMany
@@ -70,82 +74,94 @@ class Supplier extends Model
 
     /**
      * Get all addresses of type billTo
-     * @return array
      */
     public function getBillToAddresses(): array
     {
-        return $this->addresses?->billTo?->toArray() ?? [];
+        return $this->addresses()
+            ->wherePivot('address_type', AddressType::BILL_TO)
+            ->get()
+            ->map(fn($address) => $address->address_data->toArray())
+            ->toArray();
     }
 
     /**
      * Get all addresses of type shipFrom
-     * @return array
      */
     public function getShipFromAddresses(): array
     {
-        return $this->addresses?->shipFrom?->toArray() ?? [];
+        return $this->addresses()
+            ->wherePivot('address_type', AddressType::SHIP_FROM)
+            ->get()
+            ->map(fn($address) => $address->address_data->toArray())
+            ->toArray();
     }
 
     /**
      * Get all addresses of type shipTo
-     * @return array
      */
     public function getShipToAddresses(): array
     {
-        return $this->addresses?->shipTo?->toArray() ?? [];
+        return $this->addresses()
+            ->wherePivot('address_type', AddressType::SHIP_TO)
+            ->get()
+            ->map(fn($address) => $address->address_data->toArray())
+            ->toArray();
     }
 
     /**
      * Get all addresses of type returnTo
-     * @return array
      */
     public function getReturnToAddresses(): array
     {
-        return $this->addresses?->returnTo?->toArray() ?? [];
+        return $this->addresses()
+            ->wherePivot('address_type', AddressType::RETURN_TO)
+            ->get()
+            ->map(fn($address) => $address->address_data->toArray())
+            ->toArray();
     }
 
     /**
      * Get a specific billTo address by index
-     * @param int $index
-     * @return array|null
      */
     public function getBillToAddress(int $index = 0): ?array
     {
-        $addresses = $this->getBillToAddresses();
-        return $addresses[$index] ?? null;
+        $address = $this->addresses()
+            ->wherePivot('address_type', AddressType::BILL_TO)
+            ->first();
+        return $address ? $address->address_data->toArray() : null;
     }
 
     /**
      * Get a specific shipFrom address by index
-     * @param int $index
-     * @return array|null
      */
     public function getShipFromAddress(int $index = 0): ?array
     {
-        $addresses = $this->getShipFromAddresses();
-        return $addresses[$index] ?? null;
+        $address = $this->addresses()
+            ->wherePivot('address_type', AddressType::SHIP_FROM)
+            ->first();
+        return $address ? $address->address_data->toArray() : null;
     }
 
     /**
      * Get a specific shipTo address by index
-     * @param int $index
-     * @return array|null
      */
     public function getShipToAddress(int $index = 0): ?array
     {
-        $addresses = $this->getShipToAddresses();
-        return $addresses[$index] ?? null;
+        $address = $this->addresses()
+            ->wherePivot('address_type', AddressType::SHIP_TO)
+            ->first();
+        return $address ? $address->address_data->toArray() : null;
     }
 
     /**
      * Get a specific returnTo address by index
-     * @param int $index
-     * @return array|null
      */
     public function getReturnToAddress(int $index = 0): ?array
     {
-        $addresses = $this->getReturnToAddresses();
-        return $addresses[$index] ?? null;
+        $address = $this->addresses()
+            ->wherePivot('address_type', AddressType::RETURN_TO)
+            ->first();
+        return $address ? $address->address_data->toArray() : null;
     }
 
     /**
@@ -157,11 +173,22 @@ class Supplier extends Model
     }
 
     /**
-     * Scope to load suppliers with their parts
+     * Scope to load suppliers with their parts and addresses
      */
     public function scopeWithPartsAndAddresses($query)
     {
-        return $query->with('parts')  // Just load parts, replenishment_data is already cast
-            ->select(['id', 'name', 'account_number', 'addresses']);
+        return $query->with(['parts'])
+            ->select(['id', 'name', 'account_number'])
+            ->get()
+            ->map(function ($supplier) {
+                // Transform addresses into the expected format
+                $addresses = [
+                    'billTo' => $supplier->getBillToAddresses(),
+                    'shipFrom' => $supplier->getShipFromAddresses(),
+                    'shipTo' => $supplier->getShipToAddresses(),
+                    'returnTo' => $supplier->getReturnToAddresses()
+                ];
+                return array_merge($supplier->toArray(), ['addresses' => $addresses]);
+            });
     }
 }

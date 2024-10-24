@@ -15,7 +15,8 @@ class IdentifierDTO extends Data
     public function __construct(
         #[DataCollectionOf(IdentifierData::class)]
         public Collection $identifiers
-    ) {}
+    ) {
+    }
 
     public static function fromArray(array $data): self
     {

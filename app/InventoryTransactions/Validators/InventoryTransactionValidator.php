@@ -47,7 +47,7 @@ class InventoryTransactionValidator
             return $errors;
         }
 
-        $model = new $type;
+        $model = new $type();
         if (! $model instanceof Model) {
             $errors[] = "Invalid inventoryable type: {$type}. Must be an Eloquent model.";
         }

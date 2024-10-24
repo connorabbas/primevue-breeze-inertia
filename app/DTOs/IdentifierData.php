@@ -10,5 +10,6 @@ class IdentifierData extends Data
     public function __construct(
         public ?string $type = null,
         public ?string $value = null
-    ) {}
+    ) {
+    }
 }

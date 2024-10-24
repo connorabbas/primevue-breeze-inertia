@@ -6,8 +6,6 @@ use App\DataTransferObjects\PurchaseOrderFiltersDto;
 use App\Models\PurchaseOrder;
 use App\Models\PurchaseOrderPart;
 use App\Models\Product;
-use App\Models\BillOfMaterial;
-use App\DTOs\SupplierAddressesDTO;
 use App\Enums\PurchaseOrderStatus;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;

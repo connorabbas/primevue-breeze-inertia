@@ -63,7 +63,7 @@ class Dimension extends Model
         $result = $query->first();
 
         if (! $result) {
-            throw (new ModelNotFoundException)->setModel(
+            throw (new ModelNotFoundException())->setModel(
                 static::class,
                 array_values($attributes)
             );
@@ -92,7 +92,7 @@ class Dimension extends Model
         $result = $query->first();
 
         if (! $result) {
-            throw (new ModelNotFoundException)->setModel(
+            throw (new ModelNotFoundException())->setModel(
                 static::class,
                 [$length, $width, $height, $unit]
             );

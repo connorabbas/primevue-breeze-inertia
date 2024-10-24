@@ -19,7 +19,7 @@ class InventoryTransactionBuilder
 
     public function __construct(InventoryTransactionValidator $validator)
     {
-        $this->batch = new InventoryTransactionBatch;
+        $this->batch = new InventoryTransactionBatch();
         $this->batch->status = InventoryTransactionBatch::STATUS_PENDING;
         $this->batch->ulid = (string) Str::ulid();
         $this->validator = $validator;

@@ -17,7 +17,8 @@ class PurchaseOrderFiltersDto
         public ?string $user_name = null,
         public ?string $sortField = null,
         public ?string $sortDirection = 'asc',
-    ) {}
+    ) {
+    }
 
     public static function fromDataTableRequest(Request $request): self
     {

@@ -1,1934 +1,1524 @@
 
 
-==== resources\js\Components\PurchaseOrders\AddressSelectComponent.vue ====
+==== app\Http\Controllers\Admin\Auth\AuthenticatedSessionController.php ====
 
-<script setup>
-import { computed } from 'vue';
-import Select from 'primevue/select';
-import TabPanel from 'primevue/tabpanel';
-import Tab from 'primevue/tab';
-const props = defineProps({
-  modelValue: {
-    type: Object,
-    required: true,
-    default: () => ({
-      billTo: null,
-      shipFrom: null,
-      shipTo: null,
-      returnTo: null
-    })
-  },
-  availableAddresses: {
-    type: Object,
-    required: true,
-    default: () => ({
-      billTo: [],
-      shipFrom: [],
-      shipTo: [],
-      returnTo: []
-    })
-  },
-  settings: {
-    type: Object,
-    required: false,
-    default: () => ({
-      requireShippingAddress: true
-    })
-  }
-});
+<?php
 
-const emit = defineEmits(['update:modelValue']);
+namespace App\Http\Controllers\Admin\Auth;
 
-const formatAddress = (address) => {
-  if (!address) return '';
-  const parts = [
-    address.street1,
-    address.street2,
-    address.city,
-    address.state,
-    address.postal_code,
-    address.country
-  ].filter(Boolean);
-  return parts.join(', ');
-};
+use Inertia\Inertia;
+use Inertia\Response;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Route;
+use App\Http\Requests\Admin\LoginRequest;
+use Illuminate\Support\Facades\Log;
 
-const formattedAddresses = computed(() => {
-  const result = {};
-  for (const [type, addresses] of Object.entries(props.availableAddresses)) {
-    result[type] = addresses.map(addr => ({
-      label: formatAddress(addr),
-      value: addr,
-      ...addr
-    }));
-  }
-  return result;
-});
-
-const updateAddress = (type, value) => {
-  emit('update:modelValue', {
-    ...props.modelValue,
-    [type]: value
-  });
-};
-</script><template>
-  <div class="flex flex-row gap-4">
-    <div v-for="(addresses, type) in formattedAddresses"
-         :key="type"
-         class="border border-slate-200 rounded-lg bg-white shadow-md p-3 flex-1 min-w-[100px]">
-      <span class="text-xs text-gray-600 block mb-1">
-        {{ type.replace(/([A-Z])/g, ' $1').trim() }} Address
-        <span v-if="settings.requireShippingAddress && type === 'shipTo'" class="text-red-500">*</span>
-      </span>
-
-      <Select
-        v-if="addresses.length > 0"
-        :id="`address-${type}`"
-        :modelValue="modelValue[type]"
-        :options="addresses"
-        optionLabel="label"
-        :placeholder="'Select'"
-        class="w-full"
-        @update:modelValue="(value) => updateAddress(type, value)"
-      />
-      <div v-else class="text-xs text-gray-500 italic">
-        No addresses available
-      </div>
-    </div>
-  </div>
-</template>
-<style scoped>
-.addresses-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.address-field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.field-label {
-  font-weight: 500;
-  color: #666;
-}
-
-.required {
-  color: #ef4444;
-  margin-left: 0.25rem;
-}
-
-.no-addresses {
-  color: #666;
-  font-style: italic;
-  font-size: 0.875rem;
-}
-
-.address-option {
-  font-size: 0.875rem;
-  padding: 0.25rem 0;
-}
-
-:deep(.p-dropdown) {
-  width: 100%;
-}
-</style>
-
-
-==== resources\js\Components\PurchaseOrders\OrderSummary.vue ====
-
-<script setup>
-import { computed } from 'vue';
-import InputNumber from 'primevue/inputnumber';
-
-const props = defineProps({
-  subtotal: {
-    type: Number,
-    required: true
-  },
-  taxRate: {
-    type: Number,
-    required: true
-  },
-  additionalCosts: {
-    type: Number,
-    required: true
-  }
-});
-
-const emit = defineEmits(['update:taxRate', 'update:additionalCosts']);
-
-const taxAmount = computed(() => (props.subtotal * props.taxRate) / 100);
-const totalCost = computed(() => props.subtotal + taxAmount.value + props.additionalCosts);
-
-const formatCurrency = (value) => {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  }).format(value);
-};
-</script>
-
-<template>
-  <div class="bg-white rounded-lg p-6">
-    <h2 class="text-xl mb-6 text-gray-800">Order Summary</h2>
-
-    <div class="grid grid-cols-3 gap-4">
-      <!-- Labels Column -->
-      <div class="flex flex-col gap-4">
-        <span class="text-gray-600">Subtotal</span>
-        <span class="text-gray-600">Tax Rate (%)</span>
-        <span class="text-gray-600">Tax Amount</span>
-        <span class="text-gray-600">Additional Costs</span>
-        <span class="font-semibold pt-4 border-t border-gray-200">Total</span>
-      </div>
-
-      <!-- Values Column (spanning 2 columns) -->
-      <div class="col-span-2 flex flex-col gap-4">
-        <span class="text-right">{{ formatCurrency(subtotal) }}</span>
-        <InputNumber
-          :model-value="taxRate"
-          @update:model-value="$emit('update:taxRate', $event)"
-          :min-fraction-digits="2"
-          :max-fraction-digits="2"
-          :use-grouping="false"
-          class="w-full"
-        />
-        <span class="text-right">{{ formatCurrency(taxAmount) }}</span>
-        <InputNumber
-          :model-value="additionalCosts"
-          @update:model-value="$emit('update:additionalCosts', $event)"
-          mode="currency"
-          currency="USD"
-          class="w-full"
-        />
-        <span class="text-right font-semibold pt-4 border-t border-gray-200">
-          {{ formatCurrency(totalCost) }}
-        </span>
-      </div>
-    </div>
-  </div>
-</template>
-
-<style scoped>
-.p-inputnumber {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.p-inputnumber-input {
-  width: 8rem !important;
-  text-align: right;
-}
-
-.p-inputtext:enabled:focus {
-  box-shadow: none;
-  border-color: #818cf8;
-  outline: none;
-}
-</style>
-
-
-==== resources\js\Components\PurchaseOrders\PartsDataTableComponent.vue ====
-
-<script setup>
-import { ref, computed, watch } from 'vue';
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
-import Button from 'primevue/button';
-import Tag from 'primevue/tag';
-import InputText from 'primevue/inputtext';
-import InputGroup from 'primevue/inputgroup';
-import InputGroupAddon from 'primevue/inputgroupaddon';
-import InputNumber from 'primevue/inputnumber';
-import SupplierSelectComponent from './SupplierSelectComponent.vue';
-
-const props = defineProps({
-    availableParts: {
-        type: Array,
-        required: true,
-        default: () => []
-    },
-    selectedParts: {
-        type: Array,
-        required: true,
-        default: () => []
-    },
-    settings: {
-        type: Object,
-        required: true,
-        default: () => ({
-            minQuantity: 0,
-            defaultLeadDays: 0
-        })
+class AuthenticatedSessionController extends Controller
+{
+    /**
+     * Display the login view.
+     */
+    public function create(): Response
+    {
+        Log::info('Admin login view displayed');
+        return Inertia::render('Admin/Auth/Login', [
+            'canResetPassword' => Route::has('admin.password.request'),
+            'status' => session('status'),
+        ]);
     }
-});
 
-const loading = ref(true); // Start with loading state
+    /**
+     * Handle an incoming authentication request.
+     */
+    public function store(LoginRequest $request): RedirectResponse
+    {
+        Log::info('Admin login attempt', ['email' => $request->email]);
 
-// Watch for changes in availableParts
-watch(() => props.availableParts, (newParts) => {
-    loading.value = true;
-    // Simulate loading delay - remove this in production
-    setTimeout(() => {
-        loading.value = false;
-    }, 500);
-}, { immediate: true });
+        try {
+            $request->authenticate();
+            $request->session()->regenerate();
 
-const emit = defineEmits(['update-quantity', 'view-part']);
+            Log::info('Admin authenticated successfully', ['email' => $request->email]);
 
-const filters = ref({
-    global: { value: null, matchMode: 'contains' }
-});
+            return redirect()->intended(route('admin.dashboard'));
+        } catch (\Exception $e) {
+            Log::error('Admin authentication failed', ['email' => $request->email, 'error' => $e->getMessage()]);
+            return back()->withErrors(['email' => 'The provided credentials do not match our records.']);
+        }
+    }
 
-const formatCurrency = (value) => {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD'
-  }).format(value || 0);
-};
+    /**
+     * Destroy an authenticated session.
+     */
+    public function destroy(Request $request): RedirectResponse
+    {
+        Log::info('Admin logout', ['user' => Auth::guard('admin')->user()->email]);
 
-const getCostPerPart = (part) => {
-  return part.replenishment_data?.purchaseTerms?.[0]?.cost_per_part || 0;
-};
+        Auth::guard('admin')->logout();
 
-const getOrderQuantity = (partId) => {
-  const selectedPart = props.selectedParts.find(p => p.part_id === partId);
-  return selectedPart ? selectedPart.quantity_ordered : 0;
-};
+        $request->session()->invalidate();
 
-const calculateTotalCost = (part) => {
-  const selectedPart = props.selectedParts.find(p => p.part_id === part.id);
-  return selectedPart ? selectedPart.quantity_ordered * getCostPerPart(part) : 0;
-};
+        $request->session()->regenerateToken();
 
-const updateQuantity = (partId, newQuantity) => {
-  emit('update-quantity', partId, newQuantity);
-};
-
-const filteredParts = computed(() => {
-  if (!filters.value.global.value) {
-    return props.availableParts;
-  }
-  return props.availableParts.filter(part =>
-    part.part_number.toLowerCase().includes(filters.value.global.value.toLowerCase())
-  );
-});
-</script>
-<template>
-  <div class="parts-container">
-    <h2 class="mb-2 text-lg font-bold">Select Parts</h2>
-    <div class="table-actions">
-      <span class="p-input-icon-right">
-        <InputGroup>
-          <InputGroupAddon>
-            <i class="pi pi-search"></i>
-          </InputGroupAddon>
-          <InputText
-            v-model="filters.global.value"
-            placeholder="Search Parts"
-            class="search-input"
-            :disabled="loading"
-          />
-        </InputGroup>
-      </span>
-    </div>
-
-    <!-- Table with Loading and Empty States -->
-    <div class="datatable-wrapper">
-      <DataTable
-        :value="filteredParts"
-        dataKey="id"
-        :paginator="true"
-        :rows="20"
-        :rowsPerPageOptions="[20, 50, 100]"
-        responsiveLayout="scroll"
-        class="p-datatable-sm"
-        removableSort
-        :scrollable="true"
-        :stripedRows="true"
-        scrollHeight="400px"
-        :loading="loading"
-        v-model:filters="filters"
-      >
-        <!-- Loading Template -->
-        <template #loading>
-          <div class="flex justify-center items-center p-4">
-            <div class="flex flex-col items-center gap-2">
-              <i class="pi pi-spin pi-spinner text-2xl"></i>
-              <span>Loading parts...</span>
-            </div>
-          </div>
-        </template>
-
-        <!-- Empty Template -->
-        <template #empty>
-          <div class="flex flex-col items-center justify-center p-6 text-gray-500">
-            <i class="pi pi-inbox text-4xl mb-2"></i>
-            <span class="text-lg font-medium">No Parts Available</span>
-            <p class="text-sm" v-if="filters.global.value">
-              No results found for "{{ filters.global.value }}"
-            </p>
-            <p class="text-sm" v-else>
-              Select a supplier to view available parts
-            </p>
-          </div>
-        </template>
-
-        <!-- Skeleton Loading for Rows -->
-        <template #loadingbody>
-          <tr class="p-datatable-loading-row">
-            <td v-for="col in 7" :key="col" class="p-3">
-              <div class="animate-pulse bg-slate-200 h-4 rounded"></div>
-            </td>
-          </tr>
-        </template>
-
-        <!-- Regular Columns -->
-        <Column field="part_number" header="Part Number" sortable>
-          <template #body="{ data }">
-            {{ data.part_number }}
-          </template>
-        </Column>
-
-        <Column field="description" header="Description" class="w-full">
-          <template #body="{ data }">
-            {{ data.description }}
-          </template>
-        </Column>
-
-        <Column field="unit_cost" header="Unit Cost" class="w-full" sortable>
-          <template #body="{ data }">
-            {{ formatCurrency(getCostPerPart(data)) }}
-          </template>
-        </Column>
-
-        <Column field="lead_days" header="Lead Time" class="w-full">
-          <template #body="{ data }">
-            <span class="bg-gray-900 text-white text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-gray-800 dark:text-gray-100 text-center block min-w-[60px]">
-              {{`${data.replenishment_data?.lead_days || settings.defaultLeadDays} days`}}
-            </span>
-          </template>
-        </Column>
-
-        <Column header="Order Quantity">
-          <template #body="{ data }">
-            <InputNumber
-              :modelValue="getOrderQuantity(data.id)"
-              :min="settings.minQuantity"
-              :step="1"
-              :showButtons="true"
-              buttonLayout="horizontal"
-              decrementButtonClass="p-button-secondary"
-              incrementButtonClass="p-button-secondary"
-              incrementButtonIcon="pi pi-plus"
-              decrementButtonIcon="pi pi-minus"
-              :disabled="loading"
-              @update:modelValue="(value) => updateQuantity(data.id, value)"
-            />
-          </template>
-        </Column>
-
-        <Column header="Total Cost" sortable>
-          <template #body="{ data }">
-            {{ formatCurrency(calculateTotalCost(data)) }}
-          </template>
-        </Column>
-
-        <Column header="Actions" style="width: 100px">
-          <template #body="{ data }">
-            <div class="flex gap-1">
-              <Button
-                icon="pi pi-eye"
-                class="p-button-rounded p-button-info p-button-sm"
-                :disabled="loading"
-                @click="$emit('view-part', data)"
-              />
-              <Button
-                icon="pi pi-trash"
-                class="p-button-rounded p-button-danger p-button-sm"
-                :disabled="loading"
-                @click="updateQuantity(data.id, 0)"
-              />
-            </div>
-          </template>
-        </Column>
-      </DataTable>
-    </div>
-  </div>
-</template>
-<style scoped>
-.parts-container {
-  width: 100%;
-  overflow-x: hidden; /* Prevent horizontal overflow */
-}
-
-.datatable-wrapper {
-  width: 100%;
-  overflow-x: auto; /* Allow table to scroll horizontally if needed */
-}
-
-.table-actions {
-  display: flex;
-  justify-content: end;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-/* Ensure the table stays within bounds */
-:deep(.p-datatable) {
-  max-width: 100%;
-}
-
-/* Add loading state styles */
-:deep(.p-datatable-loading-overlay) {
-    background: rgba(255, 255, 255, 0.8);
-}
-
-:deep(.p-datatable-loading) {
-    background: white;
-}
-
-.p-datatable-loading-row td {
-    padding: 1rem;
-}
-
-/* Ensure proper height for empty state */
-:deep(.p-datatable-emptymessage) {
-    min-height: 300px;
-}
-
-/* Animation for skeleton loading */
-@keyframes pulse {
-    50% {
-        opacity: .5;
+        return redirect('/');
     }
 }
 
-.animate-pulse {
-    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-:deep(.p-datatable-wrapper) {
-  border: 1px solid #e2e8f0;
-  max-width: 100%;
-}
 
-/* Make columns more compact */
-:deep(.p-datatable-thead > tr > th) {
-  padding: 0.5rem;
-}
+==== app\Http\Controllers\Admin\Auth\EmailVerificationNotificationController.php ====
 
-:deep(.p-datatable-tbody > tr > td) {
-  padding: 0.5rem;
-}
+<?php
 
-/* Make the quantity column more compact */
-:deep(.p-inputnumber) {
-  width: 130px;
-}
+namespace App\Http\Controllers\Admin\Auth;
 
-.search-input {
-  width: 150px;
-}
-</style>
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
 
+class EmailVerificationNotificationController extends Controller
+{
+    /**
+     * Send a new email verification notification.
+     */
+    public function store(Request $request): RedirectResponse
+    {
+        if ($request->user()->hasVerifiedEmail()) {
+            return redirect()->intended(route('admin.dashboard', absolute: false));
+        }
 
-==== resources\js\Components\PurchaseOrders\PurchaseOrderHeader.vue ====
+        $request->user()->sendEmailVerificationNotification();
 
-<script setup>
-import { computed } from 'vue';
-import InputText from 'primevue/inputtext';
-import DatePicker from 'primevue/datepicker';
-
-const props = defineProps({
-  poNumber: {
-    type: String,
-    required: true
-  },
-  date: {
-    type: Date,
-    required: true
-  },
-  status: {
-    type: String,
-    required: true
-  }
-});
-
-const emit = defineEmits(['update:poNumber', 'update:date', 'update:status']);
-
-const formattedDate = computed({
-  get: () => props.date,
-  set: (value) => emit('update:date', value)
-});
-</script>
-
-<template>
-  <div class="p-4 mb-4 bg-surface-0 shadow-1">
-    <div class="grid">
-      <div class="col-12 md:col-4">
-        <label for="poNumber" class="block mb-1 text-sm font-medium">PO Number</label>
-        <InputText
-          id="poNumber"
-          :modelValue="poNumber"
-          class="w-full"
-          @update:modelValue="$emit('update:poNumber', $event)"
-        />
-      </div>
-      <div class="col-12 md:col-4">
-        <label for="date" class="block mb-1 text-sm font-medium">Date</label>
-        <DatePicker
-          id="date"
-          v-model="formattedDate"
-          dateFormat="dd/mm/yy"
-          class="w-full"
-        />
-      </div>
-      <div class="col-12 md:col-4">
-        <label for="status" class="block mb-1 text-sm font-medium">Status</label>
-        <InputText
-          id="status"
-          :modelValue="status"
-          class="w-full"
-          readonly
-        />
-      </div>
-    </div>
-  </div>
-</template>
-
-
-==== resources\js\Components\PurchaseOrders\PurchaseOrderToolbar.vue ====
-
-<script setup>
-import { ref } from 'vue';
-import InputText from 'primevue/inputtext';
-import DatePicker from 'primevue/datepicker';
-import Select from 'primevue/select';
-import InputGroup from 'primevue/inputgroup';
-import InputGroupAddon from 'primevue/inputgroupaddon';
-import Button from 'primevue/button';
-import Menubar from 'primevue/menubar';
-import IftaLabel from 'primevue/iftalabel';
-
-const props = defineProps({
-    poNumber: {
-        type: String,
-        required: true
-    },
-    date: {
-        type: Date,
-        required: true
-    },
-    status: {
-        type: String,
-        required: true
-    },
-    isValid: {
-        type: Boolean,
-        default: false
-    },
-    processing: {
-        type: Boolean,
-        default: false
+        return back()->with('status', 'verification-link-sent');
     }
-});
-
-const emit = defineEmits([
-    'update:poNumber',
-    'update:date',
-    'update:status',
-    'save-draft',
-    'submit',
-    'reset'
-]);
-
-const statusOptions = ref([
-    { label: 'Draft', value: 'Draft' },
-    { label: 'Pending', value: 'Pending' },
-    { label: 'Approved', value: 'Approved' },
-    { label: 'Completed', value: 'Completed' }
-]);
-
-const updatePoNumber = (event) => {
-    emit('update:poNumber', event.target.value);
-};
-
-const updateDate = (value) => {
-    emit('update:date', value);
-};
-
-const updateStatus = (value) => {
-    emit('update:status', value);
-};
-</script>
-
-<template>
- <nav class="po-toolbar block w-11/12 mx-auto px-4 py-2 text-black border border-indigo-100 shadow-md rounded-md lg:px-10 lg:py-3">
-    <div class="container flex flex-wrap items-center justify-between mx-auto text-gray-500">
-        <ul class="flex flex-row gap-2">
-            <li class="flex items-center p-1 text-sm w-full">
-                <IftaLabel class="w-full">
-                    <InputText
-                        class="w-full"
-                        :value="poNumber"
-                        @input="updatePoNumber"
-                        inputId="purchaseOrderNumber"
-                    />
-                    <label for="purchaseOrderNumber">PO#</label>
-                </IftaLabel>
-            </li>
-
-            <li class="flex items-center p-1 text-sm w-full">
-                <IftaLabel class="w-full">
-                    <DatePicker
-                        class="w-full"
-                        :model-value="date"
-                        @update:model-value="updateDate"
-                        inputId="date"
-                        showIcon
-                        iconDisplay="input"
-                        variant="filled"
-                    />
-                    <label for="date">Date</label>
-                </IftaLabel>
-            </li>
-        </ul>
-        <div class="lg:block">
-            <ul class="flex flex-col justify-end gap-2 mt-2 mb-4 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
-                <li class="flex items-center p-1 text-sm gap-x-2">
-                    <Button
-                        icon="pi pi-save"
-                        label="Save Draft"
-                        severity="secondary"
-                        :disabled="!isValid || processing"
-                        :loading="processing"
-                        @click="$emit('save-draft')"
-                    />
-                    <Button
-                        icon="pi pi-chevron-right"
-                        label="Submit"
-                        severity="success"
-                        :disabled="!isValid || processing"
-                        :loading="processing"
-                        @click="$emit('submit')"
-                    />
-                    <Button
-                        icon="pi pi-times"
-                        label="Cancel"
-                        severity="danger"
-                        :disabled="processing"
-                        @click="$emit('reset')"
-                    />
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
-</template>
-
-<style scoped>
-.toolbar-wrapper {
-    border-bottom: 1px solid var(--surface-border);
 }
 
-.logo-container {
-    width: 40px;
-    height: 40px;
-    background: var(--primary-color);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
 
-.logo-container span {
-    color: white;
-}
+==== app\Http\Controllers\Admin\Auth\EmailVerificationPromptController.php ====
 
-:deep(.p-menubar) {
-    background: transparent;
-    padding: 0.5rem 1rem;
-}
+<?php
 
-:deep(.p-menubar-root-list) {
-    margin-left: 2rem;
-}
+namespace App\Http\Controllers\Admin\Auth;
 
-:deep(.p-menuitem-link) {
-    padding: 0.75rem 1.25rem;
-}
+use Inertia\Inertia;
+use Inertia\Response;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
 
-:deep(.p-menuitem-icon) {
-    margin-right: 0.5rem;
-}
-
-:deep(.p-inputgroup) {
-    width: 200px;
-}
-
-:deep(.p-datepicker) {
-    width: 200px;
-}
-
-.toolbar-content {
-    border-top: 1px solid var(--surface-border);
-    background: var(--surface-ground);
-}
-
-:deep(.p-button.p-button-text) {
-    color: var(--surface-600);
-}
-
-:deep(.p-button.p-button-text:hover) {
-    background: var(--surface-100);
-}
-</style>
-
-
-==== resources\js\Components\PurchaseOrders\SupplierSelectComponent.vue ====
-
-
-<script setup>
-import { computed,ref } from 'vue';
-import Select from 'primevue/select';
-
-const getSupplierTooltip = (supplier) => {
-    return {
-        content: `Name: ${supplier.name}\nAccount: ${supplier.account_number}\nAddress: ${supplier.address}\nContact: ${supplier.contact}`,
-        class: 'supplier-tooltip'
-    };
-};
-
-const props = defineProps({
-    modelValue: {
-        type: [Number, null],
-        required: true
-    },
-    suppliers: {
-        type: Array,
-        required: true,
-        default: () => []
-    },
-    loading: {
-        type: Boolean,
-        default: false
+class EmailVerificationPromptController extends Controller
+{
+    /**
+     * Display the email verification prompt.
+     */
+    public function __invoke(Request $request): RedirectResponse|Response
+    {
+        return $request->user()->hasVerifiedEmail()
+            ? redirect()->intended(route('dashboard', absolute: false))
+            : Inertia::render('Admin/Auth/VerifyEmail', ['status' => session('status')]);
     }
-});
-
-const emit = defineEmits(['update:modelValue']);
-
-// Debug mode computed
-const isDebug = ref(process.env.NODE_ENV === 'development');
-
-const formattedSuppliers = computed(() => {
-    console.log('Formatting suppliers:', props.suppliers);
-    return props.suppliers.map(supplier => ({
-        label: `${supplier.name} (${supplier.account_number})`,
-        value: supplier.id,
-        ...supplier
-    }));
-});
-
-const selectedValue = computed({
-    get: () => props.modelValue,
-    set: (value) => emit('update:modelValue', value)
-});
-</script>
-<template>
-    <div>
-        <Select
-            id="supplier"
-            v-model="selectedValue"
-            :options="formattedSuppliers"
-            optionLabel="label"
-            optionValue="value"
-            placeholder="Select a supplier"
-            class="w-full"
-            :loading="loading"
-        >
-            <!-- Add tooltip template -->
-            <template #option="{ option }">
-                <div
-                    class="supplier-option"
-                    v-tooltip.right="getSupplierTooltip(option)"
-                >
-                    {{ option.label }}
-                </div>
-            </template>
-        </Select>
-    </div>
-</template>
-<style>.supplier-tooltip.p-tooltip .p-tooltip-text {
-    white-space: pre-line;
-    font-size: 0.875rem;
-    padding: 0.5rem;
-}</style>
+}
 
 
-==== resources\js\Composables\useDataTable.js ====
+==== app\Http\Controllers\Admin\Auth\NewPasswordController.php ====
 
-import { ref, computed } from 'vue';
-import { router } from '@inertiajs/vue3';
+<?php
 
-export function useDataTable(defaultFilters = {}, only = ['urlParams']) {
-    const dataTableDefaults = {
-        filters: defaultFilters,
-        sortField: '',
-        sortOrder: 1,
-        currentPage: 1,
-        rowsPerPage: 20,
-    };
+namespace App\Http\Controllers\Admin\Auth;
 
-    const filters = ref(dataTableDefaults.filters);
-    const sortField = ref(dataTableDefaults.sortField);
-    const sortOrder = ref(dataTableDefaults.sortOrder);
-    const currentPage = ref(dataTableDefaults.currentPage);
-    const rowsPerPage = ref(dataTableDefaults.rowsPerPage);
+use App\Http\Controllers\Controller;
+use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rules;
+use Illuminate\Validation\ValidationException;
+use Inertia\Inertia;
+use Inertia\Response;
 
-    const firstDatasetIndex = computed(() => {
-        return (currentPage.value - 1) * rowsPerPage.value;
-    });
-
-    function fetchData() {
-        return new Promise((resolve, reject) => {
-            router.reload({
-                only,
-                data: {
-                    filters: filters.value,
-                    sortField: sortField.value,
-                    sortOrder: sortOrder.value,
-                    page: currentPage.value,
-                    rows: rowsPerPage.value,
-                },
-                preserveState: true,
-                onSuccess: (page) => {
-                    resolve(page);
-                },
-                onError: (errors) => {
-                    reject(errors);
-                },
-            });
-        });
+class NewPasswordController extends Controller
+{
+    /**
+     * Display the password reset view.
+     */
+    public function create(Request $request): Response
+    {
+        return Inertia::render('Admin/Auth/ResetPassword', [
+            'email' => $request->email,
+            'token' => $request->route('token'),
+        ]);
     }
 
-    function onPage(event) {
-        currentPage.value = event.page + 1;
-        rowsPerPage.value = event.rows;
-        fetchData().then(() => {
-            scrollToTop();
-        });
-    }
+    /**
+     * Handle an incoming new password request.
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function store(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ]);
 
-    function onSort(event) {
-        sortField.value = event.sortField;
-        sortOrder.value = event.sortOrder;
-        fetchData();
-    }
+        // Here we will attempt to reset the user's password. If it is successful we
+        // will update the password on an actual user model and persist it to the
+        // database. Otherwise we will parse the error and return the response.
+        $status = Password::broker('admins')->reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user) use ($request) {
+                $user->forceFill([
+                    'password' => Hash::make($request->password),
+                    'remember_token' => Str::random(60),
+                ])->save();
 
-    function onFilter(event) {
-        currentPage.value = 1;
-        filters.value = event.filters;
-        fetchData();
-    }
+                event(new PasswordReset($user));
+            }
+        );
 
-    function scrollToTop() {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth',
-        });
-    }
+        // If the password was successfully reset, we will redirect the user back to
+        // the application's home authenticated view. If there is an error we can
+        // redirect them back to where they came from with their error message.
+        if ($status == Password::PASSWORD_RESET) {
+            return redirect()->route('admin.login')->with('status', __($status));
+        }
 
-    function reset() {
-        filters.value = dataTableDefaults.filters;
-        sortField.value = dataTableDefaults.sortField;
-        sortOrder.value = dataTableDefaults.sortOrder;
-        currentPage.value = dataTableDefaults.currentPage;
-        rowsPerPage.value = dataTableDefaults.rowsPerPage;
-        fetchData();
+        throw ValidationException::withMessages([
+            'email' => [trans($status)],
+        ]);
     }
-
-    function parseUrlParams(urlParams) {
-        filters.value = urlParams?.filters || dataTableDefaults.filters;
-        sortField.value = urlParams?.sortField || dataTableDefaults.sortField;
-        sortOrder.value =
-            parseInt(urlParams?.sortOrder) || dataTableDefaults.sortOrder;
-        currentPage.value =
-            parseInt(urlParams?.page) || dataTableDefaults.currentPage;
-        rowsPerPage.value =
-            parseInt(urlParams?.rows) || dataTableDefaults.rowsPerPage;
-    }
-
-    return {
-        filters,
-        sortField,
-        sortOrder,
-        currentPage,
-        rowsPerPage,
-        firstDatasetIndex,
-        onPage,
-        onSort,
-        onFilter,
-        reset,
-        fetchData,
-        parseUrlParams,
-    };
 }
 
 
-==== resources\js\Composables\usePurchaseOrderForm.js ====
+==== app\Http\Controllers\Admin\Auth\PasswordController.php ====
 
-// resources/js/Composables/usePurchaseOrderForm.js
+<?php
 
-import { ref, computed, watch } from 'vue';
-import { router } from '@inertiajs/vue3';
-import { useToast } from 'primevue/usetoast';
+namespace App\Http\Controllers\Admin\Auth;
 
-export function usePurchaseOrderForm(initialData = {}) {
-    console.log('Initializing purchase order form with:', initialData);
+use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 
-    const toast = useToast(); // Ensure toast is initialized
+class PasswordController extends Controller
+{
+    /**
+     * Update the admin user's password.
+     */
+    public function update(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', Password::defaults(), 'confirmed'],
+        ]);
 
-    const form = ref({
-        supplier_id: null,
-        location_id: null,
-        parts: [],
-        addresses: {
-            billTo: initialData?.defaultAddresses?.billTo?.[0] || null,
-            shipFrom: null,
-            shipTo: initialData?.defaultAddresses?.shipTo?.[0] || null,
-            returnTo: null
-        },
-        special_instructions: '',
-        tax_rate: initialData?.defaultTaxRate || 8.0,
-        additional_costs: 0,
-    });
+        $request->user()->update([
+            'password' => Hash::make($validated['password']),
+        ]);
 
-    // UI State
-    const loading = ref(false);
-    const errors = ref({});
-    const processing = ref(false);
-    const selectedSupplier = ref(null);
+        return back();
+    }
+}
 
-    // Settings from backend
-    const settings = computed(() => ({
-        minQuantity: initialData?.settings?.minQuantity || 1,
-        defaultLeadDays: initialData?.settings?.defaultLeadDays || 1,
-        requireShippingAddress: initialData?.settings?.requireShippingAddress ?? true,
-    }));
 
-    // Computed Properties
-    const availableSuppliers = computed(() => {
-        return initialData?.availableSuppliers || [];
-    });
+==== app\Http\Controllers\Admin\Auth\PasswordResetLinkController.php ====
 
-    const supplierParts = computed(() => {
-        if (!selectedSupplier.value) return [];
-        const supplier = availableSuppliers.value
-            .find(s => s.id === form.value.supplier_id);
-        return supplier?.parts || [];
-    });
+<?php
 
-    const supplierAddresses = computed(() => {
-        const defaultAddresses = {
-            billTo: initialData?.defaultAddresses?.billTo || [],
-            shipTo: initialData?.defaultAddresses?.shipTo || [],
-            shipFrom: [],
-            returnTo: []
-        };
+namespace App\Http\Controllers\Admin\Auth;
 
-        if (!selectedSupplier.value) return defaultAddresses;
+use Inertia\Inertia;
+use Inertia\Response;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Validation\ValidationException;
 
-        const supplier = availableSuppliers.value
-            .find(s => s.id === form.value.supplier_id);
+class PasswordResetLinkController extends Controller
+{
+    /**
+     * Display the password reset link request view.
+     */
+    public function create(): Response
+    {
+        return Inertia::render('Admin/Auth/ForgotPassword', [
+            'status' => session('status'),
+        ]);
+    }
 
-        return {
-            ...defaultAddresses,
-            shipFrom: supplier?.addresses?.shipFrom || [],
-        };
-    });
+    /**
+     * Handle an incoming password reset link request.
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function store(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
 
-    // Form Validation
-    const isValid = computed(() => {
-        const hasSupplier = !!form.value.supplier_id;
-        const hasBillTo = !!form.value.addresses.billTo;
-        const hasShipFrom = !!form.value.addresses.shipFrom;
-        const hasShipTo = !!form.value.addresses.shipTo;
-        const hasParts = form.value.parts.length > 0 && form.value.parts.every(p => p.quantity_ordered > 0);
+        // We will send the password reset link to this user. Once we have attempted
+        // to send the link, we will examine the response then see the message we
+        // need to show to the user. Finally, we'll send out a proper response.
+        $status = Password::broker('admins')->sendResetLink(
+            $request->only('email')
+        );
 
-        return hasSupplier && hasBillTo && hasShipFrom && hasShipTo && hasParts;
-    });
+        if ($status == Password::RESET_LINK_SENT) {
+            return back()->with('status', __($status));
+        }
 
-    // Cost Calculations
-    const subtotal = computed(() => {
-        return form.value.parts.reduce((total, part) => {
-            return total + (part.quantity_ordered * part.unit_cost);
-        }, 0);
-    });
+        throw ValidationException::withMessages([
+            'email' => [trans($status)],
+        ]);
+    }
+}
 
-    const taxAmount = computed(() => {
-        return (subtotal.value * form.value.tax_rate) / 100;
-    });
 
-    const totalCost = computed(() => {
-        return subtotal.value + taxAmount.value + Number(form.value.additional_costs);
-    });
+==== app\Http\Controllers\Admin\Auth\VerifyEmailController.php ====
 
-    // Watchers
-    watch(() => form.value.supplier_id, (newSupplierId) => {
-        if (newSupplierId) {
-            const supplier = availableSuppliers.value.find(s => s.id === newSupplierId);
-            if (supplier) {
-                selectedSupplier.value = supplier;
-                // Update only shipFrom address, keep default billTo and shipTo
-                form.value.addresses = {
-                    ...form.value.addresses,
-                    shipFrom: supplier.addresses?.shipFrom?.[0] || null,
-                };
+<?php
+
+namespace App\Http\Controllers\Admin\Auth;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Auth\Events\Verified;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+
+class VerifyEmailController extends Controller
+{
+    /**
+     * Mark the authenticated user's email address as verified.
+     */
+    public function __invoke(EmailVerificationRequest $request): RedirectResponse
+    {
+        if ($request->user()->hasVerifiedEmail()) {
+            return redirect()->intended(route('admin.dashboard', absolute: false) . '?verified=1');
+        }
+
+        if ($request->user()->markEmailAsVerified()) {
+            event(new Verified($request->user()));
+        }
+
+        return redirect()->intended(route('admin.dashboard', absolute: false) . '?verified=1');
+    }
+}
+
+
+==== app\Http\Controllers\Admin\ProfileController.php ====
+
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use Inertia\Inertia;
+use Inertia\Response;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Redirect;
+use App\Http\Requests\Admin\ProfileUpdateRequest;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+class ProfileController extends Controller
+{
+    /**
+     * Display the admin user's profile form.
+     */
+    public function edit(Request $request): Response
+    {
+        return Inertia::render('Admin/Profile/Edit', [
+            'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
+            'status' => session('status'),
+        ]);
+    }
+
+    /**
+     * Update the admin user's profile information.
+     */
+    public function update(ProfileUpdateRequest $request): RedirectResponse
+    {
+        $request->user()->fill($request->validated());
+
+        if ($request->user()->isDirty('email')) {
+            $request->user()->email_verified_at = null;
+        }
+
+        $request->user()->save();
+
+        return Redirect::route('admin.profile.edit');
+    }
+
+    /**
+     * Delete the admin user's account.
+     */
+    public function destroy(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'password' => ['required', 'current_password'],
+        ]);
+
+        $user = $request->user();
+
+        Auth::guard('admin')->logout();
+
+        $user->delete();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('welcome');
+    }
+}
+
+
+==== app\Http\Controllers\Admin\UserController.php ====
+
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\DataTransferObjects\UserFiltersDto;
+use Inertia\Inertia;
+use Inertia\Response;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Services\UserService;
+
+class UserController extends Controller
+{
+    public function __construct(public UserService $userService)
+    {
+    }
+
+    public function index(Request $request): Response
+    {
+        $users = $this->userService->getUsers(
+            UserFiltersDto::fromDataTableRequest($request)
+        );
+
+        return Inertia::render('Admin/Users/Index', [
+            'urlParams' => $request->all(),
+            'users' => $users,
+        ]);
+    }
+}
+
+
+==== app\Http\Controllers\Auth\AuthenticatedSessionController.php ====
+
+<?php
+
+namespace App\Http\Controllers\Auth;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\LoginRequest;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
+use Inertia\Response;
+
+class AuthenticatedSessionController extends Controller
+{
+    /**
+     * Display the login view.
+     */
+    public function create(): Response
+    {
+        return Inertia::render('Auth/Login', [
+            'canResetPassword' => Route::has('password.request'),
+            'status' => session('status'),
+        ]);
+    }
+
+    /**
+     * Handle an incoming authentication request.
+     */
+    public function store(LoginRequest $request): RedirectResponse
+    {
+        $request->authenticate();
+
+        $request->session()->regenerate();
+
+        return redirect()->intended(route('dashboard', absolute: false));
+    }
+
+    /**
+     * Destroy an authenticated session.
+     */
+    public function destroy(Request $request): RedirectResponse
+    {
+        Auth::guard('web')->logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        return redirect('/');
+    }
+}
+
+
+==== app\Http\Controllers\Auth\EmailVerificationNotificationController.php ====
+
+<?php
+
+namespace App\Http\Controllers\Auth;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+
+class EmailVerificationNotificationController extends Controller
+{
+    /**
+     * Send a new email verification notification.
+     */
+    public function store(Request $request): RedirectResponse
+    {
+        if ($request->user()->hasVerifiedEmail()) {
+            return redirect()->intended(route('dashboard', absolute: false));
+        }
+
+        $request->user()->sendEmailVerificationNotification();
+
+        return back()->with('status', 'verification-link-sent');
+    }
+}
+
+
+==== app\Http\Controllers\Auth\EmailVerificationPromptController.php ====
+
+<?php
+
+namespace App\Http\Controllers\Auth;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
+
+class EmailVerificationPromptController extends Controller
+{
+    /**
+     * Display the email verification prompt.
+     */
+    public function __invoke(Request $request): RedirectResponse|Response
+    {
+        return $request->user()->hasVerifiedEmail()
+            ? redirect()->intended(route('dashboard', absolute: false))
+            : Inertia::render('Auth/VerifyEmail', ['status' => session('status')]);
+    }
+}
+
+
+==== app\Http\Controllers\Auth\NewPasswordController.php ====
+
+<?php
+
+namespace App\Http\Controllers\Auth;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rules;
+use Illuminate\Validation\ValidationException;
+use Inertia\Inertia;
+use Inertia\Response;
+
+class NewPasswordController extends Controller
+{
+    /**
+     * Display the password reset view.
+     */
+    public function create(Request $request): Response
+    {
+        return Inertia::render('Auth/ResetPassword', [
+            'email' => $request->email,
+            'token' => $request->route('token'),
+        ]);
+    }
+
+    /**
+     * Handle an incoming new password request.
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function store(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ]);
+
+        // Here we will attempt to reset the user's password. If it is successful we
+        // will update the password on an actual user model and persist it to the
+        // database. Otherwise we will parse the error and return the response.
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user) use ($request) {
+                $user->forceFill([
+                    'password' => Hash::make($request->password),
+                    'remember_token' => Str::random(60),
+                ])->save();
+
+                event(new PasswordReset($user));
+            }
+        );
+
+        // If the password was successfully reset, we will redirect the user back to
+        // the application's home authenticated view. If there is an error we can
+        // redirect them back to where they came from with their error message.
+        if ($status == Password::PASSWORD_RESET) {
+            return redirect()->route('login')->with('status', __($status));
+        }
+
+        throw ValidationException::withMessages([
+            'email' => [trans($status)],
+        ]);
+    }
+}
+
+
+==== app\Http\Controllers\Auth\PasswordController.php ====
+
+<?php
+
+namespace App\Http\Controllers\Auth;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
+
+class PasswordController extends Controller
+{
+    /**
+     * Update the user's password.
+     */
+    public function update(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', Password::defaults(), 'confirmed'],
+        ]);
+
+        $request->user()->update([
+            'password' => Hash::make($validated['password']),
+        ]);
+
+        return back();
+    }
+}
+
+
+==== app\Http\Controllers\Auth\PasswordResetLinkController.php ====
+
+<?php
+
+namespace App\Http\Controllers\Auth;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Validation\ValidationException;
+use Inertia\Inertia;
+use Inertia\Response;
+
+class PasswordResetLinkController extends Controller
+{
+    /**
+     * Display the password reset link request view.
+     */
+    public function create(): Response
+    {
+        return Inertia::render('Auth/ForgotPassword', [
+            'status' => session('status'),
+        ]);
+    }
+
+    /**
+     * Handle an incoming password reset link request.
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function store(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        // We will send the password reset link to this user. Once we have attempted
+        // to send the link, we will examine the response then see the message we
+        // need to show to the user. Finally, we'll send out a proper response.
+        $status = Password::sendResetLink(
+            $request->only('email')
+        );
+
+        if ($status == Password::RESET_LINK_SENT) {
+            return back()->with('status', __($status));
+        }
+
+        throw ValidationException::withMessages([
+            'email' => [trans($status)],
+        ]);
+    }
+}
+
+
+==== app\Http\Controllers\Auth\RegisteredUserController.php ====
+
+<?php
+
+namespace App\Http\Controllers\Auth;
+
+use App\Http\Controllers\Controller;
+use App\Models\User;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules;
+use Inertia\Inertia;
+use Inertia\Response;
+
+class RegisteredUserController extends Controller
+{
+    /**
+     * Display the registration view.
+     */
+    public function create(): Response
+    {
+        return Inertia::render('Auth/Register');
+    }
+
+    /**
+     * Handle an incoming registration request.
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function store(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ]);
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+
+        event(new Registered($user));
+
+        Auth::login($user);
+
+        return redirect(route('dashboard', absolute: false));
+    }
+}
+
+
+==== app\Http\Controllers\Auth\VerifyEmailController.php ====
+
+<?php
+
+namespace App\Http\Controllers\Auth;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Auth\Events\Verified;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\RedirectResponse;
+
+class VerifyEmailController extends Controller
+{
+    /**
+     * Mark the authenticated user's email address as verified.
+     */
+    public function __invoke(EmailVerificationRequest $request): RedirectResponse
+    {
+        if ($request->user()->hasVerifiedEmail()) {
+            return redirect()->intended(route('dashboard', absolute: false) . '?verified=1');
+        }
+
+        if ($request->user()->markEmailAsVerified()) {
+            event(new Verified($request->user()));
+        }
+
+        return redirect()->intended(route('dashboard', absolute: false) . '?verified=1');
+    }
+}
+
+
+==== app\Http\Controllers\Controller.php ====
+
+<?php
+
+namespace App\Http\Controllers;
+
+abstract class Controller
+{
+    //
+}
+
+
+==== app\Http\Controllers\ProfileController.php ====
+
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Requests\ProfileUpdateRequest;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
+use Inertia\Inertia;
+use Inertia\Response;
+
+class ProfileController extends Controller
+{
+    /**
+     * Display the user's profile form.
+     */
+    public function edit(Request $request): Response
+    {
+        return Inertia::render('Profile/Edit', [
+            'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
+            'status' => session('status'),
+        ]);
+    }
+
+    /**
+     * Update the user's profile information.
+     */
+    public function update(ProfileUpdateRequest $request): RedirectResponse
+    {
+        $request->user()->fill($request->validated());
+
+        if ($request->user()->isDirty('email')) {
+            $request->user()->email_verified_at = null;
+        }
+
+        $request->user()->save();
+
+        return Redirect::route('profile.edit');
+    }
+
+    /**
+     * Delete the user's account.
+     */
+    public function destroy(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'password' => ['required', 'current_password'],
+        ]);
+
+        $user = $request->user();
+
+        Auth::logout();
+
+        $user->delete();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('welcome');
+    }
+}
+
+
+==== app\Http\Controllers\PurchaseOrderController.php ====
+
+<?php
+
+namespace App\Http\Controllers;
+
+use App\DataTransferObjects\PurchaseOrderFiltersDto;
+use App\Http\Requests\StorePurchaseOrderRequest;
+use App\Services\PurchaseOrderService;
+use App\DTOs\SupplierAddressesDTO;
+use App\Models\Supplier;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Inertia\Inertia;
+use Inertia\Response;
+
+class PurchaseOrderController extends Controller
+{
+    public function __construct(protected PurchaseOrderService $purchaseOrderService) {}
+
+    public function create(): Response
+    {
+        // Get self supplier (Doner Industries)
+        $selfSupplier = Supplier::where('account_number', 'DI')->firstOrFail();
+        Log::info('Self supplier found: ', ['supplier' => $selfSupplier->toArray()]);
+
+        // Get all suppliers for selection
+        $suppliers = Supplier::query()
+            ->with(['parts' => function ($query) {
+                $query->select([
+                    'id',
+                    'supplier_id',
+                    'part_number',
+                    'description',
+                    'replenishment_data'
+                ])->whereNotNull('replenishment_data');
+            }])
+            ->select([
+                'id',
+                'name',
+                'account_number',
+                'addresses'
+            ])
+            ->whereNull('deleted_at')
+            ->get();
+
+        // Get available addresses from self supplier
+        $availableAddresses = [
+            'billTo' => $selfSupplier->getBillToAddresses(),
+            'shipTo' => $selfSupplier->getShipToAddresses(),
+        ];
+
+        Log::info('Available addresses:', $availableAddresses);
+
+        return Inertia::render('PurchaseOrders/CreatePurchaseOrder', [
+            'initialData' => [
+                'availableSuppliers' => $suppliers,
+                'defaultTaxRate' => config('purchase_orders.default_tax_rate', 8.25),
+                'settings' => [
+                    'minQuantity' => 0,
+                    'defaultLeadDays' => 0,
+                    'requireShippingAddress' => true,
+                ],
+                'defaultAddresses' => $availableAddresses
+            ]
+        ]);
+    }
+
+    public function index(Request $request): Response
+    {
+        try {
+            $filters = PurchaseOrderFiltersDto::fromDataTableRequest($request);
+            $purchaseOrders = $this->purchaseOrderService->getPurchaseOrders($filters);
+
+            return Inertia::render('PurchaseOrders/Index', [
+                'urlParams' => $request->all(),
+                'purchaseOrders' => $purchaseOrders,
+                'filters' => $filters
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to load purchase orders', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return Inertia::render('PurchaseOrders/Index', [
+                'urlParams' => $request->all(),
+                'purchaseOrders' => [
+                    'data' => [],
+                    'total' => 0
+                ],
+                'error' => 'Failed to load purchase orders'
+            ]);
+        }
+    }
+
+    private function cleanAddressData($addresses)
+    {
+        $cleaned = [];
+        foreach ($addresses as $type => $address) {
+            if ($address) {
+                // If address has a 'value' property (from select component), use that
+                $addressData = isset($address['value']) ? $address['value'] : $address;
+
+                // Clean up the address data to only include valid fields
+                $cleanedAddress = array_intersect_key($addressData, array_flip([
+                    'street1',
+                    'street2',
+                    'city',
+                    'state',
+                    'postal_code',
+                    'country',
+                    'type',
+                    'address1',
+                    'address2',
+                    'state_prov_code',
+                    'zip',
+                    'phone_number',
+                    'email_address'
+                ]));
+
+                // Wrap single address in array for DTO
+                $cleaned[$type] = [$cleanedAddress];
             } else {
-                resetSupplierData();
+                $cleaned[$type] = [];
+            }
+        }
+
+        return $cleaned;
+    }
+
+    public function store(StorePurchaseOrderRequest $request)
+    {
+        try {
+            $validatedData = $request->validated();
+            Log::info('Validated data:', $validatedData);
+
+            // Clean up address data
+            $validatedData['addresses'] = $this->cleanAddressData($validatedData['addresses']);
+            Log::info('Cleaned addresses:', $validatedData['addresses']);
+
+            $validatedData['addresses'] = SupplierAddressesDTO::fromArray($validatedData['addresses']);
+            $purchaseOrder = $this->purchaseOrderService->createPurchaseOrder($validatedData);
+
+            return redirect()
+                ->route('purchase-orders.show', $purchaseOrder->id)
+                ->with('success', 'Purchase order created successfully.');
+        } catch (\Exception $e) {
+            Log::error('Failed to create purchase order', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'data' => $validatedData ?? null
+            ]);
+
+            return back()->withErrors(['error' => 'Failed to create purchase order']);
+        }
+    }
+
+    public function draft(StorePurchaseOrderRequest $request)
+    {
+        try {
+            $validatedData = $request->validated();
+            Log::info('Validated draft data:', $validatedData);
+
+            // Clean up address data
+            $validatedData['addresses'] = $this->cleanAddressData($validatedData['addresses']);
+            Log::info('Cleaned addresses:', $validatedData['addresses']);
+
+            $validatedData['addresses'] = SupplierAddressesDTO::fromArray($validatedData['addresses']);
+            $purchaseOrder = $this->purchaseOrderService->saveDraft($validatedData);
+
+            return redirect()
+                ->route('purchase-orders.show', $purchaseOrder->id)
+                ->with('success', 'Purchase order draft saved successfully.');
+        } catch (\Exception $e) {
+            Log::error('Failed to save purchase order draft', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'data' => $validatedData ?? null
+            ]);
+
+            return back()->withErrors(['error' => 'Failed to save draft']);
+        }
+    }
+
+    public function show($id): Response
+    {
+        try {
+            $purchaseOrder = $this->purchaseOrderService->getPurchaseOrder($id);
+
+            return Inertia::render('PurchaseOrders/ShowPurchaseOrder', [
+                'purchaseOrder' => $purchaseOrder
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to load purchase order', [
+                'id' => $id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return redirect()
+                ->route('purchase-orders.index')
+                ->with('error', 'Purchase order not found');
+        }
+    }
+}
+
+
+==== app\Http\Controllers\PurchaseOrderController.php ====
+
+<?php
+
+namespace App\Http\Controllers;
+
+use App\DataTransferObjects\PurchaseOrderFiltersDto;
+use App\Http\Requests\StorePurchaseOrderRequest;
+use App\Services\PurchaseOrderService;
+use App\DTOs\SupplierAddressesDTO;
+use App\Models\Supplier;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Inertia\Inertia;
+use Inertia\Response;
+
+class PurchaseOrderController extends Controller
+{
+    public function __construct(protected PurchaseOrderService $purchaseOrderService) {}
+
+    public function create(): Response
+    {
+        // Get self supplier (Doner Industries)
+        $selfSupplier = Supplier::where('account_number', 'DI')->firstOrFail();
+        Log::info('Self supplier found: ', ['supplier' => $selfSupplier->toArray()]);
+
+        // Get all suppliers for selection
+        $suppliers = Supplier::query()
+            ->with(['parts' => function ($query) {
+                $query->select([
+                    'id',
+                    'supplier_id',
+                    'part_number',
+                    'description',
+                    'replenishment_data'
+                ])->whereNotNull('replenishment_data');
+            }])
+            ->select([
+                'id',
+                'name',
+                'account_number',
+                'addresses'
+            ])
+            ->whereNull('deleted_at')
+            ->get();
+
+        // Get available addresses from self supplier
+        $availableAddresses = [
+            'billTo' => $selfSupplier->getBillToAddresses(),
+            'shipTo' => $selfSupplier->getShipToAddresses(),
+        ];
+
+        Log::info('Available addresses:', $availableAddresses);
+
+        return Inertia::render('PurchaseOrders/CreatePurchaseOrder', [
+            'initialData' => [
+                'availableSuppliers' => $suppliers,
+                'defaultTaxRate' => config('purchase_orders.default_tax_rate', 8.25),
+                'settings' => [
+                    'minQuantity' => 0,
+                    'defaultLeadDays' => 0,
+                    'requireShippingAddress' => true,
+                ],
+                'defaultAddresses' => $availableAddresses
+            ]
+        ]);
+    }
+
+    public function index(Request $request): Response
+    {
+        try {
+            $filters = PurchaseOrderFiltersDto::fromDataTableRequest($request);
+            $purchaseOrders = $this->purchaseOrderService->getPurchaseOrders($filters);
+
+            return Inertia::render('PurchaseOrders/Index', [
+                'urlParams' => $request->all(),
+                'purchaseOrders' => $purchaseOrders,
+                'filters' => $filters
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to load purchase orders', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return Inertia::render('PurchaseOrders/Index', [
+                'urlParams' => $request->all(),
+                'purchaseOrders' => [
+                    'data' => [],
+                    'total' => 0
+                ],
+                'error' => 'Failed to load purchase orders'
+            ]);
+        }
+    }
+
+    private function cleanAddressData($addresses)
+    {
+        $cleaned = [];
+        foreach ($addresses as $type => $address) {
+            if ($address) {
+                // If address has a 'value' property (from select component), use that
+                $addressData = isset($address['value']) ? $address['value'] : $address;
+
+                // Clean up the address data to only include valid fields
+                $cleanedAddress = array_intersect_key($addressData, array_flip([
+                    'street1',
+                    'street2',
+                    'city',
+                    'state',
+                    'postal_code',
+                    'country',
+                    'type',
+                    'address1',
+                    'address2',
+                    'state_prov_code',
+                    'zip',
+                    'phone_number',
+                    'email_address'
+                ]));
+
+                // Wrap single address in array for DTO
+                $cleaned[$type] = [$cleanedAddress];
+            } else {
+                $cleaned[$type] = [];
+            }
+        }
+
+        return $cleaned;
+    }
+
+    public function store(StorePurchaseOrderRequest $request)
+    {
+        try {
+            $validatedData = $request->validated();
+            Log::info('Validated data:', $validatedData);
+
+            // Clean up address data
+            $validatedData['addresses'] = $this->cleanAddressData($validatedData['addresses']);
+            Log::info('Cleaned addresses:', $validatedData['addresses']);
+
+            $validatedData['addresses'] = SupplierAddressesDTO::fromArray($validatedData['addresses']);
+            $purchaseOrder = $this->purchaseOrderService->createPurchaseOrder($validatedData);
+
+            return redirect()
+                ->route('purchase-orders.show', $purchaseOrder->id)
+                ->with('success', 'Purchase order created successfully.');
+        } catch (\Exception $e) {
+            Log::error('Failed to create purchase order', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'data' => $validatedData ?? null
+            ]);
+
+            return back()->withErrors(['error' => 'Failed to create purchase order']);
+        }
+    }
+
+    public function draft(StorePurchaseOrderRequest $request)
+    {
+        try {
+            $validatedData = $request->validated();
+            Log::info('Validated draft data:', $validatedData);
+
+            // Clean up address data
+            $validatedData['addresses'] = $this->cleanAddressData($validatedData['addresses']);
+            Log::info('Cleaned addresses:', $validatedData['addresses']);
+
+            $validatedData['addresses'] = SupplierAddressesDTO::fromArray($validatedData['addresses']);
+            $purchaseOrder = $this->purchaseOrderService->saveDraft($validatedData);
+
+            return redirect()
+                ->route('purchase-orders.show', $purchaseOrder->id)
+                ->with('success', 'Purchase order draft saved successfully.');
+        } catch (\Exception $e) {
+            Log::error('Failed to save purchase order draft', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'data' => $validatedData ?? null
+            ]);
+
+            return back()->withErrors(['error' => 'Failed to save draft']);
+        }
+    }
+
+    public function show($id): Response
+    {
+        try {
+            $purchaseOrder = $this->purchaseOrderService->getPurchaseOrder($id);
+
+            return Inertia::render('PurchaseOrders/ShowPurchaseOrder', [
+                'purchaseOrder' => $purchaseOrder
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to load purchase order', [
+                'id' => $id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return redirect()
+                ->route('purchase-orders.index')
+                ->with('error', 'Purchase order not found');
+        }
+    }
+}
+
+
+==== app\Services\PurchaseOrderService.php ====
+
+<?php
+
+namespace App\Services;
+
+use App\DataTransferObjects\PurchaseOrderFiltersDto;
+use App\Models\PurchaseOrder;
+use App\Models\PurchaseOrderPart;
+use App\Models\Product;
+use App\Models\BillOfMaterial;
+use App\DTOs\SupplierAddressesDTO;
+use App\Enums\PurchaseOrderStatus;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+
+class PurchaseOrderService
+{
+    public function getPurchaseOrders(PurchaseOrderFiltersDto $filters): mixed
+    {
+        $query = PurchaseOrder::query()
+            ->with(['supplier', 'user'])
+            ->when($filters->number, function (Builder $query) use ($filters) {
+                $query->where('number', 'like', "%{$filters->number}%");
+            })
+            ->when($filters->supplier, function (Builder $query) use ($filters) {
+                $query->whereHas('supplier', function ($q) use ($filters) {
+                    $q->where('name', 'like', "%{$filters->supplier}%");
+                });
+            })
+            ->when($filters->status, function (Builder $query) use ($filters) {
+                $query->where('status', $filters->status);
+            })
+            ->when($filters->created_at, function (Builder $query) use ($filters) {
+                $query->whereDate('created_at', $filters->created_at);
+            })
+            ->when($filters->total_cost, function (Builder $query) use ($filters) {
+                $query->where('total_cost', 'like', "%{$filters->total_cost}%");
+            })
+            ->when($filters->user_name, function (Builder $query) use ($filters) {
+                $query->whereHas('user', function ($q) use ($filters) {
+                    $q->where('name', 'like', "%{$filters->user_name}%");
+                });
+            });
+
+        if ($filters->sortField && $filters->sortDirection) {
+            if ($filters->sortField === 'supplier.name') {
+                $query->join('suppliers', 'purchase_orders.supplier_id', '=', 'suppliers.id')
+                    ->orderBy('suppliers.name', $filters->sortDirection);
+            } elseif ($filters->sortField === 'user.name') {
+                $query->join('users', 'purchase_orders.user_id', '=', 'users.id')
+                    ->orderBy('users.name', $filters->sortDirection);
+            } else {
+                $query->orderBy($filters->sortField, $filters->sortDirection);
             }
         } else {
-            resetSupplierData();
+            $query->orderBy('created_at', 'desc');
         }
-    });
 
-    // Helper Functions
-    function resetSupplierData() {
-        selectedSupplier.value = null;
-        form.value.parts = [];
-        form.value.addresses = {
-            billTo: initialData?.defaultAddresses?.billTo?.[0] || null,
-            shipFrom: null,
-            shipTo: initialData?.defaultAddresses?.shipTo?.[0] || null,
-            returnTo: null
-        };
+        return ($filters->perPage && $filters->currentPage)
+            ? $query->paginate(perPage: $filters->perPage, page: $filters->currentPage)
+            : $query->get();
     }
 
-    function showToast(severity, summary, detail) {
-        toast.add({
-            severity,
-            summary,
-            detail,
-            life: 3000
+    public function createPurchaseOrder(array $data, bool $isDraft = false): PurchaseOrder
+    {
+        Log::info('Creating purchase order with data:', $data);
+
+        return DB::transaction(function () use ($data, $isDraft) {
+            try {
+                // Create the purchase order
+                $purchaseOrder = PurchaseOrder::create([
+                    'number' => $data['number'],
+                    'supplier_id' => $data['supplier_id'],
+                    'location_id' => $data['location_id'] ?? 1,
+                    'addresses' => $data['addresses'],
+                    'special_instructions' => $data['special_instructions'] ?? null,
+                    'tax_rate' => $data['tax_rate'] ?? config('purchase_orders.default_tax_rate', 8.25),
+                    'additional_costs' => round($data['additional_costs'] ?? 0.00, 2),
+                    'total_cost' => round($data['total_cost'], 2),
+                    'user_id' => Auth::id(),
+                    'status' => $data['status'] ?? ($isDraft ? PurchaseOrderStatus::DRAFT : PurchaseOrderStatus::SUBMITTED),
+                ]);
+
+                Log::info('Created purchase order:', ['id' => $purchaseOrder->id]);
+
+                // Create purchase order parts
+                foreach ($data['parts'] as $part) {
+                    PurchaseOrderPart::create([
+                        'purchase_order_id' => $purchaseOrder->id,
+                        'part_id' => $part['part_id'],
+                        'quantity_ordered' => $part['quantity_ordered'],
+                        'unit_cost' => round($part['unit_cost'], 2),
+                        'total_cost' => round($part['total_cost'], 2),
+                    ]);
+                }
+
+                Log::info('Created purchase order parts');
+
+                // Calculate totals including tax and additional costs
+                $purchaseOrder->calculateTotals();
+                $purchaseOrder->save();
+
+                Log::info('Calculated totals and saved purchase order');
+
+                return $purchaseOrder->load(['supplier', 'location', 'parts.part']);
+            } catch (\Exception $e) {
+                Log::error('Failed to create purchase order', [
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString(),
+                    'data' => $data
+                ]);
+                throw $e;
+            }
         });
     }
 
-    // Part Management
-    function addPart(part) {
-        if (!part?.id) return;
+    public function saveDraft(array $data): PurchaseOrder
+    {
+        return $this->createPurchaseOrder($data, true);
+    }
 
-        // Check if part already exists
-        if (form.value.parts.some(p => p.part_id === part.id)) {
-            showToast('error', 'Error', 'Part already added to order');
-            return;
-        }
+    public function getPurchaseOrder($id): PurchaseOrder
+    {
+        return PurchaseOrder::with(['supplier', 'location', 'parts.part'])->findOrFail($id);
+    }
 
-        const purchaseTerms = part.replenishment_data?.purchaseTerms?.[0];
-        if (!purchaseTerms) {
-            showToast('error', 'Error', 'No pricing information available');
-            return;
-        }
-
-        form.value.parts.push({
-            part_id: part.id,
-            quantity_ordered: settings.value.minQuantity,
-            unit_cost: purchaseTerms.cost_per_part,
-            total_cost: purchaseTerms.cost_per_part * settings.value.minQuantity,
-            part_number: part.part_number,
-            description: part.description,
-            lead_days: part.replenishment_data.lead_days || settings.value.defaultLeadDays
+    public function calculateOrderTotals(array $parts, float $taxRate, float $additionalCosts): array
+    {
+        $subtotal = collect($parts)->sum(function ($part) {
+            return round($part['quantity_ordered'] * $part['unit_cost'], 2);
         });
+
+        $taxAmount = round($subtotal * ($taxRate / 100), 2);
+        $totalCost = round($subtotal + $taxAmount + $additionalCosts, 2);
+
+        return [
+            'subtotal' => $subtotal,
+            'tax_amount' => $taxAmount,
+            'total_cost' => $totalCost
+        ];
     }
 
-    function updatePartQuantity(partId, quantity) {
-        const partIndex = form.value.parts.findIndex(p => p.part_id === partId);
-        if (partIndex !== -1) {
-            // Part exists in form.parts; update it
-            const part = form.value.parts[partIndex];
-            part.quantity_ordered = Math.max(settings.value.minQuantity, quantity);
-            part.total_cost = part.quantity_ordered * part.unit_cost;
-        } else if (quantity >= settings.value.minQuantity) {
-            // Part doesn't exist; add it if quantity meets minimum
-            const availablePart = supplierParts.value.find(p => p.id === partId);
-            if (availablePart) {
-                const purchaseTerms = availablePart.replenishment_data?.purchaseTerms?.[0];
-                if (purchaseTerms) {
-                    form.value.parts.push({
-                        part_id: availablePart.id,
-                        quantity_ordered: quantity,
-                        unit_cost: purchaseTerms.cost_per_part,
-                        total_cost: quantity * purchaseTerms.cost_per_part,
-                        part_number: availablePart.part_number,
-                        description: availablePart.description,
-                        lead_days: availablePart.replenishment_data?.lead_days || settings.value.defaultLeadDays
-                    });
+    /**
+     * Calculate required parts from a list of products and their quantities
+     *
+     * @param array|Collection $products Array or Collection of product_id => quantity pairs
+     * @return array Array of calculated part requirements
+     */
+    public function fromProducts(array|Collection $products): array
+    {
+        // Convert array to collection if needed
+        $products = is_array($products) ? collect($products) : $products;
+
+        Log::info('Calculating parts for products:', $products->toArray());
+
+        // Get all products with their bill of materials
+        $productModels = Product::with(['billOfMaterials.part.supplier'])
+            ->whereIn('id', $products->keys())
+            ->get();
+
+        Log::info('Found products:', ['count' => $productModels->count()]);
+
+        // Initialize parts collection to store required quantities
+        $requiredParts = collect();
+
+        // Calculate required quantities for each part
+        foreach ($productModels as $product) {
+            $productQuantity = $products[$product->id];
+
+            Log::info('Processing product:', [
+                'product_id' => $product->id,
+                'quantity' => $productQuantity,
+                'bom_count' => $product->billOfMaterials->count()
+            ]);
+
+            foreach ($product->billOfMaterials as $bom) {
+                $partId = $bom->part_id;
+                $requiredQuantity = $bom->quantity_required * $productQuantity;
+
+                // Add to or update required parts collection
+                if ($requiredParts->has($partId)) {
+                    $requiredParts[$partId] = [
+                        'part' => $bom->part,
+                        'quantity' => $requiredParts[$partId]['quantity'] + $requiredQuantity,
+                        'products' => $requiredParts[$partId]['products']->push([
+                            'product_id' => $product->id,
+                            'product_quantity' => $productQuantity,
+                            'quantity_per_product' => $bom->quantity_required,
+                            'subtotal_quantity' => $requiredQuantity
+                        ])
+                    ];
+                } else {
+                    $requiredParts[$partId] = [
+                        'part' => $bom->part,
+                        'quantity' => $requiredQuantity,
+                        'products' => collect([[
+                            'product_id' => $product->id,
+                            'product_quantity' => $productQuantity,
+                            'quantity_per_product' => $bom->quantity_required,
+                            'subtotal_quantity' => $requiredQuantity
+                        ]])
+                    ];
                 }
             }
         }
-        // Trigger reactivity
-        form.value.parts = [...form.value.parts];
-    }
 
-    function removePart(partId) {
-        form.value.parts = form.value.parts.filter(p => p.part_id !== partId);
-    }
+        // Group parts by supplier
+        $partsBySupplier = $requiredParts->groupBy(function ($item) {
+            return $item['part']->supplier_id;
+        });
 
-    // Form Validation
-    function validateForm() {
-        errors.value = {};
+        // Log the results
+        foreach ($partsBySupplier as $supplierId => $parts) {
+            $supplierName = $parts->first()['part']->supplier->name ?? 'Unknown Supplier';
 
-        if (!form.value.supplier_id) {
-            errors.value.supplier_id = 'Please select a supplier';
-            return false;
+            Log::info("Parts needed from supplier: $supplierName", [
+                'supplier_id' => $supplierId,
+                'parts' => $parts->map(function ($item) {
+                    $unitCost = round($item['part']->unit_cost, 2);
+                    $totalCost = round($item['quantity'] * $unitCost, 2);
+
+                    return [
+                        'part_number' => $item['part']->part_number,
+                        'description' => $item['part']->description,
+                        'total_quantity' => $item['quantity'],
+                        'unit_cost' => $unitCost,
+                        'total_cost' => $totalCost,
+                        'used_in_products' => $item['products']->map(function ($usage) {
+                            return [
+                                'product_id' => $usage['product_id'],
+                                'quantity' => $usage['product_quantity'],
+                                'quantity_per_unit' => $usage['quantity_per_product']
+                            ];
+                        })->toArray()
+                    ];
+                })->toArray()
+            ]);
         }
 
-        if (form.value.parts.length === 0) {
-            errors.value.parts = 'Please add at least one part';
-            return false;
-        }
-
-        if (!form.value.parts.every(p => p.quantity_ordered > 0)) {
-            errors.value.parts = 'All parts must have quantity greater than 0';
-            return false;
-        }
-
-        if (!form.value.addresses.billTo) {
-            errors.value.billTo = 'Please select a billing address';
-            return false;
-        }
-
-        if (!form.value.addresses.shipFrom) {
-            errors.value.shipFrom = 'Please select a ship from address';
-            return false;
-        }
-
-        if (settings.value.requireShippingAddress && !form.value.addresses.shipTo) {
-            errors.value.shipTo = 'Please select a shipping address';
-            return false;
-        }
-
-        return true;
-    }
-
-    // Form Submission
-    async function submit() {
-        console.log('Submitting form with data:', form.value);
-
-        if (!validateForm()) {
-            console.log('Form validation failed:', errors.value);
-            showToast('error', 'Validation Error', 'Please check the form for errors');
-            return;
-        }
-
-        processing.value = true;
-        try {
-            const formData = {
-                ...form.value,
-                total_cost: totalCost.value,
-                status: 'submitted'
-            };
-
-            console.log('Sending data to server:', formData);
-
-            await router.post(route('purchase-orders.store'), formData, {
-                onSuccess: () => {
-                    showToast('success', 'Success', 'Purchase order created successfully');
-                    reset();
-                },
-                onError: (serverErrors) => {
-                    console.error('Server validation errors:', serverErrors);
-                    showToast('error', 'Error', 'Failed to create purchase order');
-                    errors.value = serverErrors;
-                }
-            });
-        } catch (e) {
-            console.error('Form submission error:', e);
-            showToast('error', 'Error', 'An unexpected error occurred');
-        } finally {
-            processing.value = false;
-        }
-    }
-
-    async function saveDraft() {
-        console.log('Saving draft with data:', form.value);
-
-        if (!validateForm()) {
-            console.log('Form validation failed:', errors.value);
-            showToast('error', 'Validation Error', 'Please check the form for errors');
-            return;
-        }
-
-        processing.value = true;
-        try {
-            const formData = {
-                ...form.value,
-                total_cost: totalCost.value,
-                status: 'draft'
-            };
-
-            console.log('Sending draft data to server:', formData);
-
-            await router.post(route('purchase-orders.draft'), formData, {
-                onSuccess: () => {
-                    showToast('success', 'Success', 'Draft saved successfully');
-                    reset();
-                },
-                onError: (serverErrors) => {
-                    console.error('Server validation errors:', serverErrors);
-                    showToast('error', 'Error', 'Failed to save draft');
-                    errors.value = serverErrors;
-                }
-            });
-        } catch (e) {
-            console.error('Draft save error:', e);
-            showToast('error', 'Error', 'An unexpected error occurred');
-        } finally {
-            processing.value = false;
-        }
-    }
-
-    function reset() {
-        form.value = {
-            supplier_id: null,
-            location_id: null,
-            parts: [],
-            addresses: {
-                billTo: initialData?.defaultAddresses?.billTo?.[0] || null,
-                shipFrom: null,
-                shipTo: initialData?.defaultAddresses?.shipTo?.[0] || null,
-                returnTo: null
-            },
-            special_instructions: '',
-            tax_rate: initialData.defaultTaxRate || 8.0,
-            additional_costs: 0,
-        };
-        selectedSupplier.value = null;
-        errors.value = {};
-    }
-
-    return {
-        form,
-        loading,
-        errors,
-        processing,
-        selectedSupplier,
-        settings,
-        availableSuppliers,
-        supplierParts,
-        supplierAddresses,
-        subtotal,
-        taxAmount,
-        totalCost,
-        isValid,
-        addPart,
-        removePart,
-        updatePartQuantity,
-        saveDraft,
-        submit,
-        reset,
-    };
-}
-
-
-==== resources\js\Composables\useTheme.js ====
-
-import { ref } from 'vue';
-
-const currentTheme = ref(localStorage.getItem('selectedTheme') || 'light');
-
-function initSiteTheme() {
-    setTheme(currentTheme.value);
-}
-
-function setTheme(theme) {
-    const domHtml = document.documentElement;
-    domHtml.classList.toggle('dark-mode', theme === 'dark');
-    saveThemePreference(theme);
-}
-
-function saveThemePreference(theme) {
-    currentTheme.value = theme;
-    localStorage.setItem('selectedTheme', theme);
-}
-
-export function useTheme() {
-    return { initSiteTheme, setTheme, currentTheme };
-}
-
-
-==== resources\js\Pages\PurchaseOrders\CreatePurchaseOrder.vue ====
-
-<!-- CreatePurchaseOrder.vue -->
-<script setup>
-import { ref, computed } from 'vue';
-import { usePurchaseOrderForm } from '@/Composables/usePurchaseOrderForm';
-import AuthenticatedAdminLayout from '@/Layouts/Admin/AuthenticatedLayout.vue';
-import SupplierSelectComponent from '@/Components/PurchaseOrders/SupplierSelectComponent.vue';
-import PartsDataTableComponent from '@/Components/PurchaseOrders/PartsDataTableComponent.vue';
-import OrderSummary from '@/Components/PurchaseOrders/OrderSummary.vue';
-import AddressSelectComponent from '@/Components/PurchaseOrders/AddressSelectComponent.vue';
-import PurchaseOrderToolbar from '@/Components/PurchaseOrders/PurchaseOrderToolbar.vue';
-import InputText from 'primevue/inputtext';
-import Textarea from 'primevue/textarea';
-
-const pageTitle = '';
-
-const props = defineProps({
-    initialData: {
-        type: Object,
-        required: true
-    }
-});
-
-const {
-    form,
-    errors,
-    processing,
-    selectedSupplier,
-    supplierParts,
-    supplierAddresses,
-    settings,
-    subtotal,
-    taxAmount,
-    totalCost,
-    isValid,
-    updatePartQuantity,
-    saveDraft,
-    submit,
-    reset
-} = usePurchaseOrderForm(props.initialData);
-
-const poNumber = ref('PO-' + Date.now());
-const poDate = ref(new Date());
-const poStatus = ref('Draft');
-
-function handleUpdateQuantity(partId, quantity) {
-    updatePartQuantity(partId, quantity);
-}
-
-function handleViewPart(part) {
-    console.log('Viewing part:', part);
-}
-
-function handleSubmit() {
-    form.value.number = poNumber.value;
-    form.value.date = poDate.value;
-    form.value.status = poStatus.value;
-    submit();
-}
-
-function handleSaveDraft() {
-    form.value.number = poNumber.value;
-    form.value.date = poDate.value;
-    form.value.status = poStatus.value;
-    saveDraft();
-}
-
-function handleReset() {
-    poNumber.value = 'PO-' + Date.now();
-    poDate.value = new Date();
-    poStatus.value = 'Draft';
-    reset();
-}
-</script>
-
-<template>
-  <AuthenticatedAdminLayout :page-title="pageTitle">
-    <div class="layout-container">
-      <!-- Fixed-height header toolbar -->
-      <div class="toolbar-section">
-        <PurchaseOrderToolbar
-          :poNumber="poNumber"
-          :date="poDate"
-          :status="poStatus"
-          :isValid="isValid"
-          :processing="processing"
-          @update:poNumber="poNumber = $event"
-          @update:date="poDate = $event"
-          @update:status="poStatus = $event"
-          @submit="handleSubmit"
-          @save-draft="handleSaveDraft"
-          @reset="handleReset"
-        />
-      </div>
-
-      <!-- Main content with fixed height containers -->
-      <div class="content-layout">
-        <!-- Left column - fixed width and scrollable -->
-        <div class="main-content">
-          <div class="card-stack space-y-4">
-            <!-- Address section -->
-            <div class="content-card">
-              <AddressSelectComponent
-                v-model="form.addresses"
-                :available-addresses="supplierAddresses"
-                :settings="settings"
-              />
-            </div>
-
-            <!-- Supplier section -->
-            <div class="content-card">
-              <SupplierSelectComponent
-                v-model="form.supplier_id"
-                :suppliers="availableSuppliers"
-                :loading="processing"
-              />
-            </div>
-
-            <!-- Parts table -->
-            <div class="content-card">
-              <div class="h-full flex flex-col">
-                <PartsDataTableComponent
-                  v-if="selectedSupplier"
-                  :available-parts="supplierParts"
-                  :selected-parts="form.parts"
-                  :settings="settings"
-                  @update-quantity="handleUpdateQuantity"
-                  @view-part="handleViewPart"
-                />
-                <!-- Placeholder when no supplier selected -->
-                <div v-else class="flex-grow flex items-center justify-center text-gray-500">
-                  Select a supplier to view available parts
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Right column - sticky sidebar -->
-        <div class="summary-section">
-          <div class="summary-sticky">
-            <!-- Order summary card -->
-            <div class="content-card">
-              <OrderSummary
-                :subtotal="subtotal"
-                :taxRate="form.tax_rate"
-                :additionalCosts="form.additional_costs"
-                @update:taxRate="form.tax_rate = $event"
-                @update:additionalCosts="form.additional_costs = $event"
-              />
-            </div>
-
-            <!-- Special instructions card -->
-            <div class="content-card mt-4">
-              <h2 class="text-lg font-semibold mb-4">Special Instructions</h2>
-              <Textarea
-                v-model="form.special_instructions"
-                rows="4"
-                class="w-full"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </AuthenticatedAdminLayout>
-</template>
-
-<style scoped>
-.layout-container {
-  @apply max-w-[1800px] mx-auto px-4;
-}
-
-.content-layout {
-  @apply grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-4 mt-6;
-}
-
-.main-content {
-  @apply min-w-0; /* prevents flex child overflow */
-}
-
-.summary-section {
-  @apply w-full lg:w-[400px];
-}
-
-.summary-sticky {
-  @apply sticky top-[140px]; /* Adjust this value based on your header + toolbar height */
-  height: fit-content;
-}
-
-.content-card {
-  @apply bg-white rounded-lg shadow-sm border border-indigo-100 p-6;
-}
-
-/* DataTable styles */
-:deep(.p-datatable-wrapper) {
-  @apply overflow-x-auto;
-}
-
-:deep(.p-datatable) {
-  min-width: 800px;
-}
-
-/* Mobile responsiveness */
-@media (max-width: 1024px) {
-  .content-layout {
-    @apply grid-cols-1;
-  }
-
-  .summary-sticky {
-    @apply relative top-0;
-  }
-
-  .summary-section {
-    @apply w-full;
-  }
-}
-</style>
-
-
-==== resources\js\Pages\PurchaseOrders\Index.vue ====
-
-<script setup>
-import { ref, useTemplateRef } from 'vue';
-import { Head, router } from '@inertiajs/vue3';
-import { useDataTable } from '@/Composables/useDataTable.js';
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
-import Menu from 'primevue/menu';
-import DatePicker from 'primevue/datepicker';
-import Dropdown from 'primevue/dropdown';
-import Tag from 'primevue/tag';
-import Button from 'primevue/button';
-import InputText from 'primevue/inputtext';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import Container from '@/Components/Container.vue';
-import ResponsiveCard from '@/Components/ResponsiveCard.vue';
-
-// Define FilterMatchMode as a frozen constant
-const FilterMatchMode = Object.freeze({
-    STARTS_WITH: 'startsWith',
-    CONTAINS: 'contains',
-    NOT_CONTAINS: 'notContains',
-    ENDS_WITH: 'endsWith',
-    EQUALS: 'equals',
-    DATE_IS: 'dateIs',
-});
-
-const props = defineProps({
-    auth: Object,
-    urlParams: Object,
-    purchaseOrders: {
-        type: Object,
-        required: true,
-        default: () => ({ data: [], total: 0 })
-    }
-});
-
-// Initial filters setup with proper nested object handling
-const initialFilters = {
-    number: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    'supplier.name': { value: null, matchMode: FilterMatchMode.CONTAINS },
-    status: { value: null, matchMode: FilterMatchMode.EQUALS },
-    created_at: { value: null, matchMode: FilterMatchMode.DATE_IS },
-    total_cost: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    'user.name': { value: null, matchMode: FilterMatchMode.CONTAINS },
-};
-
-// DataTable state management
-const {
-    filters,
-    sortField,
-    sortOrder,
-    rowsPerPage,
-    firstDatasetIndex,
-    onPage,
-    onSort,
-    onFilter,
-    reset,
-    parseUrlParams,
-} = useDataTable(initialFilters, ['urlParams', 'purchaseOrders']);
-
-// Status options
-const statusOptions = [
-    { label: 'Draft', value: 'draft' },
-    { label: 'Submitted', value: 'submitted' },
-    { label: 'Approved', value: 'approved' },
-    { label: 'Partially Received', value: 'partially_received' },
-    { label: 'Fully Received', value: 'fully_received' },
-    { label: 'Closed', value: 'closed' },
-    { label: 'Cancelled', value: 'cancelled' }
-];
-
-// Context menu setup
-const selectedRowData = ref(null);
-const contextMenu = useTemplateRef('context-menu');
-const contextMenuItems = [
-    {
-        label: 'View Details',
-        icon: 'pi pi-search',
-        command: () => {
-            if (selectedRowData.value?.id) {
-                router.visit(route('purchase-orders.show', selectedRowData.value.id));
-            }
-        },
-    },
-    {
-        label: 'Edit',
-        icon: 'pi pi-pencil',
-        command: () => {
-            if (selectedRowData.value?.id) {
-                router.visit(route('purchase-orders.edit', selectedRowData.value.id));
-            }
-        },
-    },
-    {
-        label: 'Delete',
-        icon: 'pi pi-trash',
-        command: () => {
-            if (selectedRowData.value?.id) {
-                // Add delete confirmation logic
-                console.log('Delete PO:', selectedRowData.value.id);
-            }
-        },
-    }
-];
-
-// Safe context menu toggle
-function toggleContextMenu(event, rowData) {
-    if (rowData) {
-        selectedRowData.value = rowData;
-        contextMenu.value?.toggle(event);
+        $totalCost = round($requiredParts->sum(function ($item) {
+            return $item['quantity'] * $item['part']->unit_cost;
+        }), 2);
+
+        return [
+            'parts_by_supplier' => $partsBySupplier->toArray(),
+            'total_suppliers' => $partsBySupplier->count(),
+            'total_parts' => $requiredParts->count(),
+            'total_cost' => $totalCost
+        ];
     }
 }
-
-// Helper Functions
-const getStatusSeverity = (status) => {
-    const severityMap = {
-        draft: 'info',
-        submitted: 'warning',
-        approved: 'success',
-        partially_received: 'warning',
-        fully_received: 'success',
-        closed: 'info',
-        cancelled: 'danger'
-    };
-    return severityMap[status] || 'info';
-};
-
-const formatCurrency = (value) => {
-    if (value == null) return '';
-    return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD'
-    }).format(value);
-};
-
-const formatDate = (dateString) => {
-    if (!dateString) return '';
-    return new Date(dateString).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric'
-    });
-};
-
-// Initialize from URL params
-if (props.urlParams) {
-    parseUrlParams(props.urlParams);
-}
-</script>
-
-<template>
-    <Head :title="'Purchase Orders'" />
-
-    <AuthenticatedLayout
-        :page-title="'Purchase Orders'"
-        :breadcrumbs="[
-            { label: 'Dashboard', route: route('dashboard') },
-            { label: 'Purchase Orders', route: route('purchase-orders.index') },
-            { label: 'List' }
-        ]"
-    >
-        <template #headerEnd>
-            <div class="flex gap-2">
-                <Link :href="route('purchase-orders.create')">
-                    <Button
-                        type="button"
-                        icon="pi pi-plus"
-                        label="New Order"
-                        raised
-                    />
-                </Link>
-                <Button
-                    type="button"
-                    icon="pi pi-filter-slash"
-                    label="Clear"
-                    outlined
-                    @click="reset"
-                />
-            </div>
-        </template>
-
-        <Container :spaced-mobile="false">
-            <ResponsiveCard spacingClasses="p-3">
-                <Menu
-                    ref="contextMenu"
-                    class="shadow"
-                    :model="contextMenuItems"
-                    popup
-                />
-                <DataTable
-                    lazy
-                    paginator
-                    stripedRows
-                    showGridlines
-                    removableSort
-                    resizableColumns
-                    columnResizeMode="fit"
-                    :value="purchaseOrders.data"
-                    :totalRecords="purchaseOrders.total"
-                    :filters="filters"
-                    filterDisplay="row"
-                    :sortField="sortField"
-                    :sortOrder="sortOrder"
-                    :rows="rowsPerPage"
-                    :rowsPerPageOptions="[10, 20, 50, 100]"
-                    :first="firstDatasetIndex"
-                    paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} records"
-                    @sort="onSort"
-                    @page="onPage"
-                    @filter="onFilter"
-                    dataKey="id"
-                >
-                    <!-- Columns definition with safe nested property handling -->
-                    <Column
-                        field="number"
-                        header="PO Number"
-                        sortable
-                        :showFilterMenu="false"
-                    >
-                        <template #filter="{ filterModel }">
-                            <InputText
-                                v-model="filterModel.value"
-                                type="text"
-                                class="w-full p-2"
-                                placeholder="Search by PO#"
-                            />
-                        </template>
-                    </Column>
-
-                    <Column
-                        field="supplier.name"
-                        header="Supplier"
-                        sortable
-                        :showFilterMenu="false"
-                    >
-                        <template #filter="{ filterModel }">
-                            <InputText
-                                v-model="filterModel.value"
-                                type="text"
-                                class="w-full p-2"
-                                placeholder="Search supplier"
-                            />
-                        </template>
-                        <template #body="{ data }">
-                            {{ data.supplier?.name }}
-                        </template>
-                    </Column>
-
-
-                    <Column
-                        field="status"
-                        header="Status"
-                        sortable
-                        :showFilterMenu="false"
-                    >
-                        <template #filter="{ filterModel, filterCallback }">
-                            <Dropdown
-                                v-model="filterModel.value"
-                                :options="statusOptions"
-                                optionLabel="label"
-                                optionValue="value"
-                                placeholder="Select Status"
-                                class="w-full"
-                                @change="filterCallback"
-                            />
-                        </template>
-                        <template #body="{ data }">
-                            <Tag :severity="getStatusSeverity(data.status)">
-                                {{ data.status }}
-                            </Tag>
-                        </template>
-                    </Column>
-
-                    <Column
-                        field="total_cost"
-                        header="Total"
-                        sortable
-                        :showFilterMenu="false"
-                    >
-                        <template #filter="{ filterModel, filterCallback }">
-                            <InputText
-                                v-model="filterModel.value"
-                                type="text"
-                                class="w-full p-2"
-                                placeholder="Search amount"
-                                @input="filterCallback"
-                            />
-                        </template>
-                        <template #body="{ data }">
-                            {{ formatCurrency(data.total_cost) }}
-                        </template>
-                    </Column>
-
-                    <Column
-                        field="created_at"
-                        header="Created"
-                        sortable
-                        :showFilterMenu="false"
-                    >
-                        <template #filter="{ filterModel, filterCallback }">
-                            <DatePicker
-                                v-model="filterModel.value"
-                                dateFormat="yy-mm-dd"
-                                placeholder="Search date"
-                                class="w-full"
-                                @date-select="filterCallback"
-                            />
-                        </template>
-                        <template #body="{ data }">
-                            {{ formatDate(data.created_at) }}
-                        </template>
-                    </Column>
-
-                    <Column
-                        field="user.name"
-                        header="Created By"
-                        sortable
-                        :showFilterMenu="false"
-                    >
-                        <template #filter="{ filterModel, filterCallback }">
-                            <InputText
-                                v-model="filterModel.value"
-                                type="text"
-                                class="w-full p-2"
-                                placeholder="Search user"
-                                @input="filterCallback"
-                            />
-                        </template>
-                    </Column>
-
-                    <Column header="Actions" :exportable="false" style="min-width: 4rem">
-                        <template #body="{ data }">
-                            <Button
-                                type="button"
-                                severity="secondary"
-                                text
-                                rounded
-                                icon="pi pi-ellipsis-v"
-                                @click="toggleContextMenu($event, data)"
-                                v-tooltip.top="'Show Actions'"
-                            />
-                        </template>
-                    </Column>
-                </DataTable>
-            </ResponsiveCard>
-        </Container>
-    </AuthenticatedLayout>
-</template>

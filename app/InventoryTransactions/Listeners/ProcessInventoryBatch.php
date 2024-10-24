@@ -11,7 +11,8 @@ class ProcessInventoryBatch implements ShouldQueue
 {
     public function __construct(
         private InventoryService $inventoryService
-    ) {}
+    ) {
+    }
 
     public function handle(InventoryBatchCreated $event): void
     {

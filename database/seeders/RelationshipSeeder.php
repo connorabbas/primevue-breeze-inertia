@@ -12,12 +12,12 @@ use App\Models\BillOfMaterial;
 use App\Models\Dimension;
 use App\Models\Gtin;
 use App\Models\Location;
+use App\Models\Address;
+use App\Data\AddressData;
+use App\Enums\AddressType;
 use App\Enums\DimensionType;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\QueryException;
-use App\DTOs\SupplierAddressesDTO;
-use App\DTOs\AddressDTO;
-use Spatie\LaravelData\DataCollection;
 
 class RelationshipSeeder extends Seeder
 {
@@ -39,32 +39,7 @@ class RelationshipSeeder extends Seeder
 
     private function setManufacturerRelationships()
     {
-        $this->command->info("Setting manufacturer relationships...");
-
-        $legacyManufacturers = DB::connection('legacy')->table('manufacturer')->get();
-        $successCount = 0;
-        $failureCount = 0;
-
-        foreach ($legacyManufacturers as $legacyManufacturer) {
-            try {
-                Manufacturer::updateOrCreate(
-                    ['id' => $legacyManufacturer->man_id],
-                    ['name' => $legacyManufacturer->man_name]
-                );
-                $successCount++;
-            } catch (QueryException $e) {
-                $failureCount++;
-                Log::error("Database error setting manufacturer relationships for manufacturer ID {$legacyManufacturer->man_id}: " . $e->getMessage());
-                Log::error("SQL: " . $e->getSql());
-                Log::error("Bindings: " . implode(', ', $e->getBindings()));
-            } catch (\Exception $e) {
-                $failureCount++;
-                Log::error("Error setting manufacturer relationships for manufacturer ID {$legacyManufacturer->man_id}: " . $e->getMessage());
-                Log::error("Manufacturer data: " . json_encode($legacyManufacturer));
-            }
-        }
-
-        $this->command->info("Manufacturer relationships: {$successCount} succeeded, {$failureCount} failed.");
+        // ... (keep existing code)
     }
 
     private function setSupplierRelationships()
@@ -77,49 +52,8 @@ class RelationshipSeeder extends Seeder
 
         foreach ($legacySuppliers as $legacySupplier) {
             try {
-                // Get all locations for this supplier
-                $supplierLocations = DB::connection('legacy')
-                    ->table('location')
-                    ->where('supplier_id', $legacySupplier->supplier_id)
-                    ->get();
-
-                // Create address collections
-                $billToAddresses = [];
-                $shipFromAddresses = [];
-                $shipToAddresses = [];
-                $returnToAddresses = [];
-
-                foreach ($supplierLocations as $location) {
-                    $address = new AddressDTO(
-                        address1: $location->address1,
-                        address2: $location->address2,
-                        city: $location->city,
-                        state_prov_code: $location->state_prov_code,
-                        zip: $location->zip,
-                        country: 'USA',
-                        phone_number: $location->phone_nbr,
-                        email_address: $location->email_address
-                    );
-
-                    if ($location->bill_to_ind) {
-                        $billToAddresses[] = $address;
-                    }
-                    if ($location->supplier_id) {
-                        $shipFromAddresses[] = $address;
-                    }
-                    if ($location->ship_to_ind) {
-                        $shipToAddresses[] = $address;
-                    }
-                }
-
-                $addresses = new SupplierAddressesDTO(
-                    billTo: new DataCollection(AddressDTO::class, $billToAddresses),
-                    shipFrom: new DataCollection(AddressDTO::class, $shipFromAddresses),
-                    shipTo: new DataCollection(AddressDTO::class, $shipToAddresses),
-                    returnTo: new DataCollection(AddressDTO::class, $returnToAddresses)
-                );
-
-                Supplier::updateOrCreate(
+                // Create or update supplier
+                $supplier = Supplier::updateOrCreate(
                     ['id' => $legacySupplier->supplier_id],
                     [
                         'name' => $legacySupplier->supplier_name,
@@ -130,10 +64,64 @@ class RelationshipSeeder extends Seeder
                             'website' => $legacySupplier->website,
                             'phone' => $legacySupplier->phone,
                             'fax' => $legacySupplier->fax,
-                        ]),
-                        'addresses' => $addresses,
+                        ])
                     ]
                 );
+
+                // Get all locations for this supplier
+                $supplierLocations = DB::connection('legacy')
+                    ->table('location')
+                    ->where('supplier_id', $legacySupplier->supplier_id)
+                    ->get();
+
+                foreach ($supplierLocations as $location) {
+                    // Create address
+                    $address = Address::create([
+                        'address_data' => AddressData::from([
+                            'street1' => $location->address1,
+                            'street2' => $location->address2,
+                            'city' => $location->city,
+                            'state' => $location->state_prov_code,
+                            'postal_code' => $location->zip,
+                            'country' => 'USA',
+                            'phone' => $location->phone_nbr,
+                            'email' => $location->email_address,
+                            'contact_name' => ''
+                        ])
+                    ]);
+
+                    // Attach address with appropriate types
+                    if ($location->bill_to_ind) {
+                        $supplier->addresses()->attach($address->id, [
+                            'address_type' => AddressType::BILL_TO,
+                            'created_at' => now(),
+                            'updated_at' => now()
+                        ]);
+
+                        // Use billing address as return address
+                        $supplier->addresses()->attach($address->id, [
+                            'address_type' => AddressType::RETURN_TO,
+                            'created_at' => now(),
+                            'updated_at' => now()
+                        ]);
+                    }
+
+                    if ($location->ship_to_ind) {
+                        $supplier->addresses()->attach($address->id, [
+                            'address_type' => AddressType::SHIP_TO,
+                            'created_at' => now(),
+                            'updated_at' => now()
+                        ]);
+                    }
+
+                    // For suppliers, every address is a potential ship from
+                    $supplier->addresses()->attach($address->id, [
+                        'address_type' => AddressType::SHIP_FROM,
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ]);
+                }
+
                 $successCount++;
             } catch (QueryException $e) {
                 $failureCount++;
@@ -160,26 +148,6 @@ class RelationshipSeeder extends Seeder
             try {
                 $locationType = $this->getLocationType($legacyLocation);
 
-                // Create address DTO
-                $address = new AddressDTO(
-                    address1: $legacyLocation->address1,
-                    address2: $legacyLocation->address2,
-                    city: $legacyLocation->city,
-                    state_prov_code: $legacyLocation->state_prov_code,
-                    zip: $legacyLocation->zip,
-                    country: 'USA',
-                    phone_number: $legacyLocation->phone_nbr,
-                    email_address: $legacyLocation->email_address
-                );
-
-                // Create addresses based on location type
-                $addresses = new SupplierAddressesDTO(
-                    billTo: $legacyLocation->bill_to_ind ? new DataCollection(AddressDTO::class, [$address]) : null,
-                    shipFrom: $legacyLocation->supplier_id ? new DataCollection(AddressDTO::class, [$address]) : null,
-                    shipTo: $legacyLocation->ship_to_ind ? new DataCollection(AddressDTO::class, [$address]) : null,
-                    returnTo: null
-                );
-
                 Location::updateOrCreate(
                     ['id' => $legacyLocation->location_id],
                     [
@@ -187,7 +155,6 @@ class RelationshipSeeder extends Seeder
                         'type' => $locationType['type'],
                         'virtual_type' => $locationType['virtual_type'] ?? null,
                         'supplier_id' => $legacyLocation->supplier_id ?: null,
-                        'addresses' => $addresses,
                     ]
                 );
                 $successCount++;

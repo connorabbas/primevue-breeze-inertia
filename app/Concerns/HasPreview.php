@@ -32,7 +32,7 @@ trait HasPreview
         $resource = Str::afterLast($resource, '\\');
         $resource = Str::slug($resource, '_');
 
-        $attributes = session()->get('preview-'.request()->get($token));
+        $attributes = session()->get('preview-' . request()->get($token));
 
         if (empty($attributes)) {
             return;

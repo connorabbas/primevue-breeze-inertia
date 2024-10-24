@@ -10,13 +10,16 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Builder;
 
 class Product extends Model
 {
-    use HasDimensions, HasFactory;
+    use HasDimensions;
+    use HasFactory;
 
     protected $fillable = [
         'name',
+        'sku',
         'description',
         'identifiers',
         'replenishment_data',
@@ -46,11 +49,6 @@ class Product extends Model
         return $this->hasOne(Gtin::class);
     }
 
-    public function getMasterSku(): ?string
-    {
-        return $this->getIdentifierValue('master_sku');
-    }
-
     public function getIdentifierValue(string $type): ?string
     {
         return $this->identifiers->identifiers->firstWhere('type', $type)?->value;
@@ -58,6 +56,11 @@ class Product extends Model
 
     public function getDisplayName(): string
     {
-        return $this->getMasterSku() ?? $this->name ?? '';
+        return $this->sku() ?? $this->name ?? '';
+    }
+
+    public function scopeByIdentifierKey($query, string $identifierKey, string $value): Builder
+    {
+        return $query->where("identifiers->" . str($identifierKey)->snake(), $value);
     }
 }

@@ -13,15 +13,15 @@ class Location extends Model
 {
     use HasFactory;
 
-    const TYPE_WAREHOUSE = 'warehouse';
-    const TYPE_SUPPLIER = 'supplier';
-    const TYPE_RACK = 'rack';
-    const TYPE_BIN = 'bin';
-    const TYPE_VIRTUAL = 'virtual';
+    public const TYPE_WAREHOUSE = 'warehouse';
+    public const TYPE_SUPPLIER = 'supplier';
+    public const TYPE_RACK = 'rack';
+    public const TYPE_BIN = 'bin';
+    public const TYPE_VIRTUAL = 'virtual';
 
-    const VIRTUAL_TYPE_BILL_TO = 'bill_to';
-    const VIRTUAL_TYPE_SHIP_TO = 'ship_to';
-    const VIRTUAL_TYPE_WORK_ORDER = 'work_order';
+    public const VIRTUAL_TYPE_BILL_TO = 'bill_to';
+    public const VIRTUAL_TYPE_SHIP_TO = 'ship_to';
+    public const VIRTUAL_TYPE_WORK_ORDER = 'work_order';
 
     protected $fillable = [
         'name',

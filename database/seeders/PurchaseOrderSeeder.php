@@ -9,7 +9,6 @@ use App\Models\Supplier;
 use App\Models\User;
 use App\Enums\PurchaseOrderStatus;
 use Illuminate\Database\Seeder;
-use App\DTOs\SupplierAddressesDTO;
 
 class PurchaseOrderSeeder extends Seeder
 {
@@ -65,6 +64,14 @@ class PurchaseOrderSeeder extends Seeder
                 $supplierParts = $allParts; // Fallback to all parts if no supplier-specific parts found
             }
 
+            // Get addresses from supplier
+            $addresses = [
+                'billTo' => $supplier->getBillToAddress(),
+                'shipFrom' => $supplier->getShipFromAddress(),
+                'shipTo' => $supplier->getShipToAddress(),
+                'returnTo' => $supplier->getReturnToAddress(),
+            ];
+
             // Create PO
             $po = PurchaseOrder::create([
                 'supplier_id' => $supplier->id,
@@ -75,11 +82,7 @@ class PurchaseOrderSeeder extends Seeder
                 'additional_costs' => rand(0, 100),
                 'opened_at' => now()->subDays(rand(1, 30)),
                 'closed_at' => in_array($statuses[$i - 1], [PurchaseOrderStatus::FULLY_RECEIVED, PurchaseOrderStatus::CLOSED]) ? now() : null,
-                'addresses' => new SupplierAddressesDTO(
-                    billTo: $location->addresses,
-                    shipFrom: $supplier->addresses[0] ?? null,
-                    shipTo: $location->addresses
-                ),
+                'addresses' => $addresses,
             ]);
 
             // Add 2-4 random parts to each PO

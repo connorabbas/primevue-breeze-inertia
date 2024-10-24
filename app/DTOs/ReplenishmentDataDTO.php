@@ -13,5 +13,6 @@ class ReplenishmentDataDTO extends Data
         #[MapInputName('purchase_terms')]
         /** @var array<int, array{minimum_quantity: int, cost_per_part: float}> */
         public array $purchaseTerms
-    ) {}
+    ) {
+    }
 }

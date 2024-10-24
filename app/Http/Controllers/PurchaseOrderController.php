@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\DataTransferObjects\PurchaseOrderFiltersDto;
 use App\Http\Requests\StorePurchaseOrderRequest;
 use App\Services\PurchaseOrderService;
-use App\DTOs\SupplierAddressesDTO;
+use App\Data\AddressData;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -22,25 +22,8 @@ class PurchaseOrderController extends Controller
         $selfSupplier = Supplier::where('account_number', 'DI')->firstOrFail();
         Log::info('Self supplier found: ', ['supplier' => $selfSupplier->toArray()]);
 
-        // Get all suppliers for selection
-        $suppliers = Supplier::query()
-            ->with(['parts' => function ($query) {
-                $query->select([
-                    'id',
-                    'supplier_id',
-                    'part_number',
-                    'description',
-                    'replenishment_data'
-                ])->whereNotNull('replenishment_data');
-            }])
-            ->select([
-                'id',
-                'name',
-                'account_number',
-                'addresses'
-            ])
-            ->whereNull('deleted_at')
-            ->get();
+        // Get all suppliers for selection with addresses already formatted
+        $suppliers = Supplier::query()->withPartsAndAddresses();
 
         // Get available addresses from self supplier
         $availableAddresses = [
@@ -100,27 +83,18 @@ class PurchaseOrderController extends Controller
                 // If address has a 'value' property (from select component), use that
                 $addressData = isset($address['value']) ? $address['value'] : $address;
 
-                // Clean up the address data to only include valid fields
-                $cleanedAddress = array_intersect_key($addressData, array_flip([
-                    'street1',
-                    'street2',
-                    'city',
-                    'state',
-                    'postal_code',
-                    'country',
-                    'type',
-                    'address1',
-                    'address2',
-                    'state_prov_code',
-                    'zip',
-                    'phone_number',
-                    'email_address'
-                ]));
-
-                // Wrap single address in array for DTO
-                $cleaned[$type] = [$cleanedAddress];
-            } else {
-                $cleaned[$type] = [];
+                // Create AddressData instance
+                $cleaned[$type] = AddressData::from([
+                    'street1' => $addressData['street1'] ?? '',
+                    'street2' => $addressData['street2'] ?? '',
+                    'city' => $addressData['city'] ?? '',
+                    'state' => $addressData['state'] ?? '',
+                    'postal_code' => $addressData['postal_code'] ?? '',
+                    'country' => $addressData['country'] ?? 'US',
+                    'phone' => $addressData['phone'] ?? '',
+                    'email' => $addressData['email'] ?? '',
+                    'contact_name' => $addressData['contact_name'] ?? null
+                ]);
             }
         }
 
@@ -137,7 +111,6 @@ class PurchaseOrderController extends Controller
             $validatedData['addresses'] = $this->cleanAddressData($validatedData['addresses']);
             Log::info('Cleaned addresses:', $validatedData['addresses']);
 
-            $validatedData['addresses'] = SupplierAddressesDTO::fromArray($validatedData['addresses']);
             $purchaseOrder = $this->purchaseOrderService->createPurchaseOrder($validatedData);
 
             return redirect()
@@ -164,7 +137,6 @@ class PurchaseOrderController extends Controller
             $validatedData['addresses'] = $this->cleanAddressData($validatedData['addresses']);
             Log::info('Cleaned addresses:', $validatedData['addresses']);
 
-            $validatedData['addresses'] = SupplierAddressesDTO::fromArray($validatedData['addresses']);
             $purchaseOrder = $this->purchaseOrderService->saveDraft($validatedData);
 
             return redirect()

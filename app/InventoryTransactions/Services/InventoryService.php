@@ -22,7 +22,8 @@ class InventoryService
         private InventoryTransactionBuilder $builder,
         private InventoryUpdateService $updateService,
         private InventoryTransactionValidator $validator
-    ) {}
+    ) {
+    }
 
     public function createBatch(array $transactionData, int $userId): InventoryTransactionBatch
     {

@@ -11,13 +11,12 @@ class DatabaseSeeder extends Seeder
 {
     public function run()
     {
-        $this->command->info('Starting legacy data import process...');
+        $this->command->info('Starting legacy data migration process...');
         try {
             if (DB::connection('legacy')) {
                 $this->call([
                     TestUserSeeder::class,
-                    BuildDefaultSupplierSeeder::class, // Add default supplier
-                    LegacySupplierSeeder::class,
+                    LegacySupplierSeeder::class, // This now handles Doner Industries and all suppliers with addresses
                     LegacyLocationSeeder::class,
                     LegacyPartSeeder::class,
                     LegacyProductSeeder::class,
@@ -25,7 +24,7 @@ class DatabaseSeeder extends Seeder
                     RelationshipSeeder::class,
                 ]);
 
-                $this->command->info('Legacy data import process completed.');
+                $this->command->info('Legacy data migration process completed.');
             }
         } catch (Exception $e) {
             $this->command->error('Exception: ' . $e->getMessage());
