@@ -1,7 +1,9 @@
 <script setup>
-import { ref, onMounted, onUnmounted, watchEffect } from 'vue';
+import { ref } from 'vue';
 import Drawer from 'primevue/drawer';
 import LinksPanelMenu from '@/Components/LinksPanelMenu.vue';
+
+const model = defineModel();
 
 // Menu Items
 const currentRoute = route().current();
@@ -66,35 +68,13 @@ const exampleNestedMenuItems = ref([
         ],
     },
 ]);
-
-// Drawer behavior
-const model = defineModel();
-const menuBackdrop = ref(false);
-const windowWidth = ref(window.innerWidth);
-const updateWidth = () => {
-    windowWidth.value = window.innerWidth;
-};
-onMounted(() => {
-    window.addEventListener('resize', updateWidth);
-});
-onUnmounted(() => {
-    window.removeEventListener('resize', updateWidth);
-});
-watchEffect(() => {
-    if (windowWidth.value <= 768) {
-        menuBackdrop.value = true;
-    } else {
-        menuBackdrop.value = false;
-    }
-});
 </script>
 
 <template>
     <Drawer
         v-model:visible="model"
         position="left"
-        :modal="menuBackdrop"
-        :showCloseIcon="menuBackdrop"
+        :autoZIndex="false"
     >
         <div>
             <div class="mb-5">

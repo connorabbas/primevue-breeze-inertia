@@ -1,7 +1,7 @@
 <script setup>
 import { ref, useTemplateRef } from 'vue';
 import { Head } from '@inertiajs/vue3';
-import { useDataTable } from '@/Composables/useDataTable.js';
+import { useLazyDataTable } from '@/Composables/useLazyDataTable.js';
 import { FilterMatchMode } from '@primevue/core/api';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
@@ -12,8 +12,7 @@ import ResponsiveCard from '@/Components/ResponsiveCard.vue';
 
 const props = defineProps({
     auth: Object,
-    urlParams: Object,
-    users: [Array, Object],
+    users: Object,
 });
 
 const pageTitle = 'Users';
@@ -49,21 +48,18 @@ const {
     sortOrder,
     rowsPerPage,
     firstDatasetIndex,
-    onPage,
-    onSort,
+    hasFilteringApplied,
     onFilter,
-    reset,
-    parseUrlParams,
-} = useDataTable(
+    onSort,
+    onPage,
+    fetchData,
+} = useLazyDataTable(
     {
         name: { value: null, matchMode: FilterMatchMode.CONTAINS },
         email: { value: null, matchMode: FilterMatchMode.CONTAINS },
     },
-    ['urlParams', 'users']
+    ['users']
 );
-
-// Parse URL params on component mount
-parseUrlParams(props.urlParams);
 </script>
 
 <template>
@@ -74,13 +70,15 @@ parseUrlParams(props.urlParams);
         :breadcrumbs="breadcrumbs"
     >
         <template #headerEnd>
-            <Button
-                type="button"
-                icon="pi pi-filter-slash"
-                label="Clear"
-                outlined
-                @click="reset"
-            />
+            <Link v-if="hasFilteringApplied" :href="route('admin.users.index')">
+                <Button
+                    severity="secondary"
+                    type="button"
+                    icon="pi pi-filter-slash"
+                    label="Clear Filters"
+                    outlined
+                />
+            </Link>
         </template>
 
         <Container :spaced-mobile="false">
@@ -112,9 +110,9 @@ parseUrlParams(props.urlParams);
                         :first="firstDatasetIndex"
                         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} records"
+                        @filter="onFilter"
                         @sort="onSort"
                         @page="onPage"
-                        @filter="onFilter"
                     >
                         <Column
                             field="name"
