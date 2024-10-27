@@ -20,5 +20,8 @@
         "tailwindcss-primeui": "^0.3.2",
         "vite": "^5.0",
         "vue": "^3.5.0"
+    },
+    "dependencies": {
+        "lodash": "^4.17.21"
     }
 }
