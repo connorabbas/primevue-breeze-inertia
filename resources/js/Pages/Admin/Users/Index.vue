@@ -23,22 +23,22 @@ const breadcrumbs = [
 ];
 
 // User context menu
-const selectedRowData = ref({});
 const userContextMenu = useTemplateRef('user-context-menu');
-const userContextMenuItems = [
-    {
-        label: 'Manage User',
-        icon: 'pi pi-pencil',
-        command: () => {
-            alert('User Data: ' + JSON.stringify(selectedRowData.value));
+const userContextMenuItems = ref([]);
+function toggleUserContextMenu(event, userData) {
+    console.log(userData);
+    // Populate menu items based on row
+    userContextMenuItems.value = [
+        {
+            label: 'Manage User',
+            icon: 'pi pi-pencil',
+            command: () => {
+                alert('User Data: ' + JSON.stringify(userData));
+            },
         },
-    },
-];
-function toggleUserContextMenu(event, rowData) {
-    selectedRowData.value = rowData;
-    if (userContextMenu.value) {
-        userContextMenu.value.toggle(event);
-    }
+    ];
+    // Show the menu
+    userContextMenu.value.toggle(event);
 }
 
 // DataTable
@@ -49,10 +49,12 @@ const {
     rowsPerPage,
     firstDatasetIndex,
     hasFilteringApplied,
+    debounceInputFilter,
     onFilter,
     onSort,
     onPage,
     fetchData,
+    resetTable,
 } = useLazyDataTable(
     {
         name: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -70,15 +72,15 @@ const {
         :breadcrumbs="breadcrumbs"
     >
         <template #headerEnd>
-            <Link v-if="hasFilteringApplied" :href="route('admin.users.index')">
-                <Button
-                    severity="secondary"
-                    type="button"
-                    icon="pi pi-filter-slash"
-                    label="Clear Filters"
-                    outlined
-                />
-            </Link>
+            <Button
+                v-if="hasFilteringApplied"
+                severity="secondary"
+                type="button"
+                icon="pi pi-filter-slash"
+                label="Clear Filters"
+                outlined
+                @click="resetTable"
+            />
         </template>
 
         <Container :spaced-mobile="false">
@@ -124,7 +126,7 @@ const {
                                 <InputText
                                     v-model="filterModel.value"
                                     type="text"
-                                    @input="filterCallback"
+                                    @input="debounceInputFilter(filterCallback)"
                                     class="w-full"
                                     placeholder="Search by name"
                                 />
@@ -143,7 +145,7 @@ const {
                                 <InputText
                                     v-model="filterModel.value"
                                     type="text"
-                                    @input="filterCallback"
+                                    @input="debounceInputFilter(filterCallback)"
                                     class="w-full"
                                     placeholder="Search by Email"
                                 />
