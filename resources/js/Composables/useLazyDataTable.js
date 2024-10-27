@@ -1,5 +1,6 @@
 import { ref, computed, onMounted } from 'vue';
 import { router, usePage } from '@inertiajs/vue3';
+import debounce from 'lodash/debounce';
 
 export function useLazyDataTable(
     defaultFilters = {},
@@ -36,6 +37,10 @@ export function useLazyDataTable(
         return isFiltering || isSorting;
     });
 
+    const debounceInputFilter = debounce((filterCallback) => {
+        filterCallback();
+    }, 300);
+
     function fetchData() {
         return new Promise((resolve, reject) => {
             router.reload({
@@ -59,7 +64,6 @@ export function useLazyDataTable(
     }
 
     function onFilter(event) {
-        // TODO: debounce "contains" searches
         currentPage.value = 1;
         filters.value = event.filters;
         // empty arrays cause filtering issues, set to null instead
@@ -93,13 +97,16 @@ export function useLazyDataTable(
         });
     }
 
-    function resetFilters() {
+    function resetTable() {
+        window.history.replaceState(null, '', window.location.pathname);
         filters.value = dataTableDefaults.filters;
         sortField.value = dataTableDefaults.sortField;
         sortOrder.value = dataTableDefaults.sortOrder;
         currentPage.value = dataTableDefaults.currentPage;
         rowsPerPage.value = dataTableDefaults.rowsPerPage;
-        fetchData();
+        router.reload({
+            only: ['request', ...new Set(only)],
+        });
     }
 
     function parseUrlParams(urlParams) {
@@ -146,10 +153,11 @@ export function useLazyDataTable(
         rowsPerPage,
         firstDatasetIndex,
         hasFilteringApplied,
+        debounceInputFilter,
         onFilter,
         onSort,
         onPage,
-        resetFilters,
+        resetTable,
         fetchData,
         parseUrlParams,
     };
