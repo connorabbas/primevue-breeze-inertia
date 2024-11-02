@@ -1,7 +1,6 @@
 <script setup>
 import { ref, useTemplateRef } from 'vue';
 import { useForm } from '@inertiajs/vue3';
-import InputError from '@/Components/InputError.vue';
 
 const passwordInput = useTemplateRef('password-input');
 const modalOpen = ref(false);
@@ -25,7 +24,7 @@ function focusPasswordInput() {
 </script>
 
 <template>
-    <section class="space-y-6">
+    <section>
         <Dialog
             :draggable="false"
             position="center"
@@ -43,8 +42,9 @@ function focusPasswordInput() {
                 </p>
             </div>
 
-            <div>
+            <div class="space-y-2">
                 <InputText
+                    autofocus
                     required
                     id="password"
                     ref="password-input"
@@ -55,9 +55,15 @@ function focusPasswordInput() {
                     :invalid="Boolean(form.errors.password)"
                     autocomplete="current-password"
                     @keyup.enter="deleteUser"
-                    autofocus
                 />
-                <InputError class="mt-2" :message="form.errors.password" />
+                <Message
+                    v-if="form.errors?.password"
+                    severity="error"
+                    variant="simple"
+                    size="small"
+                >
+                    {{ form.errors?.password }}
+                </Message>
             </div>
 
             <template #footer>
@@ -77,15 +83,6 @@ function focusPasswordInput() {
                 />
             </template>
         </Dialog>
-
-        <header>
-            <h2 class="text-lg font-medium mt-0 mb-2">Delete Account</h2>
-            <p class="mb-0 text-sm text-muted-color">
-                Once your account is deleted, all of its resources and data will
-                be permanently deleted. Before deleting your account, please
-                download any data or information that you wish to retain.
-            </p>
-        </header>
 
         <Button
             raised
