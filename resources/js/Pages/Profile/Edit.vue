@@ -21,29 +21,74 @@ const props = defineProps({
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-bold text-xl leading-tight">Profile</h2>
+            <h1 class="font-bold text-2xl leading-tight">Profile</h1>
         </template>
 
         <Container>
             <div class="py-12">
                 <div class="space-y-6">
-                    <Card>
+                    <Card
+                        :pt="{
+                            body: {
+                                class: 'max-w-2xl space-y-3',
+                            },
+                            caption: {
+                                class: 'space-y-1',
+                            },
+                        }"
+                    >
+                        <template #title>Profile Information</template>
+                        <template #subtitle>
+                            Update your account's profile information and email
+                            address.
+                        </template>
                         <template #content>
                             <UpdateProfileInformationForm
                                 :must-verify-email="mustVerifyEmail"
                                 :status="status"
-                                class="max-w-xl"
                             />
                         </template>
                     </Card>
-                    <Card>
+
+                    <Card
+                        :pt="{
+                            body: {
+                                class: 'max-w-2xl space-y-3',
+                            },
+                            caption: {
+                                class: 'space-y-1',
+                            },
+                        }"
+                    >
+                        <template #title>Update Password</template>
+                        <template #subtitle>
+                            Ensure your account is using a long, random password
+                            to stay secure.
+                        </template>
                         <template #content>
-                            <UpdatePasswordForm class="max-w-xl" />
+                            <UpdatePasswordForm />
                         </template>
                     </Card>
-                    <Card>
+
+                    <Card
+                        :pt="{
+                            body: {
+                                class: 'max-w-2xl space-y-3',
+                            },
+                            caption: {
+                                class: 'space-y-1',
+                            },
+                        }"
+                    >
+                        <template #title>Delete Account</template>
+                        <template #subtitle>
+                            Once your account is deleted, all of its resources
+                            and data will be permanently deleted. Before
+                            deleting your account, please download any data or
+                            information that you wish to retain.
+                        </template>
                         <template #content>
-                            <DeleteUserForm class="max-w-xl" />
+                            <DeleteUserForm />
                         </template>
                     </Card>
                 </div>
