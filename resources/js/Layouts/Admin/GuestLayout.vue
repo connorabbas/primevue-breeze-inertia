@@ -1,8 +1,5 @@
 <script setup>
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-import ResponsiveCard from '@/Components/ResponsiveCard.vue';
-import Toast from 'primevue/toast';
-import Tag from 'primevue/tag';
 </script>
 
 <template>
@@ -26,9 +23,11 @@ import Tag from 'primevue/tag';
 
         <div class="w-full sm:max-w-md mt-6">
             <Toast />
-            <ResponsiveCard>
-                <slot />
-            </ResponsiveCard>
+            <Card>
+                <template #content>
+                    <slot />
+                </template>
+            </Card>
         </div>
     </div>
 </template>

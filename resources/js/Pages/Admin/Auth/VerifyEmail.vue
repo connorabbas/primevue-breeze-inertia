@@ -1,7 +1,6 @@
 <script setup>
 import { computed } from 'vue';
 import { useForm } from '@inertiajs/vue3';
-import Message from 'primevue/message';
 import AdminGuestLayout from '@/Layouts/Admin/GuestLayout.vue';
 
 const props = defineProps({

@@ -1,14 +1,12 @@
 <script setup>
 import { ref, useTemplateRef } from 'vue';
 import { useForm } from '@inertiajs/vue3';
-import Toast from 'primevue/toast';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Container from '@/Components/Container.vue';
 import ToggleThemeButton from '@/Components/ToggleThemeButton.vue';
-import LinksBreadcrumb from '@/Components/LinksBreadcrumb.vue';
-import LinksMenu from '@/Components/LinksMenu.vue';
-import LinksMenuBar from '@/Components/LinksMenuBar.vue';
-import Tag from 'primevue/tag';
+import LinksBreadcrumb from '@/Components/PrimeVue/LinksBreadcrumb.vue';
+import LinksMenu from '@/Components/PrimeVue/LinksMenu.vue';
+import LinksMenuBar from '@/Components/PrimeVue/LinksMenuBar.vue';
 import DrawerMenu from './Partials/DrawerMenu.vue';
 
 const props = defineProps({

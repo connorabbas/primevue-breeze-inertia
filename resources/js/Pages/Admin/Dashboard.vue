@@ -1,7 +1,6 @@
 <script setup>
 import AuthenticatedAdminLayout from '@/Layouts/Admin/AuthenticatedLayout.vue';
 import Container from '@/Components/Container.vue';
-import ResponsiveCard from '@/Components/ResponsiveCard.vue';
 
 const pageTitle = 'Dashboard';
 </script>
@@ -9,11 +8,13 @@ const pageTitle = 'Dashboard';
 <template>
     <Head :title="pageTitle" />
     <AuthenticatedAdminLayout :page-title="pageTitle">
-        <Container :spaced-mobile="false">
+        <Container>
             <div>
-                <ResponsiveCard>
-                    <p class="m-0">You are logged in as an Admin!</p>
-                </ResponsiveCard>
+                <Card>
+                    <template #content>
+                        <p class="m-0">You are logged in as an Admin!</p>
+                    </template>
+                </Card>
             </div>
         </Container>
     </AuthenticatedAdminLayout>

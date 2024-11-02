@@ -1,7 +1,6 @@
 <script setup>
 import { ref, useTemplateRef } from 'vue';
 import { useForm } from '@inertiajs/vue3';
-import Dialog from 'primevue/dialog';
 import InputError from '@/Components/InputError.vue';
 
 const passwordInput = useTemplateRef('password-input');

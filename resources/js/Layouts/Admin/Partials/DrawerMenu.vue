@@ -1,7 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import Drawer from 'primevue/drawer';
-import LinksPanelMenu from '@/Components/LinksPanelMenu.vue';
+import LinksPanelMenu from '@/Components/PrimeVue/LinksPanelMenu.vue';
 
 const model = defineModel();
 

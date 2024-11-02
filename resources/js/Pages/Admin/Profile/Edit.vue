@@ -31,7 +31,7 @@ const breadcrumbs = [
         :page-title="pageTitle"
         :breadcrumbs="breadcrumbs"
     >
-        <Container :spaced-mobile="false">
+        <Container>
             <div class="">
                 <div class="space-y-6">
                     <ResponsiveCard>
