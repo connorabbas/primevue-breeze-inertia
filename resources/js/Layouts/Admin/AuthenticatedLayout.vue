@@ -173,7 +173,7 @@ const drawerOpen = ref(false);
 
         <!-- Page Content -->
         <main class="grow">
-            <Toast />
+            <Toast position="top-center" />
             <slot />
         </main>
 
