@@ -1,6 +1,5 @@
 <script setup>
 import { useTemplateRef } from 'vue';
-import Menu from 'primevue/menu';
 
 const childRef = useTemplateRef('child-ref');
 defineExpose({

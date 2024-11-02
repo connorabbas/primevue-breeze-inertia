@@ -2,7 +2,6 @@
 import { useTemplateRef, onMounted } from 'vue';
 import { useForm, usePage } from '@inertiajs/vue3';
 import { useToast } from 'primevue/usetoast';
-import Message from 'primevue/message';
 import InputError from '@/Components/InputError.vue';
 
 defineProps({

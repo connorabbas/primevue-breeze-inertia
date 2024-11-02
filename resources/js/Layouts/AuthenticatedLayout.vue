@@ -1,8 +1,6 @@
 <script setup>
 import { ref, useTemplateRef, onMounted, onUnmounted, watchEffect } from 'vue';
 import { useForm } from '@inertiajs/vue3';
-import Drawer from 'primevue/drawer';
-import Toast from 'primevue/toast';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Container from '@/Components/Container.vue';
 import LinksMenu from '@/Components/LinksMenu.vue';
@@ -217,7 +215,7 @@ watchEffect(() => {
             </header>
 
             <!-- Page Content -->
-            <Toast />
+            <Toast position="top-center" />
             <main>
                 <slot />
             </main>

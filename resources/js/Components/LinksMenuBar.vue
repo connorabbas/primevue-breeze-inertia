@@ -1,6 +1,5 @@
 <script setup>
 import { useTemplateRef } from 'vue';
-import Menubar from 'primevue/menubar';
 
 const childRef = useTemplateRef('child-ref');
 defineExpose({

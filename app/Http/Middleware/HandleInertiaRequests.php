@@ -35,7 +35,7 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
             ],
             'request' => [
-                'urlParams' => $request->all(),
+                'urlParams' => $request->query(),
             ],
         ];
     }
