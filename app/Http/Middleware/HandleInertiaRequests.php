@@ -35,7 +35,7 @@ class HandleInertiaRequests extends Middleware
         } elseif (Auth::guard('admin')->check()) {
             $authenticatedUser = $request->user('admin');
         } else {
-            $authenticatedUser = $request->user();
+            $authenticatedUser = null;
         }
 
         return [
@@ -44,7 +44,7 @@ class HandleInertiaRequests extends Middleware
                 'user' => $authenticatedUser,
             ],
             'request' => [
-                'urlParams' => $request->all(),
+                'urlParams' => $request->query(),
             ],
         ];
     }
