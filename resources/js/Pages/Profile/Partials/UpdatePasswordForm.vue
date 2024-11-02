@@ -2,7 +2,6 @@
 import { useTemplateRef } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import { useToast } from 'primevue/usetoast';
-import InputError from '@/Components/InputError.vue';
 
 const currentPasswordInput = useTemplateRef('current-password-input');
 const newPasswordInput = useTemplateRef('new-password-input');
@@ -45,10 +44,8 @@ const updatePassword = () => {
 
 <template>
     <form @submit.prevent="updatePassword" class="space-y-6">
-        <div>
-            <label for="current_password" class="block mb-2"
-                >Current Password</label
-            >
+        <div class="space-y-2">
+            <label for="current_password">Current Password</label>
             <InputText
                 required
                 id="current_password"
@@ -56,14 +53,21 @@ const updatePassword = () => {
                 type="password"
                 v-model="form.current_password"
                 class="w-full"
-                :invalid="Boolean(form.errors.current_password)"
+                :invalid="Boolean(form.errors?.current_password)"
                 autocomplete="current-password"
             />
-            <InputError class="mt-2" :message="form.errors?.current_password" />
+            <Message
+                v-if="form.errors?.current_password"
+                severity="error"
+                variant="simple"
+                size="small"
+            >
+                {{ form.errors?.current_password }}
+            </Message>
         </div>
 
-        <div>
-            <label for="password" class="block mb-2">New Password</label>
+        <div class="space-y-2">
+            <label for="password">New Password</label>
             <InputText
                 required
                 id="password"
@@ -74,13 +78,18 @@ const updatePassword = () => {
                 :invalid="Boolean(form.errors.password)"
                 autocomplete="new-password"
             />
-            <InputError class="mt-2" :message="form.errors?.password" />
+            <Message
+                v-if="form.errors?.password"
+                severity="error"
+                variant="simple"
+                size="small"
+            >
+                {{ form.errors?.password }}
+            </Message>
         </div>
 
-        <div>
-            <label for="password_confirmation" class="block mb-2"
-                >Confirm Password</label
-            >
+        <div class="space-y-2">
+            <label for="password_confirmation">Confirm Password</label>
             <InputText
                 required
                 id="password_confirmation"
@@ -90,10 +99,14 @@ const updatePassword = () => {
                 :invalid="Boolean(form.errors.password_confirmation)"
                 autocomplete="new-password"
             />
-            <InputError
-                class="mt-2"
-                :message="form.errors?.password_confirmation"
-            />
+            <Message
+                v-if="form.errors?.password_confirmation"
+                severity="error"
+                variant="simple"
+                size="small"
+            >
+                {{ form.errors?.password_confirmation }}
+            </Message>
         </div>
 
         <div class="flex items-center gap-4">

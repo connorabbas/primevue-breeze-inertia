@@ -2,7 +2,6 @@
 import { useTemplateRef, onMounted } from 'vue';
 import { useForm, usePage } from '@inertiajs/vue3';
 import { useToast } from 'primevue/usetoast';
-import InputError from '@/Components/InputError.vue';
 
 defineProps({
     mustVerifyEmail: {
@@ -46,8 +45,8 @@ onMounted(() => {
 
 <template>
     <form @submit.prevent="updateProfileInformation" class="space-y-6">
-        <div>
-            <label for="name" class="block mb-2">Name</label>
+        <div class="space-y-2">
+            <label for="name">Name</label>
             <InputText
                 required
                 ref="name-input"
@@ -58,10 +57,17 @@ onMounted(() => {
                 :invalid="Boolean(form.errors.name)"
                 autocomplete="name"
             />
-            <InputError class="mt-2" :message="form.errors?.name" />
+            <Message
+                v-if="form.errors?.name"
+                severity="error"
+                variant="simple"
+                size="small"
+            >
+                {{ form.errors?.name }}
+            </Message>
         </div>
-        <div>
-            <label for="email" class="block mb-2">Email</label>
+        <div class="space-y-2">
+            <label for="email">Email</label>
             <InputText
                 required
                 id="email"
@@ -71,7 +77,14 @@ onMounted(() => {
                 :invalid="Boolean(form.errors.email)"
                 autocomplete="username"
             />
-            <InputError class="mt-2" :message="form.errors?.email" />
+            <Message
+                v-if="form.errors?.email"
+                severity="error"
+                variant="simple"
+                size="small"
+            >
+                {{ form.errors?.email }}
+            </Message>
         </div>
 
         <div v-if="mustVerifyEmail && user.email_verified_at === null">

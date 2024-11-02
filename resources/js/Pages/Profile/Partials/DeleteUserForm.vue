@@ -1,7 +1,6 @@
 <script setup>
 import { ref, useTemplateRef } from 'vue';
 import { useForm } from '@inertiajs/vue3';
-import InputError from '@/Components/InputError.vue';
 
 const passwordInput = useTemplateRef('password-input');
 const modalOpen = ref(false);
@@ -43,7 +42,7 @@ function focusPasswordInput() {
                 </p>
             </div>
 
-            <div>
+            <div class="space-y-2">
                 <InputText
                     autofocus
                     required
@@ -57,7 +56,14 @@ function focusPasswordInput() {
                     autocomplete="current-password"
                     @keyup.enter="deleteUser"
                 />
-                <InputError class="mt-2" :message="form.errors.password" />
+                <Message
+                    v-if="form.errors?.password"
+                    severity="error"
+                    variant="simple"
+                    size="small"
+                >
+                    {{ form.errors?.password }}
+                </Message>
             </div>
 
             <template #footer>

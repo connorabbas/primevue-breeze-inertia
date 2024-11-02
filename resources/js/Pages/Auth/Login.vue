@@ -2,7 +2,6 @@
 import { useTemplateRef, onMounted } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
-import InputError from '@/Components/InputError.vue';
 
 defineProps({
     canResetPassword: {
@@ -42,9 +41,9 @@ onMounted(() => {
             </Message>
         </template>
 
-        <form @submit.prevent="submit">
-            <div class="mb-6">
-                <label for="email" class="block mb-2">Email</label>
+        <form @submit.prevent="submit" class="space-y-6">
+            <div class="space-y-2">
+                <label for="email">Email</label>
                 <InputText
                     required
                     ref="email-input"
@@ -55,11 +54,18 @@ onMounted(() => {
                     :invalid="Boolean(form.errors.email)"
                     autocomplete="username"
                 />
-                <InputError class="mt-2" :message="form.errors.email" />
+                <Message
+                    v-if="form.errors?.email"
+                    severity="error"
+                    variant="simple"
+                    size="small"
+                >
+                    {{ form.errors?.email }}
+                </Message>
             </div>
 
-            <div class="mb-6">
-                <label for="password" class="block mb-2">Password</label>
+            <div class="space-y-2">
+                <label for="password">Password</label>
                 <InputText
                     required
                     id="password"
@@ -69,10 +75,17 @@ onMounted(() => {
                     :invalid="Boolean(form.errors.password)"
                     autocomplete="current-password"
                 />
-                <InputError class="mt-2 mb-1" :message="form.errors.password" />
+                <Message
+                    v-if="form.errors?.password"
+                    severity="error"
+                    variant="simple"
+                    size="small"
+                >
+                    {{ form.errors?.password }}
+                </Message>
             </div>
 
-            <div class="mb-8">
+            <div>
                 <div class="flex items-center justify-between">
                     <div class="flex items-center">
                         <Checkbox
@@ -86,7 +99,7 @@ onMounted(() => {
                 </div>
             </div>
 
-            <div class="flex justify-end items-center">
+            <div class="flex justify-end items-center pt-2">
                 <Link
                     v-if="canResetPassword"
                     :href="route('password.request')"
