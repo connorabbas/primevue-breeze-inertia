@@ -2,7 +2,6 @@
 import { useTemplateRef } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import { useToast } from 'primevue/usetoast';
-import InputError from '@/Components/InputError.vue';
 
 const currentPasswordInput = useTemplateRef('current-password-input');
 const newPasswordInput = useTemplateRef('new-password-input');
@@ -44,93 +43,94 @@ const updatePassword = () => {
 </script>
 
 <template>
-    <section>
-        <header>
-            <h2 class="text-lg font-medium mt-0 mb-2">Update Password</h2>
-            <p class="mb-0 text-sm text-muted-color">
-                Ensure your account is using a long, random password to stay
-                secure.
-            </p>
-        </header>
+    <form @submit.prevent="updatePassword" class="space-y-6">
+        <div class="space-y-2">
+            <label for="current_password">Current Password</label>
+            <InputText
+                required
+                id="current_password"
+                ref="current-password-input"
+                type="password"
+                v-model="form.current_password"
+                class="w-full"
+                :invalid="Boolean(form.errors?.current_password)"
+                autocomplete="current-password"
+            />
+            <Message
+                v-if="form.errors?.current_password"
+                severity="error"
+                variant="simple"
+                size="small"
+            >
+                {{ form.errors?.current_password }}
+            </Message>
+        </div>
 
-        <form @submit.prevent="updatePassword" class="mt-6 space-y-6">
-            <div>
-                <label for="current_password" class="block mb-2"
-                    >Current Password</label
+        <div class="space-y-2">
+            <label for="password">New Password</label>
+            <InputText
+                required
+                id="password"
+                ref="new-password-input"
+                type="password"
+                v-model="form.password"
+                class="w-full"
+                :invalid="Boolean(form.errors.password)"
+                autocomplete="new-password"
+            />
+            <Message
+                v-if="form.errors?.password"
+                severity="error"
+                variant="simple"
+                size="small"
+            >
+                {{ form.errors?.password }}
+            </Message>
+        </div>
+
+        <div class="space-y-2">
+            <label for="password_confirmation">Confirm Password</label>
+            <InputText
+                required
+                id="password_confirmation"
+                type="password"
+                v-model="form.password_confirmation"
+                class="w-full"
+                :invalid="Boolean(form.errors.password_confirmation)"
+                autocomplete="new-password"
+            />
+            <Message
+                v-if="form.errors?.password_confirmation"
+                severity="error"
+                variant="simple"
+                size="small"
+            >
+                {{ form.errors?.password_confirmation }}
+            </Message>
+        </div>
+
+        <div class="flex items-center gap-4">
+            <Button
+                raised
+                type="submit"
+                :loading="form.processing"
+                label="Save"
+                severity="contrast"
+            />
+
+            <Transition
+                enter-active-class="transition ease-in-out"
+                enter-from-class="opacity-0"
+                leave-active-class="transition ease-in-out"
+                leave-to-class="opacity-0"
+            >
+                <p
+                    v-if="form.recentlySuccessful"
+                    class="text-sm text-muted-color"
                 >
-                <InputText
-                    required
-                    id="current_password"
-                    ref="current-password-input"
-                    type="password"
-                    v-model="form.current_password"
-                    class="w-full"
-                    :invalid="Boolean(form.errors.current_password)"
-                    autocomplete="current-password"
-                />
-                <InputError
-                    class="mt-2"
-                    :message="form.errors?.current_password"
-                />
-            </div>
-
-            <div>
-                <label for="password" class="block mb-2">New Password</label>
-                <InputText
-                    required
-                    id="password"
-                    ref="new-password-input"
-                    type="password"
-                    v-model="form.password"
-                    class="w-full"
-                    :invalid="Boolean(form.errors.password)"
-                    autocomplete="new-password"
-                />
-                <InputError class="mt-2" :message="form.errors?.password" />
-            </div>
-
-            <div>
-                <label for="password_confirmation" class="block mb-2"
-                    >Confirm Password</label
-                >
-                <InputText
-                    required
-                    id="password_confirmation"
-                    type="password"
-                    v-model="form.password_confirmation"
-                    class="w-full"
-                    :invalid="Boolean(form.errors.password_confirmation)"
-                    autocomplete="new-password"
-                />
-                <InputError
-                    class="mt-2"
-                    :message="form.errors?.password_confirmation"
-                />
-            </div>
-
-            <div class="flex items-center gap-4">
-                <Button
-                    raised
-                    type="submit"
-                    :loading="form.processing"
-                    label="Save"
-                    severity="contrast"
-                />
-
-                <Transition
-                    enter-active-class="transition ease-in-out"
-                    enter-from-class="opacity-0"
-                    leave-active-class="transition ease-in-out"
-                    leave-to-class="opacity-0"
-                >
-                    <p
-                        v-if="form.recentlySuccessful"
-                        class="text-sm text-muted-color"
-                    >
-                        Saved.
-                    </p>
-                </Transition>
-            </div>
-        </form>
-    </section>
+                    Saved.
+                </p>
+            </Transition>
+        </div>
+    </form>
 </template>

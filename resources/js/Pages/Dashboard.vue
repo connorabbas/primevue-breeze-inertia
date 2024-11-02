@@ -1,20 +1,21 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Container from '@/Components/Container.vue';
-import ResponsiveCard from '@/Components/ResponsiveCard.vue';
 </script>
 
 <template>
     <Head title="Dashboard" />
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-bold text-xl leading-tight">Dashboard</h2>
+            <h1 class="font-bold text-2xl leading-tight">Dashboard</h1>
         </template>
-        <Container :spaced-mobile="false">
+        <Container>
             <div class="py-12">
-                <ResponsiveCard>
-                    <p class="m-0">You are logged in!</p>
-                </ResponsiveCard>
+                <Card>
+                    <template #content>
+                        <p class="m-0">You are logged in!</p>
+                    </template>
+                </Card>
             </div>
         </Container>
     </AuthenticatedLayout>

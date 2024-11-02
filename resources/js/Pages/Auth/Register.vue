@@ -2,7 +2,6 @@
 import { useTemplateRef, onMounted } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
-import InputError from '@/Components/InputError.vue';
 
 const form = useForm({
     name: '',
@@ -28,9 +27,9 @@ onMounted(() => {
     <GuestLayout>
         <Head title="Register" />
 
-        <form @submit.prevent="submit">
-            <div class="mb-6">
-                <label for="name" class="block mb-2">Name</label>
+        <form @submit.prevent="submit" class="space-y-6">
+            <div class="space-y-2">
+                <label for="name">Name</label>
                 <InputText
                     ref="name-input"
                     id="name"
@@ -41,11 +40,18 @@ onMounted(() => {
                     required
                     autocomplete="name"
                 />
-                <InputError class="mt-2" :message="form.errors.name" />
+                <Message
+                    v-if="form.errors?.name"
+                    severity="error"
+                    variant="simple"
+                    size="small"
+                >
+                    {{ form.errors?.name }}
+                </Message>
             </div>
 
-            <div class="mb-6">
-                <label for="email" class="block mb-2">Email</label>
+            <div class="space-y-2">
+                <label for="email">Email</label>
                 <InputText
                     id="email"
                     type="email"
@@ -55,11 +61,18 @@ onMounted(() => {
                     required
                     autocomplete="username"
                 />
-                <InputError class="mt-2" :message="form.errors.email" />
+                <Message
+                    v-if="form.errors?.email"
+                    severity="error"
+                    variant="simple"
+                    size="small"
+                >
+                    {{ form.errors?.email }}
+                </Message>
             </div>
 
-            <div class="mb-6">
-                <label for="password" class="block mb-2">Password</label>
+            <div class="space-y-2">
+                <label for="password">Password</label>
                 <InputText
                     id="password"
                     type="password"
@@ -69,13 +82,18 @@ onMounted(() => {
                     required
                     autocomplete="new-password"
                 />
-                <InputError class="mt-2 mb-1" :message="form.errors.password" />
+                <Message
+                    v-if="form.errors?.password"
+                    severity="error"
+                    variant="simple"
+                    size="small"
+                >
+                    {{ form.errors?.password }}
+                </Message>
             </div>
 
-            <div class="mb-6">
-                <label for="password_confirmation" class="block mb-2"
-                    >Confirm Password</label
-                >
+            <div class="space-y-2">
+                <label for="password_confirmation">Confirm Password</label>
                 <InputText
                     id="password_confirmation"
                     type="password"
@@ -85,13 +103,17 @@ onMounted(() => {
                     required
                     autocomplete="new-password"
                 />
-                <InputError
-                    class="mt-2 mb-1"
-                    :message="form.errors.password_confirmation"
-                />
+                <Message
+                    v-if="form.errors?.password_confirmation"
+                    severity="error"
+                    variant="simple"
+                    size="small"
+                >
+                    {{ form.errors?.password_confirmation }}
+                </Message>
             </div>
 
-            <div class="flex justify-end items-center">
+            <div class="flex justify-end items-center pt-2">
                 <Link
                     :href="route('login')"
                     class="mr-4 text-muted-color underline text-muted-color hover:text-color"
