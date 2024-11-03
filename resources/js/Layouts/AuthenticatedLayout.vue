@@ -93,7 +93,7 @@ watchEffect(() => {
                         :model="mainMenuItems"
                         :pt="{
                             root: {
-                                class: 'px-0 py-3 border-0 rounded-none',
+                                class: 'px-0 py-3 border-0 rounded-none bg-surface-0 dark:bg-surface-900',
                             },
                             button: {
                                 class: 'hidden',
