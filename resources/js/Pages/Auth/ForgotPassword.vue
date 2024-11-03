@@ -1,9 +1,7 @@
 <script setup>
 import { useTemplateRef, onMounted } from 'vue';
 import { useForm } from '@inertiajs/vue3';
-import Message from 'primevue/message';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
-import InputError from '@/Components/InputError.vue';
 
 defineProps({
     status: {
@@ -42,9 +40,9 @@ onMounted(() => {
             you to choose a new one.
         </div>
 
-        <form @submit.prevent="submit">
-            <div class="mb-6">
-                <label for="email" class="block mb-2">Email</label>
+        <form @submit.prevent="submit" class="space-y-6">
+            <div class="space-y-2">
+                <label for="email">Email</label>
                 <InputText
                     required
                     ref="email-input"
@@ -55,7 +53,14 @@ onMounted(() => {
                     :invalid="Boolean(form.errors.email)"
                     autocomplete="username"
                 />
-                <InputError class="mt-2" :message="form.errors.email" />
+                <Message
+                    v-if="form.errors?.email"
+                    severity="error"
+                    variant="simple"
+                    size="small"
+                >
+                    {{ form.errors?.email }}
+                </Message>
             </div>
 
             <div class="flex justify-end items-center">

@@ -1,13 +1,11 @@
 <script setup>
 import { ref, useTemplateRef, onMounted, onUnmounted, watchEffect } from 'vue';
 import { useForm } from '@inertiajs/vue3';
-import Drawer from 'primevue/drawer';
-import Toast from 'primevue/toast';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Container from '@/Components/Container.vue';
-import LinksMenu from '@/Components/LinksMenu.vue';
-import LinksMenuBar from '@/Components/LinksMenuBar.vue';
-import LinksPanelMenu from '@/Components/LinksPanelMenu.vue';
+import LinksMenu from '@/Components/PrimeVue/LinksMenu.vue';
+import LinksMenuBar from '@/Components/PrimeVue/LinksMenuBar.vue';
+import LinksPanelMenu from '@/Components/PrimeVue/LinksPanelMenu.vue';
 import ToggleThemeButton from '@/Components/ToggleThemeButton.vue';
 
 const currentRoute = route().current();
@@ -97,7 +95,7 @@ if (import.meta.env.SSR === false) {
                         :model="mainMenuItems"
                         :pt="{
                             root: {
-                                class: 'px-0 py-3 border-0 rounded-none',
+                                class: 'px-0 py-3 border-0 rounded-none bg-surface-0 dark:bg-surface-900',
                             },
                             button: {
                                 class: 'hidden',
@@ -219,7 +217,7 @@ if (import.meta.env.SSR === false) {
             </header>
 
             <!-- Page Content -->
-            <Toast />
+            <Toast position="top-center" />
             <main>
                 <slot />
             </main>

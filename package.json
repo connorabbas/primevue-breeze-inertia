@@ -7,16 +7,19 @@
     },
     "devDependencies": {
         "@inertiajs/vue3": "^1.0.0",
-        "@primevue/themes": "^4.0.0",
+        "@primevue/auto-import-resolver": "^4.2.1",
+        "@primevue/themes": "^4.2.1",
         "@vitejs/plugin-vue": "^5.0.0",
         "autoprefixer": "^10.4.19",
         "axios": "^1.6.4",
         "laravel-vite-plugin": "^1.0",
         "postcss": "^8.4.39",
+        "postcss-import": "^16.1.0",
         "primeicons": "^7.0.0",
-        "primevue": "^4.0.0",
+        "primevue": "^4.2.1",
         "tailwindcss": "^3.4.4",
         "tailwindcss-primeui": "^0.3.2",
+        "unplugin-vue-components": "^0.27.4",
         "vite": "^5.0",
         "vue": "^3.5.0"
     },
@@ -24,6 +27,7 @@
         "@vue/server-renderer": "^3.5.10",
         "@vueuse/integrations": "^11.1.0",
         "universal-cookie": "^7.2.0",
-        "ziggy-js": "^2.3.0"
+        "ziggy-js": "^2.3.0",
+        "lodash": "^4.17.21"
     }
 }

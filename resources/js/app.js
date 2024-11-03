@@ -9,8 +9,6 @@ import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 
 import PrimeVue from 'primevue/config';
 import ToastService from 'primevue/toastservice';
-import InputText from 'primevue/inputtext';
-import Button from 'primevue/button';
 
 import { useTheme } from '@/Composables/useTheme.js';
 import customThemePreset from '@/theme-preset.js';
@@ -39,8 +37,6 @@ createInertiaApp({
             .use(ToastService)
             .component('Head', Head)
             .component('Link', Link)
-            .component('InputText', InputText)
-            .component('Button', Button)
             .mount(el);
     },
     progress: {
