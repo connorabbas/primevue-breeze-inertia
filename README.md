@@ -4,7 +4,7 @@ A starter kit using [Laravel Breeze](https://laravel.com/docs/master/starter-kit
 ## Installation 
 1. Clone the repo (or download the zip)
    ```
-   git clone --single-branch --branch admin-panel https://github.com/connorabbas/primevue-breeze-inertia.git
+   git clone --single-branch --branch feature/admin-panel https://github.com/connorabbas/primevue-breeze-inertia.git
    ```
 
 2. Step into the project directory

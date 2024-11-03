@@ -16,6 +16,8 @@
         }"
     >
         <template #item="{ item }">
+            <!-- add if using 'nora' preset theme -->
+            <!-- hover:text-primary-100 hover:dark:text-primary-950 -->
             <Link
                 v-if="item.route"
                 :href="item.route"
@@ -23,14 +25,14 @@
                 class="flex items-center cursor-pointer no-underline px-4 py-2"
                 :class="
                     item.active
-                        ? 'text-primary'
+                        ? 'font-bold text-primary'
                         : 'text-surface-700 dark:text-surface-0'
                 "
             >
                 <span
                     v-show="item.icon"
                     :class="item.icon"
-                    class="p-panelmenu-item-icon mr-2"
+                    class="mr-2"
                 />
                 <span>{{ item.label }}</span>
             </Link>
@@ -43,7 +45,7 @@
                 <span
                     v-show="item.icon"
                     :class="item.icon"
-                    class="p-panelmenu-item-icon mr-2"
+                    class="mr-2"
                 />
                 <span>{{ item.label }}</span>
                 <span v-if="item.items" class="pi pi-angle-down ml-auto" />
