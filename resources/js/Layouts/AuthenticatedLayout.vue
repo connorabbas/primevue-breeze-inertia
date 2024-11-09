@@ -134,7 +134,7 @@ watchEffect(() => {
                                         <span class="text-base">
                                             {{ $page.props.auth.user.name }}
                                         </span>
-                                        <i class="pi pi-angle-down ml-1"></i>
+                                        <i class="pi pi-angle-down"></i>
                                     </Button>
                                 </div>
                             </div>

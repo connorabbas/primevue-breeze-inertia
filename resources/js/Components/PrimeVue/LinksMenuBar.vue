@@ -21,6 +21,7 @@ defineExpose({
                 class="p-menubar-item-link"
                 :class="{
                     'font-bold text-primary': item.active,
+                    'text-muted-color': root && !item.active,
                 }"
                 custom
             >
@@ -37,6 +38,9 @@ defineExpose({
                 :target="item.target"
                 v-bind="props.action"
                 class="p-menubar-item-link"
+                :class="{
+                    'text-muted-color': root,
+                }"
             >
                 <span
                     v-show="item.icon"
@@ -47,11 +51,8 @@ defineExpose({
                 <i
                     v-if="hasSubmenu"
                     :class="[
-                        'pi pi-angle-down',
-                        {
-                            'pi-angle-down ml-2': root,
-                            'pi-angle-right ml-auto': !root,
-                        },
+                        'pi text-muted-color',
+                        root ? 'pi-angle-down text-xs' : 'pi-angle-right',
                     ]"
                 ></i>
             </a>
