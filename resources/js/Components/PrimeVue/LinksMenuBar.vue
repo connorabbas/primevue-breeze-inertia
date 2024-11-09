@@ -8,7 +8,7 @@ defineExpose({
 </script>
 
 <template>
-    <Menubar ref="child-ref">
+    <Menubar ref="child-ref" breakpoint="1024px">
         <template v-if="$slots.start" #start>
             <slot name="start"></slot>
         </template>
