@@ -15,7 +15,7 @@
             },
         }"
     >
-        <template #item="{ item }">
+        <template #item="{ item, active }">
             <!-- add if using 'nora' preset theme -->
             <!-- hover:text-primary-100 hover:dark:text-primary-950 -->
             <Link
@@ -48,7 +48,13 @@
                     class="p-panelmenu-item-icon mr-2"
                 />
                 <span>{{ item.label }}</span>
-                <span v-if="item.items" class="pi pi-angle-down ml-auto" />
+                <span
+                    v-if="item.items"
+                    :class="[
+                        'pi text-muted-color ml-auto',
+                        active ? 'pi-angle-down' : 'pi-angle-right',
+                    ]"
+                />
             </a>
         </template>
     </PanelMenu>
