@@ -70,7 +70,7 @@ onUnmounted(() => {
     window.removeEventListener('resize', updateWidth);
 });
 watchEffect(() => {
-    if (windowWidth.value > 768) {
+    if (windowWidth.value > 1024) {
         mobileMenuOpen.value = false;
     }
 });
@@ -111,7 +111,7 @@ watchEffect(() => {
                             </div>
                         </template>
                         <template #end>
-                            <div class="hidden md:flex md:items-center md:ms-6">
+                            <div class="hidden lg:flex items-center ms-6">
                                 <ToggleThemeButton
                                     text
                                     severity="secondary"
@@ -139,15 +139,19 @@ watchEffect(() => {
                                 </div>
                             </div>
 
-                            <!-- Hamburger -->
-                            <div class="flex items-center md:hidden">
+                            <!-- Mobile Hamburger -->
+                            <div class="flex items-center lg:hidden">
                                 <div class="relative">
                                     <Button
                                         text
-                                        rounded
                                         severity="secondary"
                                         icon="pi pi-bars"
                                         @click="mobileMenuOpen = true"
+                                        :pt="{
+                                            icon: {
+                                                class: 'text-xl',
+                                            },
+                                        }"
                                     />
                                 </div>
                             </div>
