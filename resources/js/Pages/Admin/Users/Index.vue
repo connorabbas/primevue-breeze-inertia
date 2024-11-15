@@ -67,7 +67,7 @@ const {
         :page-title="pageTitle"
         :breadcrumbs="breadcrumbs"
     >
-        <template #headerEnd>
+        <template #titleEnd>
             <Button
                 v-if="hasFilteringApplied"
                 severity="secondary"
