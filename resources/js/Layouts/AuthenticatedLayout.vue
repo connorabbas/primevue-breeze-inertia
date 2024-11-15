@@ -83,8 +83,8 @@ watchEffect(() => {
                 class="dynamic-bg border-b"
                 :class="
                     $slots.header
-                        ? 'border-surface-100 dark:border-surface-800'
-                        : 'border-surface-0 dark:border-surface-900 shadow'
+                        ? 'dynamic-border'
+                        : 'shadow'
                 "
             >
                 <!-- Primary Navigation Menu -->
