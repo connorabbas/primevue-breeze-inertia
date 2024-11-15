@@ -7,8 +7,8 @@ const pageTitle = 'Dashboard';
 
 <template>
     <Head :title="pageTitle" />
-    <AuthenticatedAdminLayout :page-title="pageTitle">
-        <Container>
+    <AuthenticatedAdminLayout>
+        <Container class="py-4 md:py-8">
             <div>
                 <Card>
                     <template #content>
