@@ -1,7 +1,7 @@
-import Aura from '@primevue/themes/aura';
+import Preset from '@primevue/themes/lara';
 import { definePreset } from '@primevue/themes';
 
-const customThemePreset = definePreset(Aura, {
+const customThemePreset = definePreset(Preset, {
     semantic: {
         primary: {
             50: '{indigo.50}',

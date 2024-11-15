@@ -5,13 +5,21 @@ const props = defineProps({
         default: true,
         required: false,
     },
+    fluid: {
+        type: Boolean,
+        default: true,
+        required: false,
+    },
 });
 </script>
 
 <template>
     <div
-        :class="[spacedMobile ? 'px-4' : 'px-0']"
-        class="max-w-screen-2xl mx-auto sm:px-4"
+        :class="[
+            { 'max-w-screen-2xl mx-auto': !fluid },
+            spacedMobile ? 'px-4' : 'px-0',
+            'md:px-8',
+        ]"
     >
         <slot />
     </div>

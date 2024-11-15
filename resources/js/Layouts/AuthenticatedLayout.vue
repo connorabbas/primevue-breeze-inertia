@@ -70,7 +70,7 @@ onUnmounted(() => {
     window.removeEventListener('resize', updateWidth);
 });
 watchEffect(() => {
-    if (windowWidth.value > 768) {
+    if (windowWidth.value > 1024) {
         mobileMenuOpen.value = false;
     }
 });
@@ -80,11 +80,11 @@ watchEffect(() => {
     <div>
         <div class="min-h-screen">
             <nav
-                class="bg-surface-0 dark:bg-surface-900 border-b"
+                class="dynamic-bg border-b"
                 :class="
                     $slots.header
-                        ? 'border-surface-100 dark:border-surface-800'
-                        : 'border-surface-0 dark:border-surface-900 shadow'
+                        ? 'dynamic-border'
+                        : 'shadow'
                 "
             >
                 <!-- Primary Navigation Menu -->
@@ -93,7 +93,7 @@ watchEffect(() => {
                         :model="mainMenuItems"
                         :pt="{
                             root: {
-                                class: 'px-0 py-3 border-0 rounded-none',
+                                class: 'px-0 py-3 border-0 rounded-none dynamic-bg',
                             },
                             button: {
                                 class: 'hidden',
@@ -111,7 +111,7 @@ watchEffect(() => {
                             </div>
                         </template>
                         <template #end>
-                            <div class="hidden md:flex md:items-center md:ms-6">
+                            <div class="hidden lg:flex items-center ms-6">
                                 <ToggleThemeButton
                                     text
                                     severity="secondary"
@@ -123,7 +123,6 @@ watchEffect(() => {
                                         :model="userMenuItems"
                                         popup
                                         ref="user-menu"
-                                        class="shadow"
                                     />
                                     <Button
                                         text
@@ -134,20 +133,24 @@ watchEffect(() => {
                                         <span class="text-base">
                                             {{ $page.props.auth.user.name }}
                                         </span>
-                                        <i class="pi pi-angle-down ml-1"></i>
+                                        <i class="pi pi-angle-down"></i>
                                     </Button>
                                 </div>
                             </div>
 
-                            <!-- Hamburger -->
-                            <div class="flex items-center md:hidden">
+                            <!-- Mobile Hamburger -->
+                            <div class="flex items-center lg:hidden">
                                 <div class="relative">
                                     <Button
                                         text
-                                        rounded
                                         severity="secondary"
                                         icon="pi pi-bars"
                                         @click="mobileMenuOpen = true"
+                                        :pt="{
+                                            icon: {
+                                                class: 'text-xl',
+                                            },
+                                        }"
                                     />
                                 </div>
                             </div>
@@ -204,7 +207,7 @@ watchEffect(() => {
 
             <!-- Page Heading -->
             <header
-                class="bg-surface-0 dark:bg-surface-900 shadow"
+                class="dynamic-bg shadow"
                 v-if="$slots.header"
             >
                 <Container>

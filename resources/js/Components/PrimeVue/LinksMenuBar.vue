@@ -8,18 +8,20 @@ defineExpose({
 </script>
 
 <template>
-    <Menubar ref="child-ref">
+    <Menubar ref="child-ref" breakpoint="1024px">
         <template v-if="$slots.start" #start>
             <slot name="start"></slot>
         </template>
         <template #item="{ item, props, hasSubmenu, root }">
+            <!-- add if using 'nora' preset theme -->
+            <!-- hover:text-primary-100 hover:dark:text-primary-950 -->
             <Link
                 v-if="item.route"
                 :href="item.route"
                 class="p-menubar-item-link"
                 :class="{
-                    'font-bold text-primary dark:text-primary-300 bg-primary-50 dark:bg-primary-950 rounded-lg':
-                        item.active,
+                    'font-bold text-primary': item.active,
+                    'text-muted-color': root && !item.active,
                 }"
                 custom
             >
@@ -36,6 +38,9 @@ defineExpose({
                 :target="item.target"
                 v-bind="props.action"
                 class="p-menubar-item-link"
+                :class="{
+                    'text-muted-color': root,
+                }"
             >
                 <span
                     v-show="item.icon"
@@ -46,11 +51,8 @@ defineExpose({
                 <i
                     v-if="hasSubmenu"
                     :class="[
-                        'pi pi-angle-down',
-                        {
-                            'pi-angle-down ml-2': root,
-                            'pi-angle-right ml-auto': !root,
-                        },
+                        'pi text-muted-color',
+                        root ? 'pi-angle-down text-xs' : 'pi-angle-right',
                     ]"
                 ></i>
             </a>
