@@ -1,193 +1,132 @@
 <script setup>
-import { ref, useTemplateRef } from 'vue';
-import { useForm } from '@inertiajs/vue3';
-import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-import Container from '@/Components/Container.vue';
-import ToggleThemeButton from '@/Components/ToggleThemeButton.vue';
+import { ref, useTemplateRef, onMounted } from 'vue';
+import { usePage } from '@inertiajs/vue3';
 import LinksBreadcrumb from '@/Components/PrimeVue/LinksBreadcrumb.vue';
-import LinksMenu from '@/Components/PrimeVue/LinksMenu.vue';
-import LinksMenuBar from '@/Components/PrimeVue/LinksMenuBar.vue';
-import DrawerMenu from './Partials/DrawerMenu.vue';
+import MobileSidebarNavDrawer from './Partials/MobileSidebarNavDrawer.vue';
+import TopNav from './Partials/TopNav.vue';
+import Footer from './Partials/Footer.vue';
+import SideMenuItems from './Partials/SideMenuItems.vue';
 
 const props = defineProps({
     pageTitle: {
-        required: false,
         type: String,
+        required: false,
     },
     breadcrumbs: {
-        required: false,
         type: Array,
+        required: false,
         default: () => [],
     },
 });
 
-// User menu
-const logoutForm = useForm({});
-const userMenu = useTemplateRef('user-menu');
-const userMenuItems = [
-    {
-        label: 'Profile',
-        route: route('admin.profile.edit'),
-        icon: 'pi pi-fw pi-user',
-    },
-    {
-        label: 'Log Out',
-        icon: 'pi pi-fw pi-sign-out',
-        command: () => {
-            logoutForm.post(route('admin.logout'));
-        },
-    },
-];
-const toggleUserMenu = (event) => {
-    userMenu.value.childRef.toggle(event);
-};
+const page = usePage();
 
-// Drawer menu
-const drawerOpen = ref(false);
+// Drawer menus
+const navDrawerOpen = ref(false);
+
+// Dynamic header height for arbitrary class styling
+const headerHeight = ref('');
+const siteHeader = useTemplateRef('site-header');
+onMounted(() => {
+    if (siteHeader.value) {
+        headerHeight.value = `${siteHeader.value.offsetHeight}px`;
+    }
+});
 </script>
 
 <template>
-    <div class="h-screen flex flex-col">
-        <!-- Navigation Menu -->
-        <nav
-            class="bg-surface-0 dark:bg-surface-900 border-b mb-8"
-            :class="
-                $slots.header
-                    ? 'border-surface-100 dark:border-surface-800'
-                    : 'border-surface-0 dark:border-surface-900 shadow'
-            "
-        >
-            <Container>
-                <LinksMenuBar
-                    :pt="{
-                        root: {
-                            class: 'px-0 py-3 border-0 rounded-none bg-surface-0 dark:bg-surface-900',
-                        },
-                        button: {
-                            class: 'hidden',
-                        },
-                    }"
-                >
-                    <template #start>
-                        <div class="flex">
-                            <!-- Logo -->
-                            <div class="shrink-0 flex items-center">
-                                <Button
-                                    outlined
-                                    severity="secondary"
-                                    icon="pi pi-bars"
-                                    @click="drawerOpen = true"
-                                    :pt="{
-                                        icon: {
-                                            class: 'text-xl',
-                                        },
-                                    }"
-                                    class="mr-5"
-                                />
-                                <Link :href="route('welcome')" class="mr-5">
-                                    <ApplicationLogo
-                                        class="block h-10 w-auto fill-current text-surface-900 dark:text-surface-0"
-                                    />
-                                </Link>
-                                <Tag value="Primary">ADMIN</Tag>
-                            </div>
-                        </div>
-                    </template>
-                    <template #end>
-                        <div class="flex items-center ms-6">
-                            <ToggleThemeButton
-                                text
-                                severity="secondary"
-                                rounded
-                                :pt="{
-                                    icon: {
-                                        class: 'text-xl md:text-base',
-                                    },
-                                }"
-                            />
-                            <!-- User Dropdown Menu -->
-                            <div class="ms-3 relative">
-                                <LinksMenu
-                                    :model="userMenuItems"
-                                    popup
-                                    ref="user-menu"
-                                    class="shadow"
-                                />
-                                <Button
-                                    class="hidden md:flex"
-                                    text
-                                    size="small"
-                                    severity="secondary"
-                                    @click="toggleUserMenu($event)"
-                                >
-                                    <span class="text-base">
-                                        {{ $page.props.auth.user.name }}
-                                    </span>
-                                    <i class="pi pi-angle-down"></i>
-                                </Button>
-                                <Button
-                                    class="flex md:hidden"
-                                    icon="pi pi-user"
-                                    text
-                                    rounded
-                                    severity="secondary"
-                                    :pt="{
-                                        icon: {
-                                            class: 'text-xl',
-                                        },
-                                    }"
-                                    @click="toggleUserMenu($event)"
-                                />
-                            </div>
-                        </div>
-                    </template>
-                </LinksMenuBar>
-            </Container>
-            <DrawerMenu v-model="drawerOpen" />
-        </nav>
+    <Teleport to="body">
+        <Toast position="top-center" />
+        <MobileSidebarNavDrawer v-model="navDrawerOpen">
+            <SideMenuItems />
+        </MobileSidebarNavDrawer>
+    </Teleport>
 
-        <!-- Page Heading -->
-        <header v-if="pageTitle" class="mb-6">
-            <Container>
-                <div class="flex items-end justify-between flex-wrap">
-                    <div>
-                        <LinksBreadcrumb
-                            v-if="breadcrumbs.length"
-                            :model="breadcrumbs"
-                            class="mb-4"
-                        />
-                        <h1
-                            class="font-bold text-2xl sm:text-3xl leading-tight"
-                        >
-                            {{ pageTitle }}
-                        </h1>
-                    </div>
-                    <div>
-                        <div v-if="$slots.headerEnd">
-                            <slot name="headerEnd" />
-                        </div>
-                    </div>
-                </div>
-            </Container>
+    <div class="h-screen flex flex-col">
+        <header
+            id="site-header"
+            ref="site-header"
+            class="block lg:fixed top-0 left-0 right-0 z-50"
+        >
+            <!-- Main Nav -->
+            <TopNav
+                @open-nav="navDrawerOpen = true"
+            />
         </header>
 
-        <!-- Page Content -->
-        <main class="grow">
-            <Toast position="top-center" />
-            <slot />
-        </main>
-
-        <!-- Footer -->
-        <footer
-            class="w-full mt-10 border-t border-surface-100 dark:border-surface-800"
-        >
-            <div
-                class="flex justify-center bg-surface-0 dark:bg-surface-900 py-6"
+        <main class="flex-1">
+            <!-- Desktop Sidebar -->
+            <aside
+                :class="[
+                    'w-[18rem] inset-0 hidden lg:block fixed overflow-y-auto overflow-x-hidden dynamic-bg border-r dynamic-border',
+                    `top-[${headerHeight}]`,
+                ]"
             >
-                <p class="text-muted-color">
-                    Your Company - {{ new Date().getFullYear() }}
-                </p>
+                <div class="w-full px-8 py-6">
+                    <SideMenuItems />
+                </div>
+            </aside>
+
+            <!-- Scrollable Content -->
+            <div
+                :class="[
+                    'flex flex-col h-full lg:pl-[18rem]',
+                    `lg:pt-[${headerHeight}]`,
+                ]"
+            >
+                <!-- Breadcrumbs Nav -->
+                <nav
+                    v-if="breadcrumbs.length"
+                    class="dynamic-bg border-b dynamic-border"
+                >
+                    <Container>
+                        <div
+                            class="flex items-center justify-between flex-wrap"
+                        >
+                            <div>
+                                <LinksBreadcrumb
+                                    :model="breadcrumbs"
+                                    class="py-3 lg:py-5"
+                                />
+                            </div>
+                            <div>
+                                <div v-if="$slots.headerEnd" class="py-3">
+                                    <slot name="headerEnd" />
+                                </div>
+                            </div>
+                        </div>
+                    </Container>
+                </nav>
+
+                <!-- Page Title -->
+                <section v-if="pageTitle">
+                    <Container class="my-4 md:mt-8 md:mb-6">
+                        <div class="flex items-end justify-between flex-wrap">
+                            <div>
+                                <h1
+                                    class="font-bold text-2xl md:text-3xl leading-tight"
+                                >
+                                    {{ pageTitle }}
+                                </h1>
+                            </div>
+                            <div>
+                                <div v-if="$slots.titleEnd">
+                                    <slot name="titleEnd" />
+                                </div>
+                            </div>
+                        </div>
+                    </Container>
+                </section>
+
+                <!-- Page Content -->
+                <section id="page-content" class="grow">
+                    <slot />
+                </section>
+
+                <footer class="">
+                    <Footer />
+                </footer>
             </div>
-        </footer>
+        </main>
     </div>
 </template>

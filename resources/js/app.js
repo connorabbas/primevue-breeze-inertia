@@ -14,6 +14,8 @@ import Tooltip from 'primevue/tooltip';
 import { useTheme } from '@/Composables/useTheme.js';
 import customThemePreset from '@/theme-preset.js';
 
+import Container from './Components/Container.vue';
+
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 createInertiaApp({
@@ -38,6 +40,7 @@ createInertiaApp({
             .use(ToastService)
             .component('Head', Head)
             .component('Link', Link)
+            .component('Container', Container)
             .directive('tooltip', Tooltip)
             .mount(el);
     },

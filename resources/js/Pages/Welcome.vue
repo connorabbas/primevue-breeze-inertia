@@ -69,7 +69,7 @@ const dashboardRoute = computed(() => {
                                 <Button
                                     raised
                                     label="Dashboard"
-                                    icon="pi pi-home"
+                                    icon="pi pi-th-large"
                                     class="mr-4"
                                 />
                             </Link>
