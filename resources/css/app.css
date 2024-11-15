@@ -7,3 +7,12 @@
     @tailwind components;
     @tailwind utilities;
 }
+
+@layer components {
+    .dynamic-bg {
+        @apply bg-surface-0 dark:bg-surface-900;
+    }
+    .dynamic-border {
+        @apply border-surface-100 dark:border-surface-800;
+    }
+}
