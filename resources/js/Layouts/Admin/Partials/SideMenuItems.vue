@@ -1,7 +1,7 @@
 <script setup>
 import LinksPanelMenu from '@/Components/PrimeVue/LinksPanelMenu.vue';
 
-// Nav Menu
+// Nav Items
 const currentRoute = route().current();
 const homeMenuItems = [
     {
