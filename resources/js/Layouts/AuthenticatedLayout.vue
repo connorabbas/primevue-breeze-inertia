@@ -123,7 +123,6 @@ watchEffect(() => {
                                         :model="userMenuItems"
                                         popup
                                         ref="user-menu"
-                                        class="shadow"
                                     />
                                     <Button
                                         text
