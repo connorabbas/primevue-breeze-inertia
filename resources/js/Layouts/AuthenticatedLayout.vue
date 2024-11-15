@@ -80,11 +80,11 @@ watchEffect(() => {
     <div>
         <div class="min-h-screen">
             <nav
-                class="bg-surface-0 dark:bg-surface-900 border-b"
+                class="dynamic-bg border-b"
                 :class="
                     $slots.header
-                        ? 'border-surface-100 dark:border-surface-800'
-                        : 'border-surface-0 dark:border-surface-900 shadow'
+                        ? 'dynamic-border'
+                        : 'shadow'
                 "
             >
                 <!-- Primary Navigation Menu -->
@@ -93,7 +93,7 @@ watchEffect(() => {
                         :model="mainMenuItems"
                         :pt="{
                             root: {
-                                class: 'px-0 py-3 border-0 rounded-none bg-surface-0 dark:bg-surface-900',
+                                class: 'px-0 py-3 border-0 rounded-none dynamic-bg',
                             },
                             button: {
                                 class: 'hidden',
@@ -207,7 +207,7 @@ watchEffect(() => {
 
             <!-- Page Heading -->
             <header
-                class="bg-surface-0 dark:bg-surface-900 shadow"
+                class="dynamic-bg shadow"
                 v-if="$slots.header"
             >
                 <Container>
