@@ -107,29 +107,30 @@ watchEffect(() => {
                             </div>
                         </template>
                         <template #end>
-                            <div class="hidden lg:flex items-center ms-6">
-                                <ToggleThemeButton
-                                    text
-                                    severity="secondary"
-                                    rounded
-                                    :pt="{
-                                        icon: {
-                                            class: 'text-muted-color',
-                                        },
-                                    }"
-                                />
+                            <div
+                                class="hidden lg:flex items-center ms-6 space-x-3"
+                            >
+                                <div>
+                                    <ToggleThemeButton
+                                        text
+                                        severity="secondary"
+                                        rounded
+                                        :pt="{
+                                            icon: {
+                                                class: 'text-muted-color',
+                                            },
+                                        }"
+                                    />
+                                </div>
                                 <!-- User Dropdown Menu -->
-                                <div class="ms-3 flex flex-col">
+                                <div class="flex flex-col">
                                     <Button
                                         id="user-menu-btn"
                                         text
-                                        size="small"
                                         severity="secondary"
                                         @click="toggleUserMenu($event)"
                                     >
-                                        <span
-                                            class="text-muted-color"
-                                        >
+                                        <span class="text-muted-color">
                                             {{ $page.props.auth.user.name }}
                                         </span>
                                         <i
