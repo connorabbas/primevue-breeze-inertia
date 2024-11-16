@@ -128,7 +128,7 @@ watchEffect(() => {
                                         @click="toggleUserMenu($event)"
                                     >
                                         <span
-                                            class="text-base text-muted-color"
+                                            class="text-muted-color"
                                         >
                                             {{ $page.props.auth.user.name }}
                                         </span>
