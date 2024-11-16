@@ -70,40 +70,33 @@ const toggleUserMenu = (event) => {
                     </div>
                 </template>
                 <template #end>
-                    <div class="flex items-center space-x-1 md:space-x-3">
-                        <ToggleThemeButton
-                            text
-                            severity="secondary"
-                            rounded
-                            :pt="{
-                                icon: {
-                                    class: 'text-xl md:text-base',
-                                },
-                            }"
-                        />
-                        <!-- User Dropdown Menu -->
-                        <div class="relative flex space-x-1">
-                            <LinksMenu
-                                :model="userMenuItems"
-                                popup
-                                ref="user-menu"
+                    <div class="flex items-center space-x-3">
+                        <div>
+                            <ToggleThemeButton
+                                text
+                                severity="secondary"
+                                rounded
                                 :pt="{
-                                    root: {
-                                        class: '!left-auto right-4 md:right-8',
+                                    icon: {
+                                        class: 'text-xl md:text-base text-muted-color',
                                     },
                                 }"
                             />
+                        </div>
+                        <!-- User Dropdown Menu -->
+                        <div class="flex flex-col">
                             <Button
                                 class="hidden md:flex"
                                 text
-                                size="small"
                                 severity="secondary"
                                 @click="toggleUserMenu($event)"
                             >
-                                <span class="text-base">
+                                <span class="text-muted-color">
                                     {{ page.props.auth.user.name }}
                                 </span>
-                                <i class="pi pi-angle-down"></i>
+                                <i
+                                    class="pi pi-angle-down text-muted-color"
+                                ></i>
                             </Button>
                             <Button
                                 class="flex md:hidden"
@@ -113,10 +106,22 @@ const toggleUserMenu = (event) => {
                                 severity="secondary"
                                 :pt="{
                                     icon: {
-                                        class: 'text-xl',
+                                        class: 'text-xl text-muted-color',
                                     },
                                 }"
                                 @click="toggleUserMenu($event)"
+                            />
+                            <div id="user-menu-append" class="relative"></div>
+                            <LinksMenu
+                                appendTo="#user-menu-append"
+                                :model="userMenuItems"
+                                popup
+                                ref="user-menu"
+                                :pt="{
+                                    root: {
+                                        class: '!left-auto !top-0 right-0',
+                                    },
+                                }"
                             />
                         </div>
                     </div>
