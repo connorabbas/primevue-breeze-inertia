@@ -13,6 +13,6 @@
         @apply bg-surface-0 dark:bg-surface-900;
     }
     .dynamic-border {
-        @apply border-surface-100 dark:border-surface-800;
+        @apply border-surface-200 dark:border-surface-800;
     }
 }
