@@ -15,7 +15,7 @@
             },
         }"
     >
-        <template #item="{ item }">
+        <template #item="{ item, active }">
             <!-- add if using 'nora' preset theme -->
             <!-- hover:text-primary-100 hover:dark:text-primary-950 -->
             <Link
@@ -29,10 +29,10 @@
                         : 'text-surface-700 dark:text-surface-0'
                 "
             >
-                <span
+                <i
                     v-show="item.icon"
                     :class="item.icon"
-                    class="mr-2"
+                    class="p-panelmenu-item-icon mr-2"
                 />
                 <span>{{ item.label }}</span>
             </Link>
@@ -42,13 +42,19 @@
                 :href="item.url"
                 :target="item.target"
             >
-                <span
+                <i
                     v-show="item.icon"
                     :class="item.icon"
-                    class="mr-2"
+                    class="p-panelmenu-item-icon mr-2"
                 />
                 <span>{{ item.label }}</span>
-                <span v-if="item.items" class="pi pi-angle-down ml-auto" />
+                <span
+                    v-if="item.items"
+                    :class="[
+                        'pi text-muted-color ml-auto',
+                        active ? 'pi-angle-down' : 'pi-angle-right',
+                    ]"
+                />
             </a>
         </template>
     </PanelMenu>
