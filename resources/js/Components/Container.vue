@@ -7,7 +7,7 @@ const props = defineProps({
     },
     fluid: {
         type: Boolean,
-        default: true,
+        default: false,
         required: false,
     },
 });
@@ -16,7 +16,7 @@ const props = defineProps({
 <template>
     <div
         :class="[
-            { 'max-w-screen-2xl mx-auto': !fluid },
+            { 'max-w-screen-xl mx-auto': !fluid },
             spacedMobile ? 'px-4' : 'px-0',
             'md:px-8',
         ]"

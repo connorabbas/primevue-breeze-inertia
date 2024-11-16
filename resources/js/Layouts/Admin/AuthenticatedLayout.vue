@@ -49,9 +49,7 @@ onMounted(() => {
             class="block lg:fixed top-0 left-0 right-0 z-50"
         >
             <!-- Main Nav -->
-            <TopNav
-                @open-nav="navDrawerOpen = true"
-            />
+            <TopNav @open-nav="navDrawerOpen = true" />
         </header>
 
         <main class="flex-1">
@@ -79,7 +77,7 @@ onMounted(() => {
                     v-if="breadcrumbs.length"
                     class="dynamic-bg border-b dynamic-border"
                 >
-                    <Container>
+                    <Container :fluid="true">
                         <div
                             class="flex items-center justify-between flex-wrap"
                         >
@@ -100,7 +98,7 @@ onMounted(() => {
 
                 <!-- Page Title -->
                 <section v-if="pageTitle">
-                    <Container class="my-4 md:mt-8 md:mb-6">
+                    <Container :fluid="true" class="my-4 md:mt-8 md:mb-6">
                         <div class="flex items-end justify-between flex-wrap">
                             <div>
                                 <h1

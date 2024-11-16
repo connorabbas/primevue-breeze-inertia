@@ -11,8 +11,8 @@ module.exports = {
     safelist: [
         'top-[57px]', // 57px header height for aura & nora theme
         'lg:pt-[57px]',
-        'top-[60px]', // 61px header height for lara theme
-        'lg:pt-[60px]',
+        'top-[61px]', // 61px header height for lara theme
+        'lg:pt-[61px]',
         'top-[64px]', // 64px header height for material theme
         'lg:pt-[64px]',
     ],

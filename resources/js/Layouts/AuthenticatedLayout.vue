@@ -81,11 +81,7 @@ watchEffect(() => {
         <div class="min-h-screen">
             <nav
                 class="dynamic-bg border-b"
-                :class="
-                    $slots.header
-                        ? 'dynamic-border'
-                        : 'shadow'
-                "
+                :class="$slots.header ? 'dynamic-border' : 'shadow'"
             >
                 <!-- Primary Navigation Menu -->
                 <Container>
@@ -116,25 +112,45 @@ watchEffect(() => {
                                     text
                                     severity="secondary"
                                     rounded
+                                    :pt="{
+                                        icon: {
+                                            class: 'text-muted-color',
+                                        },
+                                    }"
                                 />
                                 <!-- User Dropdown Menu -->
-                                <div class="ms-3 relative">
-                                    <LinksMenu
-                                        :model="userMenuItems"
-                                        popup
-                                        ref="user-menu"
-                                    />
+                                <div class="ms-3 flex flex-col">
                                     <Button
+                                        id="user-menu-btn"
                                         text
                                         size="small"
                                         severity="secondary"
                                         @click="toggleUserMenu($event)"
                                     >
-                                        <span class="text-base">
+                                        <span
+                                            class="text-muted-color"
+                                        >
                                             {{ $page.props.auth.user.name }}
                                         </span>
-                                        <i class="pi pi-angle-down"></i>
+                                        <i
+                                            class="pi pi-angle-down text-muted-color"
+                                        ></i>
                                     </Button>
+                                    <div
+                                        id="user-menu-append"
+                                        class="relative"
+                                    ></div>
+                                    <LinksMenu
+                                        appendTo="#user-menu-append"
+                                        :model="userMenuItems"
+                                        popup
+                                        ref="user-menu"
+                                        :pt="{
+                                            root: {
+                                                class: '!left-auto !top-0 right-0',
+                                            },
+                                        }"
+                                    />
                                 </div>
                             </div>
 
@@ -206,10 +222,7 @@ watchEffect(() => {
             </nav>
 
             <!-- Page Heading -->
-            <header
-                class="dynamic-bg shadow"
-                v-if="$slots.header"
-            >
+            <header class="dynamic-bg shadow" v-if="$slots.header">
                 <Container>
                     <div class="py-6">
                         <slot name="header" />

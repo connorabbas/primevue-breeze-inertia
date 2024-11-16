@@ -79,7 +79,7 @@ const {
             />
         </template>
 
-        <Container>
+        <Container :fluid="true">
             <div>
                 <Card
                     :pt="{
