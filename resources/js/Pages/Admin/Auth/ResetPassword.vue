@@ -2,7 +2,6 @@
 import { useTemplateRef, onMounted } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import AdminGuestLayout from '@/Layouts/Admin/GuestLayout.vue';
-import InputError from '@/Components/InputError.vue';
 
 const props = defineProps({
     email: {
