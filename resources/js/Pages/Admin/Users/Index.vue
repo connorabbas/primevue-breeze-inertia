@@ -22,8 +22,7 @@ const breadcrumbs = [
 const userContextMenu = useTemplateRef('user-context-menu');
 const userContextMenuItems = ref([]);
 function toggleUserContextMenu(event, userData) {
-    console.log(userData);
-    // Populate menu items based on row
+    // Populate menu items based on row data
     userContextMenuItems.value = [
         {
             label: 'Manage User',
@@ -166,7 +165,7 @@ const {
                                 </template>
                             </Column>
                             <Column header="Action">
-                                <template #body="slotProps">
+                                <template #body="{ data }">
                                     <Button
                                         type="button"
                                         severity="secondary"
@@ -174,10 +173,7 @@ const {
                                         rounded
                                         icon="pi pi-ellipsis-v"
                                         @click="
-                                            toggleUserContextMenu(
-                                                $event,
-                                                slotProps.data
-                                            )
+                                            toggleUserContextMenu($event, data)
                                         "
                                         v-tooltip.top="'Show User Actions'"
                                     />
