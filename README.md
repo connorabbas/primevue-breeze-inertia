@@ -3,53 +3,6 @@ A basic starter kit using [Laravel](https://laravel.com/docs/master), [Intertia.
 
 Need an admin panel? [There's a branch for that.](https://github.com/connorabbas/laravel-inertia-primevue/tree/feature/admin-panel)
 
-## Installation 
-1. Clone the repo (or download the zip)
-    ```
-    git clone https://github.com/connorabbas/laravel-inertia-primevue.git
-    ```
-
-2. Step into the project directory
-    ```
-    cd ./laravel-inertia-primevue
-    ```
-
-3. Install the framework and other packages
-    ```
-    composer install
-    ```
-
-3. Setup `.env` file
-
-    Windows
-    ```
-    copy .env.example .env
-    ```
-    Unix/Linux/MacOS
-    ```
-    cp .env.example .env
-    ```
-
-4. Generate the app key
-    ```
-    php artisan key:generate
-    ```
-
-5. Migrate database tables (after `.env` and database related config setup)
-    ```
-    php artisan migrate
-    ```
-
-6. Install npm packages
-    ```
-    npm install
-    ```
-
-7. Start the Vite dev server
-    ```
-    npm run dev
-    ```
-
 ## Usage with Docker
 This starter kit is configured to use Docker Compose for local development with a few extra configuration steps. With this setup, you do not need PHP, Composer, MySQL/MariaDB, or Node.js installed on your machine to get up and running with this project.
 
