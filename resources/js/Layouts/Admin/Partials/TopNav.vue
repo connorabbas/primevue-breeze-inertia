@@ -76,39 +76,25 @@ const toggleUserMenu = (event) => {
                                 text
                                 severity="secondary"
                                 rounded
-                                :pt="{
-                                    icon: {
-                                        class: 'text-xl md:text-base text-muted-color',
-                                    },
-                                }"
                             />
                         </div>
                         <!-- User Dropdown Menu -->
                         <div class="flex flex-col">
                             <Button
-                                class="hidden md:flex"
+                                id="user-menu-btn"
                                 text
                                 severity="secondary"
+                                :label="$page.props.auth.user.name"
+                                icon="pi pi-angle-down"
+                                iconPos="right"
                                 @click="toggleUserMenu($event)"
-                            >
-                                <span class="text-muted-color">
-                                    {{ page.props.auth.user.name }}
-                                </span>
-                                <i
-                                    class="pi pi-angle-down text-muted-color"
-                                ></i>
-                            </Button>
+                            />
                             <Button
                                 class="flex md:hidden"
                                 icon="pi pi-user"
                                 text
                                 rounded
                                 severity="secondary"
-                                :pt="{
-                                    icon: {
-                                        class: 'text-xl text-muted-color',
-                                    },
-                                }"
                                 @click="toggleUserMenu($event)"
                             />
                             <div id="user-menu-append" class="relative"></div>
