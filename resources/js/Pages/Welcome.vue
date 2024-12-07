@@ -33,12 +33,9 @@ defineProps({
             >
                 <template #content>
                     <div class="text-center md:text-left">
-                        <span class="block text-6xl font-bold mb-1">
-                            Laravel Inertia
-                        </span>
-                        <div class="text-6xl text-primary font-bold mb-4">
-                            & PrimeVue
-                        </div>
+                        <span class="block text-6xl font-bold text-red-500 dark:text-red-400 mb-1 ">Laravel,</span>
+                        <div class="text-6xl font-bold text-indigo-500 dark:text-indigo-400 mb-1">Inertia.js,</div>
+                        <div class="text-6xl text-green-500 dark:text-green-400 text-emerald font-bold mb-4">& PrimeVue</div>
                         <p class="mt-0 mb-4 text-muted-color leading-normal">
                             A starter kit using
                             <a
