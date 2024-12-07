@@ -1,0 +1,2 @@
+GRANT ALL PRIVILEGES ON *.* TO 'docker_mariadb'@'%';
+FLUSH PRIVILEGES;
