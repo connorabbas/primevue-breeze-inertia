@@ -6,6 +6,9 @@
     ],
     "service": "laravel",
     "workspaceFolder": "/var/www/html",
+    "mounts": [
+        "type=bind,source=/home/${localEnv:USER}/.ssh,target=/root/.ssh,readonly"
+    ],
     "customizations": {
         "vscode": {
             "extensions": [
