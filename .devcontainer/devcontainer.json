@@ -7,7 +7,7 @@
     "service": "laravel",
     "workspaceFolder": "/var/www/html",
     "mounts": [
-        "type=bind,source=/home/${localEnv:USER}/.ssh,target=/root/.ssh,readonly"
+        "type=bind,source=/home/${localEnv:USER}/.ssh,target=/home/sail/.ssh,readonly"
     ],
     "customizations": {
         "vscode": {
