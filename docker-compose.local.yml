@@ -1,0 +1,60 @@
+services:
+  laravel:
+    container_name: primevue_inertia_laravel
+    build:
+      context: ./docker/local/php/8.3
+      dockerfile: Dockerfile
+      args:
+        WWWGROUP: '${WWWGROUP}'
+    image: sail-8.3/app
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    ports:
+      - '${APP_PORT:-8000}:80'
+      - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
+    environment:
+      WWWUSER: '${WWWUSER}'
+      LARAVEL_SAIL: 1
+      XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
+      XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
+      IGNITION_LOCAL_SITES_PATH: '${PWD}'
+    volumes:
+      - '.:/var/www/html'
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.primevue_inertia.rule=Host(`primevue-inertia.localhost`)"
+      - "traefik.http.services.primevue_inertia.loadbalancer.server.port=80"
+    networks:
+      - sail
+      - proxy
+    depends_on:
+      - mariadb
+
+  mariadb:
+    container_name: primevue_inertia_mariadb
+    image: mariadb:11
+    ports:
+      - "${FORWARD_DB_PORT:-3306}:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_DATABASE: '${DB_DATABASE}'
+      MYSQL_USER: '${DB_USERNAME}'
+      MYSQL_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    volumes:
+      - primevue_inertia_mariadb_data:/var/lib/mysql
+      - ./docker/local/database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - sail
+
+volumes:
+  primevue_inertia_mariadb_data:
+    driver: local
+
+networks:
+  sail:
+    driver: bridge
+  proxy:
+    name: traefik_network
+    external: true

@@ -117,11 +117,6 @@ if (import.meta.env.SSR === false) {
                                         text
                                         severity="secondary"
                                         rounded
-                                        :pt="{
-                                            icon: {
-                                                class: 'text-muted-color',
-                                            },
-                                        }"
                                     />
                                 </div>
                                 <!-- User Dropdown Menu -->
@@ -130,15 +125,11 @@ if (import.meta.env.SSR === false) {
                                         id="user-menu-btn"
                                         text
                                         severity="secondary"
+                                        :label="$page.props.auth.user.name"
+                                        icon="pi pi-angle-down"
+                                        iconPos="right"
                                         @click="toggleUserMenu($event)"
-                                    >
-                                        <span class="text-muted-color">
-                                            {{ $page.props.auth.user.name }}
-                                        </span>
-                                        <i
-                                            class="pi pi-angle-down text-muted-color"
-                                        ></i>
-                                    </Button>
+                                    />
                                     <div
                                         id="user-menu-append"
                                         class="relative"
