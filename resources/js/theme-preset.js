@@ -1,4 +1,4 @@
-import Preset from '@primevue/themes/lara';
+import Preset from '@primevue/themes/aura';
 import { definePreset } from '@primevue/themes';
 
 const customThemePreset = definePreset(Preset, {
