@@ -33,28 +33,30 @@ defineProps({
             >
                 <template #content>
                     <div class="text-center md:text-left">
-                        <span class="block text-6xl font-bold mb-1"
-                            >Laravel Breeze</span
-                        >
+                        <span class="block text-6xl font-bold mb-1">
+                            Laravel Inertia
+                        </span>
                         <div class="text-6xl text-primary font-bold mb-4">
                             & PrimeVue
                         </div>
-                        <p class="mt-0 mb-1 text-muted-color leading-normal">
-                            A starter kit using the Vue/Inertia option for
+                        <p class="mt-0 mb-4 text-muted-color leading-normal">
+                            A starter kit using
                             <a
-                                href="https://laravel.com/docs/master/starter-kits#laravel-breeze"
+                                href="https://laravel.com/docs/master"
                                 class="underline text-primary hover:text-color"
-                                >Laravel Breeze</a
+                                >Laravel</a
                             >,
-                        </p>
-                        <p class="mt-0 mb-6 text-muted-color leading-normal">
-                            utilizing
+                            <a
+                                href="https://inertiajs.com/"
+                                class="underline text-primary hover:text-color"
+                                >Inertia.js</a
+                            >,
+                            and
                             <a
                                 href="https://primevue.org/"
                                 class="underline text-primary hover:text-color"
                                 >PrimeVue</a
-                            >
-                            components
+                            >.
                         </p>
                         <template v-if="$page.props.auth.user">
                             <Link :href="route('dashboard')">
