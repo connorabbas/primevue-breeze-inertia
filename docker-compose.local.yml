@@ -1,6 +1,5 @@
 services:
   laravel:
-    container_name: primevue_inertia_laravel
     build:
       context: ./docker/local/php/8.3
       dockerfile: Dockerfile
@@ -28,28 +27,35 @@ services:
       - sail
       - proxy
     depends_on:
-      - mariadb
+      - mysql
 
-  mariadb:
-    container_name: primevue_inertia_mariadb
-    image: mariadb:11
+  mysql:
+    image: 'mysql/mysql-server:8.0'
     ports:
-      - "${FORWARD_DB_PORT:-3306}:3306"
+      - '${FORWARD_DB_PORT:-3306}:3306'
     environment:
       MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
-      MYSQL_ROOT_HOST: "%"
+      MYSQL_ROOT_HOST: '%'
       MYSQL_DATABASE: '${DB_DATABASE}'
       MYSQL_USER: '${DB_USERNAME}'
       MYSQL_PASSWORD: '${DB_PASSWORD}'
-      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
     volumes:
-      - primevue_inertia_mariadb_data:/var/lib/mysql
-      - ./docker/local/database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - 'primevue-inertia-mysql:/var/lib/mysql'
+      - './docker/local/database/mysql/create-testing-database.sh:/docker-entrypoint-initdb.d/10-create-testing-database.sh'
     networks:
       - sail
+    healthcheck:
+      test:
+        - CMD
+        - mysqladmin
+        - ping
+        - '-p${DB_PASSWORD}'
+      retries: 3
+      timeout: 5s
 
 volumes:
-  primevue_inertia_mariadb_data:
+  primevue-inertia-mysql:
     driver: local
 
 networks:
