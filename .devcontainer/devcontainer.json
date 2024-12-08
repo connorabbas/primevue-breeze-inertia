@@ -12,6 +12,7 @@
     "customizations": {
         "vscode": {
             "extensions": [
+                "ms-azuretools.vscode-docker",
                 "absszero.vscode-laravel-goto",
                 "codingyu.laravel-goto-view",
                 "onecentlin.laravel-blade",
