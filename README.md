@@ -4,7 +4,7 @@ A basic starter kit using [Laravel](https://laravel.com/docs/master), [Intertia.
 Need an admin panel? [There's a branch for that.](https://github.com/connorabbas/laravel-inertia-primevue/tree/feature/admin-panel)
 
 ## Usage with Docker
-This starter kit is configured to use Docker Compose for local development with a few extra configuration steps. With this setup, you do not need PHP, Composer, MySQL/MariaDB, or Node.js installed on your machine to get up and running with this project.
+This starter kit is configured to use Docker Compose for local development with a few extra configuration steps. With this setup, you do not need PHP, Composer, MySQL or Node.js installed on your machine to get up and running with this project.
 
 ### Setup
 1. In a new directory (outside of your Laravel project) create a `docker-compose.yml` file to create a reverse proxy container using [Traefik](https://doc.traefik.io/traefik/getting-started/quick-start/). You can reference this [example implementation](https://github.com/connorabbas/traefik-docker-compose/blob/master/docker-compose.yml).
@@ -19,11 +19,11 @@ This starter kit is configured to use Docker Compose for local development with 
     # Match with value used in docker-compose.local.yml
     APP_URL=http://primevue-inertia.localhost
 
-    DB_CONNECTION=mariadb
-    DB_HOST=mariadb # service name from container
+    DB_CONNECTION=mysql
+    DB_HOST=mysql
     DB_PORT=3306
     DB_DATABASE=laravel
-    DB_USERNAME=docker_mariadb
+    DB_USERNAME=sail
     DB_PASSWORD=password
 
     # Update as needed for running multiple projects
