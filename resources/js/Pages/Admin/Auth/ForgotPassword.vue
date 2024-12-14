@@ -49,7 +49,7 @@ onMounted(() => {
                     id="email"
                     type="email"
                     v-model="form.email"
-                    class="w-full"
+                    fluid
                     :invalid="Boolean(form.errors.email)"
                     autocomplete="username"
                 />
