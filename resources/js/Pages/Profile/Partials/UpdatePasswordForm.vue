@@ -52,7 +52,7 @@ const updatePassword = () => {
                 ref="current-password-input"
                 type="password"
                 v-model="form.current_password"
-                class="w-full"
+                fluid
                 :invalid="Boolean(form.errors?.current_password)"
                 autocomplete="current-password"
             />
@@ -74,7 +74,7 @@ const updatePassword = () => {
                 ref="new-password-input"
                 type="password"
                 v-model="form.password"
-                class="w-full"
+                fluid
                 :invalid="Boolean(form.errors.password)"
                 autocomplete="new-password"
             />
@@ -95,7 +95,7 @@ const updatePassword = () => {
                 id="password_confirmation"
                 type="password"
                 v-model="form.password_confirmation"
-                class="w-full"
+                fluid
                 :invalid="Boolean(form.errors.password_confirmation)"
                 autocomplete="new-password"
             />

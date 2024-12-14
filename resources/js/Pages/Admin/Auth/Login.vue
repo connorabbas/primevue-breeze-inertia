@@ -51,7 +51,7 @@ onMounted(() => {
                         id="email"
                         type="email"
                         v-model="form.email"
-                        class="w-full"
+                        fluid
                         :invalid="Boolean(form.errors.email)"
                         autocomplete="username"
                     />
@@ -72,7 +72,7 @@ onMounted(() => {
                         id="password"
                         type="password"
                         v-model="form.password"
-                        class="w-full"
+                        fluid
                         :invalid="Boolean(form.errors.password)"
                         autocomplete="current-password"
                     />

@@ -35,7 +35,7 @@ onMounted(() => {
                     id="name"
                     type="text"
                     v-model="form.name"
-                    class="w-full"
+                    fluid
                     :invalid="Boolean(form.errors.name)"
                     required
                     autocomplete="name"
@@ -56,7 +56,7 @@ onMounted(() => {
                     id="email"
                     type="email"
                     v-model="form.email"
-                    class="w-full"
+                    fluid
                     :invalid="Boolean(form.errors.email)"
                     required
                     autocomplete="username"
@@ -77,7 +77,7 @@ onMounted(() => {
                     id="password"
                     type="password"
                     v-model="form.password"
-                    class="w-full"
+                    fluid
                     :invalid="Boolean(form.errors.password)"
                     required
                     autocomplete="new-password"
@@ -98,7 +98,7 @@ onMounted(() => {
                     id="password_confirmation"
                     type="password"
                     v-model="form.password_confirmation"
-                    class="w-full"
+                    fluid
                     :invalid="Boolean(form.errors.password_confirmation)"
                     required
                     autocomplete="new-password"
@@ -116,7 +116,7 @@ onMounted(() => {
             <div class="flex justify-end items-center pt-2">
                 <Link
                     :href="route('login')"
-                    class="mr-4 text-muted-color underline text-muted-color hover:text-color"
+                    class="mr-4 underline text-muted-color hover:text-color"
                 >
                     Already registered?
                 </Link>

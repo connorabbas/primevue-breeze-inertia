@@ -195,7 +195,7 @@ watchEffect(() => {
                                 <Button
                                     label="Profile"
                                     icon="pi pi-user"
-                                    class="w-full"
+                                    fluid
                                     severity="secondary"
                                     outlined
                                 ></Button>

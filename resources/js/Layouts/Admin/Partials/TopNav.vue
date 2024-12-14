@@ -8,8 +8,6 @@ import LinksMenuBar from '@/Components/PrimeVue/LinksMenuBar.vue';
 
 const emit = defineEmits(['open-nav']);
 
-const page = usePage();
-
 // User menu
 const logoutForm = useForm({});
 const userMenu = useTemplateRef('user-menu');
@@ -85,12 +83,13 @@ const toggleUserMenu = (event) => {
                                 text
                                 severity="secondary"
                                 :label="$page.props.auth.user.name"
+                                class="hidden sm:flex"
                                 icon="pi pi-angle-down"
                                 iconPos="right"
                                 @click="toggleUserMenu($event)"
                             />
                             <Button
-                                class="flex md:hidden"
+                                class="flex sm:hidden"
                                 icon="pi pi-user"
                                 text
                                 rounded
