@@ -93,7 +93,7 @@ onMounted(() => {
                 <Link
                     :href="route('verification.send')"
                     method="post"
-                    class="underline text-sm text-muted-color underline text-muted-color hover:text-color"
+                    class="underline text-sm text-muted-color hover:text-color"
                 >
                     Click here to re-send the verification email.
                 </Link>
