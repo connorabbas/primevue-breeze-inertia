@@ -197,7 +197,7 @@ if (import.meta.env.SSR === false) {
                                 <Button
                                     label="Profile"
                                     icon="pi pi-user"
-                                    class="w-full"
+                                    fluid
                                     severity="secondary"
                                     outlined
                                 ></Button>
