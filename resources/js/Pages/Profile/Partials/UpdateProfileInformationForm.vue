@@ -53,7 +53,7 @@ onMounted(() => {
                 id="name"
                 type="text"
                 v-model="form.name"
-                class="w-full"
+                fluid
                 :invalid="Boolean(form.errors.name)"
                 autocomplete="name"
             />
@@ -73,7 +73,7 @@ onMounted(() => {
                 id="email"
                 type="email"
                 v-model="form.email"
-                class="w-full"
+                fluid
                 :invalid="Boolean(form.errors.email)"
                 autocomplete="username"
             />
@@ -93,7 +93,7 @@ onMounted(() => {
                 <Link
                     :href="route('verification.send')"
                     method="post"
-                    class="underline text-sm text-muted-color underline text-muted-color hover:text-color"
+                    class="underline text-sm text-muted-color hover:text-color"
                 >
                     Click here to re-send the verification email.
                 </Link>
