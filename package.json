@@ -6,7 +6,7 @@
         "build": "vite build"
     },
     "devDependencies": {
-        "@inertiajs/vue3": "^1.0.0",
+        "@inertiajs/vue3": "^2.0.0",
         "@primevue/auto-import-resolver": "^4.2.2",
         "@primevue/themes": "^4.2.2",
         "@vitejs/plugin-vue": "^5.0.0",
