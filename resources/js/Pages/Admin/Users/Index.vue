@@ -98,8 +98,6 @@ const {
                             ref="dataTable"
                             lazy
                             paginator
-                            stripedRows
-                            showGridlines
                             removableSort
                             resizableColumns
                             columnResizeMode="fit"
@@ -130,10 +128,10 @@ const {
                                     <InputText
                                         v-model="filterModel.value"
                                         type="text"
+                                        fluid
                                         @input="
                                             debounceInputFilter(filterCallback)
                                         "
-                                        class="w-full"
                                         placeholder="Search by name"
                                     />
                                 </template>
@@ -153,10 +151,10 @@ const {
                                     <InputText
                                         v-model="filterModel.value"
                                         type="text"
+                                        fluid
                                         @input="
                                             debounceInputFilter(filterCallback)
                                         "
-                                        class="w-full"
                                         placeholder="Search by Email"
                                     />
                                 </template>
