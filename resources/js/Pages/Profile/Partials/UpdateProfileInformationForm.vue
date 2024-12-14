@@ -53,7 +53,7 @@ onMounted(() => {
                 id="name"
                 type="text"
                 v-model="form.name"
-                class="w-full"
+                fluid
                 :invalid="Boolean(form.errors.name)"
                 autocomplete="name"
             />
@@ -73,7 +73,7 @@ onMounted(() => {
                 id="email"
                 type="email"
                 v-model="form.email"
-                class="w-full"
+                fluid
                 :invalid="Boolean(form.errors.email)"
                 autocomplete="username"
             />

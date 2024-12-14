@@ -26,7 +26,7 @@ const props = defineProps({
 
         <Container>
             <div class="py-4 md:py-8">
-                <div class="space-y-6">
+                <div class="space-y-4 md:space-y-8">
                     <Card
                         :pt="{
                             body: {
