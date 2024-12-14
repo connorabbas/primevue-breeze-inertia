@@ -33,7 +33,7 @@ This starter kit is configured to use Docker Compose for local development with 
    - Either build manually with docker compose (like above), use [Laravel Sail](https://laravel.com/docs/master/sail), or build as a [VS Code Dev Container](https://code.visualstudio.com/docs/devcontainers/tutorial) using the `Dev Containers: Reopen in Container` command.
 
 ### Additional configuration
-If you wish to add additional services, or swap out MariaDB with an alternative database, you can reference the [Laravel Sail stubs](https://github.com/laravel/sail/tree/1.x/stubs) and update the `docker-compose.local.yml` file as needed.
+If you wish to add additional services, or swap out MySQL with an alternative database, you can reference the [Laravel Sail stubs](https://github.com/laravel/sail/tree/1.x/stubs) and update the `docker-compose.local.yml` file as needed.
 
 ## Admin Area
 ### About
