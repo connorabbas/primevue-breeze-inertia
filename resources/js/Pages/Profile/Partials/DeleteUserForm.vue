@@ -51,7 +51,7 @@ function focusPasswordInput() {
                     type="password"
                     placeholder="Password"
                     v-model="form.password"
-                    class="w-full"
+                    fluid
                     :invalid="Boolean(form.errors.password)"
                     autocomplete="current-password"
                     @keyup.enter="deleteUser"
