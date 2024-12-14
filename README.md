@@ -64,7 +64,7 @@ php artisan db:seed
 ```
 
 ### Changes
-[Compare against the master branch](https://github.com/connorabbas/primevue-breeze-inertia/compare/master...admin-panel)
+[Compare against the master branch](https://github.com/connorabbas/primevue-breeze-inertia/compare/master...feature/admin-panel)
 
 ## Theme
 This starter kit provides a light/dark mode and custom theme functionality provided by the powerful PrimeVue theming system, using styled mode and custom design token values.
