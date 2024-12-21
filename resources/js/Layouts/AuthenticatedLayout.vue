@@ -169,7 +169,15 @@ if (import.meta.env.SSR === false) {
                 </Container>
 
                 <!-- Mobile drawer menu -->
-                <Drawer v-model:visible="mobileMenuOpen" position="right">
+                <Drawer
+                    v-model:visible="mobileMenuOpen"
+                    position="right"
+                    :pt="{
+                        footer: {
+                            class: 'p-5',
+                        },
+                    }"
+                >
                     <template #header>
                         <ToggleThemeButton text severity="secondary" rounded />
                     </template>
