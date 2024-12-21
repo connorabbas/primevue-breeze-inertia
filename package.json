@@ -18,7 +18,7 @@
         "primeicons": "^7.0.0",
         "primevue": "^4.2.2",
         "tailwindcss": "^3.4.4",
-        "tailwindcss-primeui": "^0.3.2",
+        "tailwindcss-primeui": "^0.3.3",
         "unplugin-vue-components": "^0.27.4",
         "vite": "^5.0",
         "vue": "^3.5.0"
