@@ -1,10 +1,9 @@
-import '../css/app.css';
-import 'primeicons/primeicons.css';
-
-import { createSSRApp, h } from 'vue';
-import { renderToString } from '@vue/server-renderer';
 import { createInertiaApp, Head, Link } from '@inertiajs/vue3';
 import createServer from '@inertiajs/vue3/server';
+
+import { renderToString } from '@vue/server-renderer';
+import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
+import { createSSRApp, h } from 'vue';
 
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 import { route as routeFn } from 'ziggy-js';
@@ -14,9 +13,6 @@ import ToastService from 'primevue/toastservice';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 
-import { useTheme } from '@/Composables/useTheme.js';
-import customThemePreset from '@/theme-preset.js';
-
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 createServer((page) =>
@@ -24,39 +20,31 @@ createServer((page) =>
         page,
         render: renderToString,
         title: (title) => `${title} - ${appName}`,
-        resolve: (name) => {
-            const pages = import.meta.glob('./Pages/**/*.vue', { eager: true });
-            return pages[`./Pages/${name}.vue`];
-        },
+        resolve: (name) =>
+            resolvePageComponent(
+                `./Pages/${name}.vue`,
+                import.meta.glob('./Pages/**/*.vue')
+            ),
         setup({ App, props, plugin }) {
-            // set site theme (light/dark mode)
-            const { setTheme, currentTheme } = useTheme();
-            setTheme(currentTheme.value);
-
             // Ziggy work around for SSR
             const Ziggy = {
                 ...props.initialPage.props.ziggy,
-                location: new URL(props.initialPage.props.ziggy.url),
+                location: new URL(page.props.ziggy.location),
             };
             global.route = (name, params, absolute, config = Ziggy) =>
                 routeFn(name, params, absolute, config);
 
-            return createSSRApp({
-                render: () => h(App, props),
-            })
+            return createSSRApp({ render: () => h(App, props) })
                 .use(plugin)
                 .use(ZiggyVue, Ziggy)
                 .use(PrimeVue, {
-                    theme: customThemePreset,
+                    theme: 'none',
                 })
                 .use(ToastService)
                 .component('Head', Head)
                 .component('Link', Link)
                 .component('InputText', InputText)
                 .component('Button', Button);
-        },
-        progress: {
-            color: 'var(--p-primary-500)',
         },
     })
 );

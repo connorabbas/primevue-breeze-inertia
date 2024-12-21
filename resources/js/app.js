@@ -1,17 +1,20 @@
-import './bootstrap';
-import '../css/app.css';
+import '../css/tailwind.css';
+import '../css/styles.css';
 import 'primeicons/primeicons.css';
 
-import { createSSRApp, h } from 'vue';
+import './bootstrap';
+
+import { createApp, h } from 'vue';
 import { createInertiaApp, Head, Link } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 
 import PrimeVue from 'primevue/config';
 import ToastService from 'primevue/toastservice';
+import InputText from 'primevue/inputtext';
+import Button from 'primevue/button';
 
 import { useTheme } from '@/Composables/useTheme.js';
-import customThemePreset from '@/theme-preset.js';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -27,16 +30,17 @@ createInertiaApp({
         const { setTheme, currentTheme } = useTheme();
         setTheme(currentTheme.value);
 
-        // start the app
-        return createSSRApp({ render: () => h(App, props) })
+        return createApp({ render: () => h(App, props) })
             .use(plugin)
-            .use(ZiggyVue, Ziggy)
+            .use(ZiggyVue)
             .use(PrimeVue, {
-                theme: customThemePreset,
+                theme: 'none',
             })
             .use(ToastService)
             .component('Head', Head)
             .component('Link', Link)
+            .component('InputText', InputText)
+            .component('Button', Button)
             .mount(el);
     },
     progress: {

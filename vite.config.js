@@ -41,8 +41,8 @@ export default ({ mode }) => {
         preview: {
             port: devPort,
         },
-        ssr: {
-            //noExternal: ['primevue'],
-        },
+        /* ssr: {
+            noExternal: ['primevue'],
+        }, */
     });
 };

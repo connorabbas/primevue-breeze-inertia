@@ -11,11 +11,30 @@ import Container from '@/Components/Container.vue';
         </template>
         <Container>
             <div class="py-4 md:py-8">
-                <Card>
+                <Card class="mb-5">
                     <template #content>
                         <p class="m-0">You are logged in!</p>
                     </template>
                 </Card>
+
+                <div class="card flex justify-center flex-wrap gap-4">
+                    <Button
+                        label="Primary"
+                        severity="primary"
+                        :pt="{
+                            root: {
+                                class: '!text-primary-contrast',
+                            },
+                        }"
+                    />
+                    <Button label="Secondary" severity="secondary" />
+                    <Button label="Success" severity="success" />
+                    <Button label="Info" severity="info" />
+                    <Button label="Warn" severity="warn" />
+                    <Button label="Help" severity="help" />
+                    <Button label="Danger" severity="danger" />
+                    <Button label="Contrast" severity="contrast" />
+                </div>
             </div>
         </Container>
     </AuthenticatedLayout>
