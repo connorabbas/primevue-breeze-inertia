@@ -10,8 +10,6 @@ import { route as routeFn } from 'ziggy-js';
 
 import PrimeVue from 'primevue/config';
 import ToastService from 'primevue/toastservice';
-import InputText from 'primevue/inputtext';
-import Button from 'primevue/button';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -42,9 +40,7 @@ createServer((page) =>
                 })
                 .use(ToastService)
                 .component('Head', Head)
-                .component('Link', Link)
-                .component('InputText', InputText)
-                .component('Button', Button);
+                .component('Link', Link);
         },
     })
 );
