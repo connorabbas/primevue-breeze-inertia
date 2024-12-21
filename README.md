@@ -6,7 +6,7 @@ This branch is tailored towards applications that rely on Server-Side Rendering 
 
 ## PrimeVue V4 Styled Mode and SSR
 
-With **PrimeVue V4**, component styles are dynamically generated on the client side based on the design token values configured in your theme. This approach is well-suited for Single Page Applications (SPAs), where the initial render begins with a blank page, hydration seamlessly takes over, and client-side routing ensures smooth navigation.
+With **PrimeVue V4** styled mode, component styles are dynamically generated on the client side based on the design token values configured in your theme. This approach is well-suited for Single Page Applications (SPAs), where the initial render begins with a blank page, hydration seamlessly takes over, and client-side routing ensures smooth navigation.
 
 However, this dynamic styling mechanism introduces challenges for Server-Side Rendering (SSR).
 
@@ -42,20 +42,20 @@ This approach ensures:
 2. No "jumpy" UI issues when refreshing the Vue SSR app.
 3. Simplicity and maintainability without tampering with the SSR Node.js process.
 
-By opting for the Tailwind Theme, it is possible still achieve a modern, customizable design system while retaining the benefits of server-side styling compatibility.
+By opting for the Tailwind Theme, it is still possible to achieve a modern, customizable design system while retaining the benefits of server-side styling compatibility.
 
 ### Configuration
-In other branches, theming is handled by the `resources/js/theme-preset.js` file and the extended Aura theme provided by PrimeVue. With this Tailwind Theme version, the configuration of custom base styles is handled via CSS variables within the `resources/css/styles.css` file instead.
+In other branches, theming is handled by the `resources/js/theme-preset.js` file and the extended Aura theme provided by PrimeVue. With this Tailwind Theme version, the configuration of custom base styles is instead handled via CSS variables within the `resources/css/styles.css` file.
 
-The components styles reside within the `resources/css/primevue` directory, copied from the latest release of the [primefaces/primevue-tailwind](https://github.com/primefaces/primevue-tailwind/releases) styles. 
+The component styles reside within the `resources/css/primevue` directory, copied from the latest release of the [primefaces/primevue-tailwind](https://github.com/primefaces/primevue-tailwind/releases) styles. 
 
-CSS layers have also been implemented so the Tailwind utilities can override the PrimeVue component styling when needed. Feel free to revert this change and use the default example [styles import](https://tailwind.primevue.org/vite/#importstyles) provided by PrimeVue.
+CSS layers have also been implemented so that Tailwind utilities can override the PrimeVue component styling when needed. Feel free to revert this change and use the default example [styles import](https://tailwind.primevue.org/vite/#importstyles) provided by PrimeVue.
 
 ---
 
 ## Usage with Docker
 
-This starter kit is configured to use Docker Compose for local development with a few extra configuration steps. With this setup, you do not need PHP, Composer, MySQL or Node.js installed on your machine to get up and running with this project.
+This starter kit is configured to use Docker Compose for local development with a few extra configuration steps. With this setup, you do not need PHP, Composer, MySQL or Node.js installed on your machine to get up and running.
 
 ### Setup
 
