@@ -1,6 +1,7 @@
 import { ref, computed, onMounted } from 'vue';
 import { router, usePage } from '@inertiajs/vue3';
 import debounce from 'lodash/debounce';
+import { FilterMatchMode } from '@primevue/core/api';
 
 export function useLazyDataTable(
     defaultFilters = {},
@@ -53,6 +54,7 @@ export function useLazyDataTable(
                     rows: rowsPerPage.value,
                 },
                 preserveState: true,
+                showProgress: true,
                 onSuccess: (page) => {
                     resolve(page);
                 },
@@ -77,6 +79,7 @@ export function useLazyDataTable(
     }
 
     function onSort(event) {
+        currentPage.value = 1;
         sortField.value = event.sortField;
         sortOrder.value = event.sortOrder;
         fetchData();
@@ -109,18 +112,27 @@ export function useLazyDataTable(
         });
     }
 
+    /**
+     * WIP, parse url params into useable filters
+     */
     function parseUrlParams(urlParams) {
         filters.value = urlParams?.filters || dataTableDefaults.filters;
-        // Cast strings to Numbers for v-model
         Object.keys(filters.value).forEach((key) => {
             const filter = filters.value[key];
-            if (!filter.value) {
+            if (!filter?.value || !filter?.matchMode) {
                 return;
             }
-            if (typeof filter.value === 'string' && !isNaN(filter.value)) {
+            if (filter.matchMode == FilterMatchMode.DATE_IS) {
+                filters.value[key].value = new Date(filter.value);
+            } else if (
+                typeof filter.value === 'string' &&
+                !isNaN(filter.value)
+            ) {
                 filters.value[key].value = Number(filter.value);
-            }
-            if (Array.isArray(filter.value)) {
+            } else if (
+                Array.isArray(filter.value) ||
+                filter.matchMode == FilterMatchMode.IN
+            ) {
                 // TODO: find out why there are duplicate array values in multi-select filters
                 // "Fixed" with reassigning to unique array
                 const unique = [...new Set(filter.value)];

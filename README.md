@@ -1,12 +1,19 @@
-# Laravel Inertia & PrimeVue Starter Kit
+# Laravel, Inertia, & PrimeVue Starter Kit
+## About
 A basic authentication starter kit using [Laravel](https://laravel.com/docs/master), [Intertia.js](https://inertiajs.com/), and [PrimeVue](https://primevue.org/). An equivalent to using [Laravel Breeze](https://laravel.com/docs/master/starter-kits#laravel-breeze), but with the added benefit of all the PrimeVue components at your disposal.
 
-Need an admin panel? [There's a branch for that.](https://github.com/connorabbas/laravel-inertia-primevue/tree/feature/admin-panel)
-
-Need SSR support? [There's a branch for that.](https://github.com/connorabbas/laravel-inertia-primevue/tree/feature/ssr)
+## Features
+- Same auth structure and features as Laravel Breeze with User Profile page
+- Need an admin panel? [There's a branch for that.](https://github.com/connorabbas/laravel-inertia-primevue/tree/feature/admin-panel)
+- Need SSR support? [There's a branch for that.](https://github.com/connorabbas/laravel-inertia-primevue/tree/feature/ssr)
+- Pre-configured [Auto Import](https://primevue.org/autoimport/) PrimeVue components
+- Wrapper components for PrimeVue's `Menu`, `MenuBar`, & `PanelMenu` utilizing Inertia's `Link` component
+- Light/Dark mode toggle with custom component & composable
+- `useLazyDataTable()` composable for use with PrimeVue's `DataTable` component for easy filtering/sorting (example usage in `feature/admin-panel` branch)
+- Easily customizable theming
 
 ## Theme
-This starter kit provides a light/dark mode and custom theme functionality provided by the powerful **PrimeVue V4** theming system, using styled mode and custom design token values.
+This starter kit provides a light/dark mode toggle by default, and custom theme functionality provided by the powerful **PrimeVue V4** theming system, using styled mode and custom design token values.
 
 The starting point for customizing your theme will be the `resources/js/theme-preset.js` module file. To quickly change the look and feel of your site, swap the [primary](https://primevue.org/theming/styled/#primary) values with a different set of [colors](https://primevue.org/theming/styled/#colors), change the [surface](https://primevue.org/theming/styled/#surface) `colorScheme` values (slate, gray, neutral, etc.), or completely change the [preset theme](https://primevue.org/theming/styled/#presets) (Aura used by default).
 
