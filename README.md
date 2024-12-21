@@ -2,6 +2,16 @@
 
 This branch is tailored towards applications that rely on Server-Side Rendering (SSR), this means the PrimeVue [styled mode](https://primevue.org/theming/styled/) implementation (used in the other branches of this project) is not a suitable solution for the component styling.
 
+Run the site with SSR:
+
+```
+npm run build
+```
+
+```
+php artisan inertia:start-ssr
+```
+
 ## PrimeVue V4 Styled Mode and SSR
 
 With **PrimeVue V4** styled mode, component styles are dynamically generated on the client side based on the design token values configured in your theme. This approach is well-suited for Single Page Applications (SPAs), where the initial render begins with a blank page, hydration seamlessly takes over, and client-side routing ensures smooth navigation.
@@ -43,8 +53,13 @@ This approach ensures:
 By opting for the Tailwind Theme, it is still possible to achieve a modern, customizable design system while retaining the benefits of server-side styling compatibility.
 
 ### Configuration
+
 In other branches, theming is handled by the `resources/js/theme-preset.js` file and the extended Aura theme provided by PrimeVue. With this Tailwind Theme version, the configuration of custom base styles is instead handled via CSS variables within the `resources/css/styles.css` file.
 
-The component styles reside within the `resources/css/primevue` directory, copied from the latest release of the [primefaces/primevue-tailwind](https://github.com/primefaces/primevue-tailwind/releases) styles. 
+The component styles reside within the `resources/css/primevue` directory, copied from the latest release of the [primefaces/primevue-tailwind](https://github.com/primefaces/primevue-tailwind/releases) styles.
 
 CSS layers have also been implemented so that Tailwind utilities can override the PrimeVue component styling when needed. Feel free to revert this change and use the default example [styles import](https://tailwind.primevue.org/vite/#importstyles) provided by PrimeVue.
+
+### Changes
+
+[Compare against the master branch](https://github.com/connorabbas/primevue-breeze-inertia/compare/master...feature/ssr)
